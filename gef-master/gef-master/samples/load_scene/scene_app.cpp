@@ -104,6 +104,8 @@ bool SceneApp::Update(float frame_time)
 void SceneApp::Render()
 {
 	gef::Matrix44 projection_matrix;
+
+#if 0
 	gef::Matrix44 view_matrix;
 
 	projection_matrix = platform_.PerspectiveProjectionFov(camera_fov, (float)platform_.width() / (float)platform_.height(), near_plane, far_plane);
@@ -114,12 +116,22 @@ void SceneApp::Render()
 	// draw meshes here
 	renderer_3d_->Begin();
 	renderer_3d_->End();
-
+#endif
 
 
 	// setup the sprite renderer, but don't clear the frame buffer
 	// draw 2D sprites here
-	sprite_renderer_->Begin(false);
+
+
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width/2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	sprite_renderer_->set_projection_matrix(projection_matrix);
+
+	sprite_renderer_->Begin();
 
 	car->draw(sprite_renderer_);
 

@@ -21,6 +21,7 @@ Tire::Tire(b2World* world)
 	tireSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	tireSprite.set_rotation(-body->GetAngle());
 
+
 }
 
 

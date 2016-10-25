@@ -25,6 +25,8 @@ public:
 	~Car();
 	void Update(int controlState);
 	void draw(gef::SpriteRenderer* sprite_renderer);
+	float getXPosition();
+	float getYPosition();
 };
 
 

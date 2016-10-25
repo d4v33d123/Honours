@@ -149,3 +149,13 @@ void Car::draw(gef::SpriteRenderer* sprite_renderer)
 	
 
 }
+
+float Car::getXPosition()
+{
+	return body->GetPosition().x;
+}
+
+float Car::getYPosition()
+{
+	return body->GetPosition().y;
+}
