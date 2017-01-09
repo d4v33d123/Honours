@@ -162,11 +162,19 @@
     <ClCompile Include="..\..\main_d3d11.cpp" />
     <ClCompile Include="..\..\scene_app.cpp" />
     <ClCompile Include="..\..\Tire.cpp" />
+    <ClCompile Include="BackPropagation.cpp" />
+    <ClCompile Include="NeuralNetwork.cpp" />
+    <ClCompile Include="RMGS.cpp" />
+    <ClCompile Include="RProp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Car.h" />
     <ClInclude Include="..\..\scene_app.h" />
     <ClInclude Include="..\..\Tire.h" />
+    <ClInclude Include="BackPropagation.h" />
+    <ClInclude Include="NeuralNetwork.h" />
+    <ClInclude Include="RMGS.h" />
+    <ClInclude Include="RProp.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
