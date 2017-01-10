@@ -1,0 +1,836 @@
+
+<!-- saved from url=(0179)http://webcache.googleusercontent.com/search?q=cache:yVG99eg_6SEJ:citeseerx.ist.psu.edu/viewdoc/download%3Fdoi%3D10.1.1.52.1422%26rep%3Drep1%26type%3Dpdf+&cd=8&hl=en&ct=clnk&gl=uk -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">body { margin-left:0;margin-right:0;margin-top:0; }#google-cache-hdr {background:#f5f5f5 !important;font:13px arial,sans-serif !important;text-align:left !important;color:#202020 !important;border:0 !important;margin:0 !important;border-bottom:1px solid #cecece !important;line-height:16px !important ;padding:16px 28px 24px 28px !important;}#google-cache-hdr * {display:inline !important;font:inherit !important;text-align:inherit !important;color:inherit !important;line-height:inherit !important;background:none !important;border:0 !important;margin:0 !important;padding:0 !important;letter-spacing:0 !important;}#google-cache-hdr a {text-decoration:none !important;color:#1a0dab !important;}#google-cache-hdr a:hover { text-decoration:underline !important; }#google-cache-hdr a:visited { color:#609 !important; }#google-cache-hdr div { display:block !important;margin-top:4px !important; }#google-cache-hdr b {font-weight:bold !important;display:inline-block !important;direction:ltr !important;}pre { word-wrap:break-word; }pre { white-space:pre-wrap; }</style></head><body bgcolor="#ffffff" vlink="blue" link="blue"><div id="google-cache-hdr" dir="ltr"><div>This is the html version of the file <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.52.1422&amp;rep=rep1&amp;type=pdf" dir="ltr">http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.52.1422&amp;rep=rep1&amp;type=pdf</a>.<br><b>Google</b> automatically generates html versions of documents as we crawl the web.</div></div><div style="position:relative;margin:8px;">
+
+
+
+<meta name="Producer" content="ESP Ghostscript 815.02">
+<meta name="CreationDate" content="D:20071107062022">
+<meta name="ModDate" content="D:20071107062022">
+<title>Fast Training of Multilayer Perceptrons</title>
+
+<table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="1"><b>Page 1</b></a></font></td></tr></tbody></table><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:1317;left:441"><nobr>1</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:19px;font-family:Times">
+<div style="position:absolute;top:287;left:272"><nobr><b>Fast Training of Multilayer Perceptrons</b></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:14px;font-family:Times">
+<div style="position:absolute;top:413;left:301"><nobr>Brijesh Verma, <i>Member of IEEE &amp; IASTED</i></nobr></div>
+<div style="position:absolute;top:433;left:333"><nobr>School of Information Technology</nobr></div>
+<div style="position:absolute;top:452;left:301"><nobr>Faculty of Engineering and Applied Science</nobr></div>
+<div style="position:absolute;top:471;left:315"><nobr>Griffith University, Gold Coast Campus</nobr></div>
+<div style="position:absolute;top:491;left:314"><nobr>Gold Coast, Queensland 4217, Australia</nobr></div>
+<div style="position:absolute;top:510;left:339"><nobr>E-mail: B.Verma@eas.gu.edu.au</nobr></div>
+<div style="position:absolute;top:530;left:339"><nobr>URL: http://eassun.eas.gu.edu.au/</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:607;left:106"><nobr><i><b>Abstract</b></i><b>- Training a multilayer perceptron by an error backpropagation algorithm is slow and uncertain.</b></nobr></div>
+<div style="position:absolute;top:642;left:106"><nobr><b>This paper describes a new approach which is much faster and certain than error backpropagation. The</b></nobr></div>
+<div style="position:absolute;top:677;left:106"><nobr><b>proposed approach is based on combined iterative and direct solution methods. In this approach, we use an</b></nobr></div>
+<div style="position:absolute;top:712;left:106"><nobr><b>inverse transformation for linearization of nonlinear output activation functions, direct solution matrix</b></nobr></div>
+<div style="position:absolute;top:747;left:106"><nobr><b>methods for training the weights of the output layer; and gradient descent, delta rule and other proposed</b></nobr></div>
+<div style="position:absolute;top:782;left:106"><nobr><b>techniques for training the weights of the hidden layers. The approach has been implemented and tested on</b></nobr></div>
+<div style="position:absolute;top:817;left:106"><nobr><b>many problems. Experimental results, including training times and recognition accuracy, are given.</b></nobr></div>
+<div style="position:absolute;top:852;left:106"><nobr><b>Generally, the approach achieves accuracy as good as or better than perceptrons trained using error</b></nobr></div>
+<div style="position:absolute;top:887;left:106"><nobr><b>backpropagation, and the training process is much faster than the error backpropagation algorithm and also</b></nobr></div>
+<div style="position:absolute;top:922;left:106"><nobr><b>avoids local minima and paralysis.</b></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:14px;font-family:Times">
+<div style="position:absolute;top:977;left:106"><nobr><b>Keywords: </b><font style="font-size:12px">Artificial Neural Networks, Multilayer Perceptrons, Least Squares Methods, Supervised Learning,</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:995;left:192"><nobr>BackPropagation Algorithm, Local Minima.</nobr></div>
+<div style="position:absolute;top:1048;left:382"><nobr><b>I. INTRODUCTION</b></nobr></div>
+<div style="position:absolute;top:1083;left:106"><nobr>The Multi-Layer Perceptron (MLP) is a nonparametric technique for performing a wide variety of estimation tasks.</nobr></div>
+<div style="position:absolute;top:1118;left:106"><nobr>Error Back-Propagation (EBP) [1] is one of the most important and widely used algorithms for training multilayer</nobr></div>
+<div style="position:absolute;top:1154;left:106"><nobr>perceptrons. EBP has been applied to a wide variety of real world applications [2, 3].</nobr></div>
+<div style="position:absolute;top:1189;left:120"><nobr>One of the major problems of the EBP algorithm is the long and uncertain training process. For complex problems</nobr></div>
+<div style="position:absolute;top:1224;left:106"><nobr>it may require days or weeks to train the network, and it may not train at all. Long training time can be the result of</nobr></div>
+<div style="position:absolute;top:1260;left:106"><nobr>nonoptimum step size. Outright training failures generally arise from two sources: network paralysis and local</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:1438;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="2"><b>Page 2</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:2580;left:441"><nobr>2</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:1548;left:106"><nobr>minima [1, 2, 3]. A number of modifications [2, 3, 4, 5, 6, 7, 8, 9] have been proposed to improve the training of the</nobr></div>
+<div style="position:absolute;top:1584;left:106"><nobr>EBP algorithm. Also many new training algorithms [10, 11, 12, 13, 14, 15, 16] for MLPs have been invented, but</nobr></div>
+<div style="position:absolute;top:1619;left:106"><nobr>still we need a training method which could be faster and gives certainty for training MLPs.</nobr></div>
+<div style="position:absolute;top:1654;left:120"><nobr>In this paper we propose some training methods which are not only faster but also provide guaranteed training of</nobr></div>
+<div style="position:absolute;top:1689;left:106"><nobr>MLPs. In the proposed methods, we use a transformation of nonlinear output activation function into linear functions</nobr></div>
+<div style="position:absolute;top:1725;left:106"><nobr>and define a linear system of equations for the output layer. The linear system of equations is solved for calculating</nobr></div>
+<div style="position:absolute;top:1760;left:106"><nobr>the weights of the output layer, using the modified Gram-Schmidt algorithm [17, 18]. The hidden layers are trained</nobr></div>
+<div style="position:absolute;top:1795;left:106"><nobr>using EBP, delta rule and the other proposed techniques.</nobr></div>
+<div style="position:absolute;top:1831;left:120"><nobr>The major benefit of the new approach presented in this paper is its ability to train MLPs much faster than the</nobr></div>
+<div style="position:absolute;top:1866;left:106"><nobr>conventional error backpropagation algorithm and results are comparable.</nobr></div>
+<div style="position:absolute;top:1901;left:120"><nobr>The remainder of this paper is organised as follows. In Section II we briefly present the notation for MLP</nobr></div>
+<div style="position:absolute;top:1936;left:106"><nobr>description. In Section III we propose techniques for determining the weights of hidden layers and the output layer.</nobr></div>
+<div style="position:absolute;top:1972;left:106"><nobr>In Section IV we present a description of the proposed methods in detail. In Section V computer simulations for</nobr></div>
+<div style="position:absolute;top:2007;left:106"><nobr>performance evaluation and comparison are presented. Finally, Section VI concludes the paper.</nobr></div>
+<div style="position:absolute;top:2078;left:396"><nobr><b>II. NOTATION</b></nobr></div>
+<div style="position:absolute;top:2112;left:106"><nobr>Let n be the number of neurons in the input layer, m the number of neurons in the output layer, N<font style="font-size:7px">l </font>be the number of</nobr></div>
+<div style="position:absolute;top:2148;left:106"><nobr>neurons belonging to the <i>l</i>th layer and o<font style="font-size:7px">k</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:2144;left:354"><nobr>(l) <font style="font-size:12px">be the output of the </font><i><font style="font-size:12px">k</font></i><font style="font-size:12px">th neuron of the </font><i><font style="font-size:12px">l</font></i><font style="font-size:12px">th layer, then the computation</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2183;left:106"><nobr>performed by each neuron can be expressed as:</nobr></div>
+<div style="position:absolute;top:2292;left:124"><nobr>o<font style="font-size:7px">k</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:2289;left:136"><nobr>(l) <font style="font-size:12px">= f( net</font>k</nobr></div>
+<div style="position:absolute;top:2289;left:195"><nobr>(l) <font style="font-size:12px">)</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2292;left:758"><nobr>(2)</nobr></div>
+<div style="position:absolute;top:2327;left:106"><nobr>where net<font style="font-size:7px">k</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:2324;left:169"><nobr>(l) <font style="font-size:12px">is the weighted sum of the k neurons of the </font><i><font style="font-size:12px">l</font></i><font style="font-size:12px">th layer, w</font>kj</nobr></div>
+<div style="position:absolute;top:2324;left:530"><nobr>(l) <font style="font-size:12px">is the weight by which the same neuron</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2363;left:106"><nobr>multiplies the output o<font style="font-size:7px">j</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:2359;left:242"><nobr>(l-1) <font style="font-size:12px">of the </font><i><font style="font-size:12px">j</font></i><font style="font-size:12px">th neuron of the previous layer and f(.) is a nonlinear bounded function, often the</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2398;left:106"><nobr>sigmoid function.</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:8px;font-family:Times">
+<div style="position:absolute;top:2243;left:149"><nobr><i>k</i></nobr></div>
+<div style="position:absolute;top:2233;left:148"><nobr><i>(l)</i></nobr></div>
+<div style="position:absolute;top:2257;left:188"><nobr><i>j=1</i></nobr></div>
+<div style="position:absolute;top:2221;left:186"><nobr><i>N</i></nobr></div>
+<div style="position:absolute;top:2243;left:219"><nobr><i>kj</i></nobr></div>
+<div style="position:absolute;top:2233;left:219"><nobr><i>(l)</i></nobr></div>
+<div style="position:absolute;top:2242;left:241"><nobr><i>j</i></nobr></div>
+<div style="position:absolute;top:2233;left:239"><nobr><i>(l-1)</i></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:15px;font-family:Times">
+<div style="position:absolute;top:2237;left:125"><nobr><i>net =</i></nobr></div>
+<div style="position:absolute;top:2237;left:207"><nobr><i>w o</i></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:5px;font-family:Times">
+<div style="position:absolute;top:2224;left:195"><nobr><i>l-1</i></nobr></div>
+</span></font>
+<font size="4" face="Symbol"><span style="font-size:24px;font-family:Symbol">
+<div style="position:absolute;top:2223;left:185"><nobr>∑</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2237;left:774"><nobr>(1)</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:2701;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="3"><b>Page 3</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:3843;left:441"><nobr>3</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:10px;font-family:Times">
+<div style="position:absolute;top:2906;left:194"><nobr>sum</nobr></div>
+<div style="position:absolute;top:2951;left:210"><nobr>net<font style="font-size:5px">k</font>=ln(o <font style="font-size:5px">k </font>/ (1-o <font style="font-size:5px">k </font>))  d <font style="font-size:5px">k</font></nobr></div>
+<div style="position:absolute;top:2909;left:335"><nobr>o<font style="font-size:5px">k</font></nobr></div>
+<div style="position:absolute;top:2878;left:116"><nobr>x<font style="font-size:5px">1</font></nobr></div>
+<div style="position:absolute;top:2904;left:118"><nobr>x<font style="font-size:5px">2</font></nobr></div>
+<div style="position:absolute;top:2933;left:118"><nobr>x<font style="font-size:5px">n</font></nobr></div>
+<div style="position:absolute;top:2864;left:223"><nobr>f(net <font style="font-size:5px">k</font>)=1/(1+exp(-net <font style="font-size:5px">k </font>))</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:2904;left:277"><nobr>f</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:10px;font-family:Times">
+<div style="position:absolute;top:2885;left:150"><nobr>w<font style="font-size:5px">1</font></nobr></div>
+<div style="position:absolute;top:2904;left:150"><nobr>w<font style="font-size:5px">2</font></nobr></div>
+<div style="position:absolute;top:2921;left:151"><nobr>w<font style="font-size:5px">n</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:4px;font-family:Times">
+<div style="position:absolute;top:2853;left:499"><nobr>o 1    </nobr></div>
+<div style="position:absolute;top:2853;left:520"><nobr>o2   ...     o</nobr></div>
+<div style="position:absolute;top:2853;left:556"><nobr>m</nobr></div>
+<div style="position:absolute;top:2871;left:575"><nobr>output layer</nobr></div>
+<div style="position:absolute;top:2909;left:576"><nobr>hidden layer</nobr></div>
+<div style="position:absolute;top:2945;left:576"><nobr>input</nobr></div>
+<div style="position:absolute;top:2965;left:498"><nobr>x 1    </nobr></div>
+<div style="position:absolute;top:2965;left:519"><nobr>x 2   ...     x</nobr></div>
+<div style="position:absolute;top:2966;left:557"><nobr>n</nobr></div>
+<div style="position:absolute;top:2946;left:531"><nobr>......</nobr></div>
+<div style="position:absolute;top:2911;left:527"><nobr>......</nobr></div>
+<div style="position:absolute;top:2872;left:531"><nobr>......</nobr></div>
+<div style="position:absolute;top:2927;left:564"><nobr>w ih</nobr></div>
+<div style="position:absolute;top:2890;left:564"><nobr>w ho</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:3036;left:155"><nobr>Figure 1. Single neuron model.    </nobr></div>
+<div style="position:absolute;top:3036;left:411"><nobr>Figure 2. Multilayer Perceptron with single hidden layer.</nobr></div>
+<div style="position:absolute;top:3116;left:106"><nobr>Figure 1 shows a single neuron model. In the output layer for each neuron, the value <i>net </i>can be calculated as</nobr></div>
+<div style="position:absolute;top:3151;left:106"><nobr>shown in Figure 1. We use this value to establish the linear system of equations for the output layer, which is</nobr></div>
+<div style="position:absolute;top:3186;left:106"><nobr>described in Section III. Figure 2 shows a multilayer perceptron with single hidden layer suitable for training with</nobr></div>
+<div style="position:absolute;top:3221;left:106"><nobr>the proposed approach. As shown in Figure 2, the input signal is simply passed through to the weights on their</nobr></div>
+<div style="position:absolute;top:3257;left:106"><nobr>outputs. Each neuron in subsequent layers produces <i>net </i>and o<font style="font-size:7px">k </font>signals as shown in Equations 1 and 2.</nobr></div>
+<div style="position:absolute;top:3301;left:342"><nobr><b>III. PROPOSED TECHNIQUES</b></nobr></div>
+<div style="position:absolute;top:3336;left:106"><nobr>In this Section we discuss Gradient Descent [1, 2], Delta Rule [2, 3], Radial Basis Function [2, 12] as well as some</nobr></div>
+<div style="position:absolute;top:3371;left:106"><nobr>new techniques for training the weights of the hidden layer and a totally new technique is proposed for training the</nobr></div>
+<div style="position:absolute;top:3406;left:106"><nobr>weights of the output layer.</nobr></div>
+<div style="position:absolute;top:3477;left:106"><nobr>A. Training the weights of the hidden layer.</nobr></div>
+<div style="position:absolute;top:3512;left:106"><nobr>The technique of unsupervised learning is often used to perform clustering as the unsupervised classification of</nobr></div>
+<div style="position:absolute;top:3548;left:106"><nobr>objects without providing information about the actual classes. In our approach this kind of learning is used to adjust</nobr></div>
+<div style="position:absolute;top:3583;left:106"><nobr>the weights of the hidden layer of  MLP. For this purpose we propose to apply the following techniques:</nobr></div>
+<div style="position:absolute;top:3653;left:106"><nobr>1. Delta Rule (DR)</nobr></div>
+<div style="position:absolute;top:3689;left:106"><nobr>The delta rule [2,3] is only valid for continuous activation functions and in supervised training mode. Our aim in</nobr></div>
+<div style="position:absolute;top:3724;left:106"><nobr>presenting the delta rule here, is to show that how this rule can be adapted in the proposed methods for training the</nobr></div>
+<div style="position:absolute;top:3759;left:106"><nobr>weights of the hidden layer because this layer doesn’t have target vectors.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:3964;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="4"><b>Page 4</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:5106;left:441"><nobr>4</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:4074;left:120"><nobr>Let x<font style="font-size:7px">1</font>,, x<font style="font-size:7px">2</font>, ... x<font style="font-size:7px">p </font>be the input vectors, and p be the total number of training pairs. The mapping of the input space</nobr></div>
+<div style="position:absolute;top:4110;left:106"><nobr>into hidden units is shown in [12]. The input space consists of the set of all input vectors and hidden unit space</nobr></div>
+<div style="position:absolute;top:4145;left:106"><nobr>consists of the set of the hidden units. We represent p-input vectors  into (ln p / ln 2) bits (hidden units) in the hidden</nobr></div>
+<div style="position:absolute;top:4180;left:106"><nobr>layer. Because p can be represented [12] by (ln p/ ln 2) bits.</nobr></div>
+<div style="position:absolute;top:4215;left:120"><nobr>In the proposed methods binary value 1/0 is defined as 0.9/0.1. Sometimes, we need more hidden units (&gt; ln p / ln</nobr></div>
+<div style="position:absolute;top:4251;left:106"><nobr>2)  to adjust more accurate weights of the output layer which would give more accurate results. The extra  hidden</nobr></div>
+<div style="position:absolute;top:4286;left:106"><nobr>units are adjusted to 0.1. After coding the hidden units, we apply the delta rule for training the hidden layer and</nobr></div>
+<div style="position:absolute;top:4321;left:106"><nobr>weights can be adjusted as follows:</nobr></div>
+<div style="position:absolute;top:4358;left:149"><nobr>w<font style="font-size:7px">ij</font>(n+1) = w<font style="font-size:7px">ij</font>(n) + <font face="Symbol">∆</font>w<font style="font-size:7px">ij</font>(n)</nobr></div>
+<div style="position:absolute;top:4358;left:766"><nobr>(3)</nobr></div>
+</span></font>
+<font size="3" face="Symbol"><span style="font-size:12px;font-family:Symbol">
+<div style="position:absolute;top:4392;left:149"><nobr>∆<font face="Times">w</font><font style="font-size:7px" face="Times">ij</font><font face="Times">(n) = </font>η <font face="Times">o (1-o)o</font><font style="font-size:7px" face="Times">pj</font><font face="Times">+</font>α<font face="Times">(w</font><font style="font-size:7px" face="Times">ij</font><font face="Times">(n)-w</font><font style="font-size:7px" face="Times">ij</font><font face="Times">(n-1))</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:4397;left:766"><nobr>(4)</nobr></div>
+<div style="position:absolute;top:4434;left:106"><nobr>where</nobr></div>
+</span></font>
+<font size="3" face="Symbol"><span style="font-size:12px;font-family:Symbol">
+<div style="position:absolute;top:4466;left:106"><nobr>η <font face="Times">= learning rate, </font>α<font face="Times">= momentum, w</font><font style="font-size:7px" face="Times">ij</font><font face="Times">= weight connecting nodes i and j, </font>∆<font face="Times">w</font><font style="font-size:7px" face="Times">ij</font><font face="Times">= change in weight value and o</font><font style="font-size:7px" face="Times">pj</font><font face="Times">= output</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:4509;left:106"><nobr>of the node j at hidden layer.</nobr></div>
+<div style="position:absolute;top:4579;left:106"><nobr>2. Random Weights (RW)</nobr></div>
+<div style="position:absolute;top:4614;left:106"><nobr>The weights are adjusted at small random values. It is assumed that they fulfil the following conditions [12].</nobr></div>
+</span></font>
+<font size="3" face="Symbol"><span style="font-size:12px;font-family:Symbol">
+<div style="position:absolute;top:4646;left:106"><nobr>• <font face="Times">The weights must be small real values (-0.5 +0.5) except zero. Small weights are recommended for good</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:4686;left:133"><nobr>generalisation ability. The weights cannot be zero because if the weights are zero then we will get the same</nobr></div>
+<div style="position:absolute;top:4721;left:133"><nobr>input vector for the output layer and the possibility of finding the weights of the output layer will be minimal.</nobr></div>
+</span></font>
+<font size="3" face="Symbol"><span style="font-size:12px;font-family:Symbol">
+<div style="position:absolute;top:4753;left:106"><nobr>• <font face="Times">Two different input vectors cannot have the same output values for the hidden units. If for different input</font></nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:4793;left:133"><nobr>vectors, we have the same output values in the hidden layer and the desired values (targets) are different, then it</nobr></div>
+<div style="position:absolute;top:4828;left:133"><nobr>is difficult to calculate the weights of the output layer.</nobr></div>
+<div style="position:absolute;top:4899;left:106"><nobr>3. Minimum Bit Distance (MBD)</nobr></div>
+<div style="position:absolute;top:4934;left:106"><nobr>The basic idea of MBD is to compute the measures of similarity in vector space for classification of the input vectors</nobr></div>
+<div style="position:absolute;top:4969;left:106"><nobr>using unsupervised learning. The weights of the <i>i</i>th neuron of the hidden layer are input vectors of the <i>i</i>th pair. The</nobr></div>
+<div style="position:absolute;top:5005;left:106"><nobr>minimum bit distance between vectors x and w is given by</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:5227;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="5"><b>Page 5</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:6369;left:441"><nobr>5</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:5406;left:146"><nobr>net = MBD(x,w)</nobr></div>
+<div style="position:absolute;top:5406;left:754"><nobr>(5b)</nobr></div>
+<div style="position:absolute;top:5441;left:106"><nobr>In Equation (5a), i/n is used to avoid the situation such as different vectors but same difference.</nobr></div>
+<div style="position:absolute;top:5477;left:106"><nobr>eg., let x be the [1,1,1], w1 be the [1,1,0] and w2 be the [0,1,1]. The MBD(x,w1) &amp; MBD(x,w2) without i/n are the</nobr></div>
+<div style="position:absolute;top:5512;left:106"><nobr>same. But as we can see they are not the same. In Equation (5a), factor i/n avoids this situation.</nobr></div>
+<div style="position:absolute;top:5547;left:106"><nobr>Output of the hidden layer is as follows:</nobr></div>
+<div style="position:absolute;top:5582;left:149"><nobr>o<font style="font-size:7px">k </font>= (1 - tanh ( net<font style="font-size:7px">k </font>)) or, o<font style="font-size:7px">k </font>= exp(-net<font style="font-size:7px">k</font>)</nobr></div>
+<div style="position:absolute;top:5582;left:766"><nobr>(6)</nobr></div>
+<div style="position:absolute;top:5618;left:106"><nobr>Note that different activation functions are used, which gives maximum value (o<font style="font-size:7px">k</font>=1) at the output for best match</nobr></div>
+<div style="position:absolute;top:5653;left:106"><nobr>(net<font style="font-size:7px">k </font>= 0) [12].</nobr></div>
+<div style="position:absolute;top:5723;left:106"><nobr>B. Training the weights of the output layer</nobr></div>
+<div style="position:absolute;top:5759;left:106"><nobr>In supervised learning we assume that at each instance of time when the input is applied, the desired response d of</nobr></div>
+<div style="position:absolute;top:5794;left:106"><nobr>the system is known. An important fact used in implementing a MLP is the relation between the desired response d</nobr></div>
+<div style="position:absolute;top:5829;left:106"><nobr>and net. This relation can be found using Equation (2) and it can be provided as follows:</nobr></div>
+<div style="position:absolute;top:5865;left:170"><nobr>o<font style="font-size:7px">k</font>=f(net<font style="font-size:7px">k</font>)</nobr></div>
+<div style="position:absolute;top:5900;left:171"><nobr>o<font style="font-size:7px">k</font>=1/(1+exp(-net<font style="font-size:7px">k</font>)) </nobr></div>
+<div style="position:absolute;top:5900;left:766"><nobr>(7)</nobr></div>
+<div style="position:absolute;top:5935;left:171"><nobr>or, net<font style="font-size:7px">k</font>=ln(o<font style="font-size:7px">k</font>/(1-o<font style="font-size:7px">k</font>))</nobr></div>
+<div style="position:absolute;top:5935;left:766"><nobr>(8)</nobr></div>
+<div style="position:absolute;top:5970;left:120"><nobr>Because the desired response d<font style="font-size:7px">k </font>is available for each neuron in the output layer and this value is equal to the o<font style="font-size:7px">k </font>for</nobr></div>
+<div style="position:absolute;top:6006;left:106"><nobr>output layer. It is easy to calculate the net from (8) by replacing the desired value d<font style="font-size:7px">k </font>with the o<font style="font-size:7px">k </font>value.</nobr></div>
+<div style="position:absolute;top:6041;left:171"><nobr>net<font style="font-size:7px">k</font>=ln(d<font style="font-size:7px">k</font>/(1-d<font style="font-size:7px">k</font>))</nobr></div>
+<div style="position:absolute;top:6041;left:766"><nobr>(9)</nobr></div>
+<div style="position:absolute;top:6076;left:160"><nobr>where 0 &lt; d<font style="font-size:7px">k </font>&lt; 1</nobr></div>
+<div style="position:absolute;top:6112;left:120"><nobr>The weights of the output layer play an important role in multilayer perceptrons because they are directly</nobr></div>
+<div style="position:absolute;top:6147;left:106"><nobr>connected with the output. The weights are easily trained using direct solution methods for linear equations. It is easy</nobr></div>
+<div style="position:absolute;top:6182;left:106"><nobr>to calculate net value using the following equation</nobr></div>
+<div style="position:absolute;top:6217;left:214"><nobr>net<font style="font-size:7px">ij </font>= ln ((d<font style="font-size:7px">ij</font>)/(1-d<font style="font-size:7px">ij</font>) )</nobr></div>
+<div style="position:absolute;top:6217;left:754"><nobr>(10)</nobr></div>
+<div style="position:absolute;top:6253;left:106"><nobr>where net<font style="font-size:7px">ij </font>= the value of net for the ith neuron and jth pair in the output layer.</nobr></div>
+<div style="position:absolute;top:6288;left:106"><nobr>d<font style="font-size:7px">ij </font>= desired value dij of the ith neuron and jth pair in the output layer.</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:15px;font-family:Times">
+<div style="position:absolute;top:5351;left:147"><nobr><i>MBD(x,w)=||x-w||= ( (x -w )</i></nobr></div>
+<div style="position:absolute;top:5339;left:435"><nobr><i>i</i></nobr></div>
+<div style="position:absolute;top:5365;left:434"><nobr><i>n</i></nobr></div>
+<div style="position:absolute;top:5351;left:447"><nobr><i>)</i></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:8px;font-family:Times">
+<div style="position:absolute;top:5374;left:336"><nobr><i>i=1</i></nobr></div>
+<div style="position:absolute;top:5338;left:341"><nobr><i>n</i></nobr></div>
+<div style="position:absolute;top:5359;left:373"><nobr><i>i</i></nobr></div>
+<div style="position:absolute;top:5359;left:403"><nobr><i>i</i></nobr></div>
+<div style="position:absolute;top:5348;left:417"><nobr><i>2</i></nobr></div>
+</span></font>
+<font size="4" face="Symbol"><span style="font-size:24px;font-family:Symbol">
+<div style="position:absolute;top:5340;left:334"><nobr>∑</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:6490;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="6"><b>Page 6</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:7632;left:441"><nobr>6</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:6600;left:106"><nobr>Using (2), Equation (10) becomes</nobr></div>
+<div style="position:absolute;top:6795;left:106"><nobr>Using equation (11) given above, for each neuron in the output layer we can write a linear system</nobr></div>
+<div style="position:absolute;top:6830;left:160"><nobr>Xw=net</nobr></div>
+<div style="position:absolute;top:6830;left:759"><nobr>(12)</nobr></div>
+<div style="position:absolute;top:6865;left:160"><nobr>where</nobr></div>
+<div style="position:absolute;top:6901;left:160"><nobr>net is p x 1, w is h x 1, p&gt;=h and X is p x h with rank h.</nobr></div>
+<div style="position:absolute;top:6936;left:120"><nobr>In real world problems, p is usually greater than h; that is, there are more training patterns than hidden units.</nobr></div>
+<div style="position:absolute;top:6971;left:106"><nobr>Therefore, we need to solve an overdetermined system of equations. In this study, many techniques have been tested</nobr></div>
+<div style="position:absolute;top:7006;left:106"><nobr>and we have found that the Modified Gram-Schmidt (MGS) algorithm is very stable and needs less computer</nobr></div>
+<div style="position:absolute;top:7042;left:106"><nobr>memory than other existing algorithms [17, 18]. In our approach, we use MGS to solve linear systems of equations</nobr></div>
+<div style="position:absolute;top:7077;left:106"><nobr>(12).</nobr></div>
+<div style="position:absolute;top:7148;left:272"><nobr><b>IV. DESCRIPTION OF THE PROPOSED METHODS</b></nobr></div>
+<div style="position:absolute;top:7182;left:106"><nobr>1. Error Back-Propagation Using Direct Solutions: Method EBUDS</nobr></div>
+<div style="position:absolute;top:7218;left:106"><nobr>The basic idea of this method is to combine iterative and direct methods to improve the training time and avoid local</nobr></div>
+<div style="position:absolute;top:7253;left:106"><nobr>minima and paralysis. This method can be applied to MLPs with any number of layers; however only two layers are</nobr></div>
+<div style="position:absolute;top:7288;left:106"><nobr>needed to demonstrate the method and solve any real world problem.</nobr></div>
+<div style="position:absolute;top:7324;left:120"><nobr>This method uses a gradient search technique and direct solution methods (least square techniques) to minimise</nobr></div>
+<div style="position:absolute;top:7359;left:106"><nobr>the cost function equal to the mean square difference between the desired and the actual net outputs. The desired</nobr></div>
+<div style="position:absolute;top:7394;left:106"><nobr>output of all nodes is typically low (0.1 not 0) unless that node corresponds to the class of the current input, in which</nobr></div>
+<div style="position:absolute;top:7429;left:106"><nobr>case it is high (0.9 not 1). The multilayer perceptron is trained by initially selecting small random weights and</nobr></div>
+<div style="position:absolute;top:7465;left:106"><nobr>internal thresholds and then presenting all training data repeatedly. Weights are adjusted after each iteration and after</nobr></div>
+<div style="position:absolute;top:7500;left:106"><nobr>some iteration or even when the training process is trapped at a local minimum; training of the MLPs can be stopped</nobr></div>
+<div style="position:absolute;top:7535;left:106"><nobr>and the weights of the output layer can be calculated using direct solution methods. The method EBUDS can be</nobr></div>
+<div style="position:absolute;top:7571;left:106"><nobr>outlined by the following steps:</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:13px;font-family:Times">
+<div style="position:absolute;top:6647;left:186"><nobr>1iw * 1j</nobr></div>
+<div style="position:absolute;top:6636;left:229"><nobr>l</nobr></div>
+<div style="position:absolute;top:6646;left:221"><nobr>x + 2iw * 2j</nobr></div>
+<div style="position:absolute;top:6636;left:300"><nobr>l</nobr></div>
+<div style="position:absolute;top:6646;left:292"><nobr>x +..+ hiw * hj</nobr></div>
+<div style="position:absolute;top:6636;left:387"><nobr>l</nobr></div>
+<div style="position:absolute;top:6646;left:379"><nobr>x =</nobr></div>
+<div style="position:absolute;top:6651;left:435"><nobr>ij</nobr></div>
+<div style="position:absolute;top:6636;left:435"><nobr>l</nobr></div>
+<div style="position:absolute;top:6646;left:416"><nobr>net</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:6644;left:776"><nobr>(11)</nobr></div>
+<div style="position:absolute;top:6689;left:182"><nobr>where</nobr></div>
+<div style="position:absolute;top:6724;left:182"><nobr>w<font style="font-size:7px">hi</font>=the value of a weight from neuron h in the hidden layer to neuron i in the output layer.</nobr></div>
+<div style="position:absolute;top:6759;left:182"><nobr>x<font style="font-size:7px">hj</font></nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:6756;left:197"><nobr>l<font style="font-size:12px">=the value of output for neuron h of pair j in the hidden layer l.</font></nobr></div>
+</span></font>
+
+<div style="position:absolute;top:7753;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="7"><b>Page 7</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:8895;left:441"><nobr>7</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:7863;left:106"><nobr>1. Consider a two layer perceptron with a single hidden layer as shown in Figure 2.</nobr></div>
+<div style="position:absolute;top:7899;left:106"><nobr>2. Present input vectors (x<font style="font-size:7px">1</font>, x<font style="font-size:7px">2</font>,...,x<font style="font-size:7px">n</font>) and desired output vectors (d<font style="font-size:7px">1</font>, d<font style="font-size:7px">2</font>,...,d<font style="font-size:7px">n</font>).</nobr></div>
+<div style="position:absolute;top:7934;left:106"><nobr>3. Initialise all weights of the two layer perceptron at small random values.</nobr></div>
+<div style="position:absolute;top:7969;left:128"><nobr>Use the RW technique from Section III.</nobr></div>
+<div style="position:absolute;top:8004;left:106"><nobr>4. Calculate actual outputs of the MLP.</nobr></div>
+<div style="position:absolute;top:8004;left:377"><nobr>Use Equations 1 and 2.</nobr></div>
+<div style="position:absolute;top:8040;left:106"><nobr>5. Train the weights of the hidden layer to output.</nobr></div>
+<div style="position:absolute;top:8040;left:430"><nobr>Use an error backpropagation technique for this purpose.</nobr></div>
+<div style="position:absolute;top:8075;left:106"><nobr>6. After a certain number of iterations stop the iterative training process.</nobr></div>
+<div style="position:absolute;top:8110;left:106"><nobr>7. Develop a linear system of equations for the output layer.</nobr></div>
+<div style="position:absolute;top:8146;left:130"><nobr>Use Equation (10) and convert the output nonlinear activation function into linear function.</nobr></div>
+<div style="position:absolute;top:8181;left:130"><nobr>Use Equation (11) and develop a linear system of equations as shown in Equation (12).</nobr></div>
+<div style="position:absolute;top:8216;left:106"><nobr>8. Calculate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve (12).</nobr></div>
+<div style="position:absolute;top:8251;left:106"><nobr>9. Repeat Step 7 through 8 for each neuron in the hidden layer.</nobr></div>
+<div style="position:absolute;top:8322;left:106"><nobr>2. Delta Rule-Symmetric Gaussian Elimination: Method DRSGE</nobr></div>
+<div style="position:absolute;top:8357;left:106"><nobr>In this method, the delta learning rule described in Section III is used for unsupervised (coded supervised) learning</nobr></div>
+<div style="position:absolute;top:8393;left:106"><nobr>and the modified Gram-Schmidt algorithm or symmetric Gaussian elimination algorithm [17, 18] is used for</nobr></div>
+<div style="position:absolute;top:8428;left:106"><nobr>supervised learning.</nobr></div>
+<div style="position:absolute;top:8463;left:116"><nobr>The delta rule is used to adjust the weights of the hidden layer. This layer is used to classify input data. For this</nobr></div>
+<div style="position:absolute;top:8498;left:106"><nobr>classification we used two techniques, binary coding described in the previous section and the symmetric matrix</nobr></div>
+<div style="position:absolute;top:8534;left:106"><nobr>coding which can be used in rare cases where the number of the hidden units is equal to the number of training pairs.</nobr></div>
+<div style="position:absolute;top:8569;left:106"><nobr>In this technique, each input pair has a neuron in the hidden layer which has a desired value 0.9 and all other neurons</nobr></div>
+<div style="position:absolute;top:8604;left:106"><nobr>in the hidden layer for this pair have the desired value of 0.1. The method DRSGE can be outlined by the following</nobr></div>
+<div style="position:absolute;top:8640;left:106"><nobr>steps:</nobr></div>
+<div style="position:absolute;top:8675;left:106"><nobr>1. Steps 1, 2, 3 and 4 are the same as those of EBUDS.</nobr></div>
+<div style="position:absolute;top:8710;left:106"><nobr>2. Train the weights of the hidden layer.</nobr></div>
+<div style="position:absolute;top:8745;left:130"><nobr>Use the delta learning rule  which is described in Section III.</nobr></div>
+<div style="position:absolute;top:8781;left:130"><nobr>Before using this rule, code the hidden units as shown above and in Section III.</nobr></div>
+<div style="position:absolute;top:8816;left:130"><nobr>In the proposed methods, it is not necessary to perform full training of the weights of the hidden layer. Training</nobr></div>
+<div style="position:absolute;top:8851;left:130"><nobr>the weights of the hidden layer can be stopped when suitable clusters are formed at the hidden units.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:9016;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="8"><b>Page 8</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:10158;left:441"><nobr>8</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:9126;left:106"><nobr>3. Steps 6, 7, 8 and 9 are same as that of EBUDS.</nobr></div>
+<div style="position:absolute;top:9197;left:106"><nobr>3. Random-Minimum Bit Distance-Gram-Schmidt: Method RMGS</nobr></div>
+<div style="position:absolute;top:9232;left:106"><nobr>The main idea of this method is to train an output layer by supervised learning and the remainder of the two layers by</nobr></div>
+<div style="position:absolute;top:9267;left:106"><nobr>unsupervised learning. In this method the weights of the output layer are adjusted using modified Gram-Schmidt</nobr></div>
+<div style="position:absolute;top:9303;left:106"><nobr>algorithm; the weights of the second hidden layer (which is directly connected to the output layer) are calculated</nobr></div>
+<div style="position:absolute;top:9338;left:106"><nobr>using minimum bit distance (MBD) and the weights of the first hidden layer (which is directly connected to the input</nobr></div>
+<div style="position:absolute;top:9373;left:106"><nobr>layer)  are adjusted to small random values (RW).</nobr></div>
+<div style="position:absolute;top:9409;left:106"><nobr>The distance is treated as a measure of vector similarity. The minimum bit distance between vectors x and w is given</nobr></div>
+<div style="position:absolute;top:9444;left:106"><nobr>by MBD(x,w)=||x-w|| [ see Section III ]</nobr></div>
+<div style="position:absolute;top:9444;left:759"><nobr>(13)</nobr></div>
+<div style="position:absolute;top:9479;left:106"><nobr>where, x is an input vector and w is a weight vector of the second hidden layer.</nobr></div>
+<div style="position:absolute;top:9514;left:106"><nobr>In this approach, weights of the second hidden layer are input vectors of the first hidden layer.</nobr></div>
+<div style="position:absolute;top:9550;left:106"><nobr>If the number of training pairs is greater than the number of hidden units then the weights of the second hidden layer</nobr></div>
+<div style="position:absolute;top:9585;left:106"><nobr>are randomly selected from training pairs as in Radial Basis Function type networks [12]. The method RMGS can be</nobr></div>
+<div style="position:absolute;top:9620;left:106"><nobr>outlined by the following steps:</nobr></div>
+<div style="position:absolute;top:9656;left:106"><nobr>1. Consider a three layer perceptron with two hidden layers.</nobr></div>
+<div style="position:absolute;top:9691;left:106"><nobr>2. Initialise the weights of the first hidden layer to small random values. Use the RW technique from Section</nobr></div>
+<div style="position:absolute;top:9726;left:130"><nobr>III.</nobr></div>
+<div style="position:absolute;top:9761;left:106"><nobr>3. Present input vectors (x<font style="font-size:7px">1</font>, x<font style="font-size:7px">2</font>,...,x<font style="font-size:7px">n</font>) and desired output vectors (d<font style="font-size:7px">1</font>, d<font style="font-size:7px">2</font>,...,d<font style="font-size:7px">n</font>).</nobr></div>
+<div style="position:absolute;top:9797;left:106"><nobr>4. Adjust the weights of the second hidden layer using MBD techniques from Section III.</nobr></div>
+<div style="position:absolute;top:9832;left:106"><nobr>5. Calculate actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6).</nobr></div>
+<div style="position:absolute;top:9867;left:106"><nobr>6. Develop a linear system of equations for the output layer.</nobr></div>
+<div style="position:absolute;top:9903;left:130"><nobr>Use Equation (10) and convert the output nonlinear activation function into a linear function.</nobr></div>
+<div style="position:absolute;top:9938;left:130"><nobr>Use Equations (11) and develop a linear system of equations as shown in Equation (12).</nobr></div>
+<div style="position:absolute;top:9973;left:106"><nobr>7. Calculate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve (12).</nobr></div>
+<div style="position:absolute;top:10008;left:106"><nobr>8. Repeat Step 6 through 7 for each neuron in the hidden layer.</nobr></div>
+<div style="position:absolute;top:10044;left:106"><nobr>4. The Proposed Methods (Comparisons and Problems)</nobr></div>
+<div style="position:absolute;top:10079;left:106"><nobr><b>The proposed methods </b>are much faster and without local minima because they use direct solution methods. It</nobr></div>
+<div style="position:absolute;top:10114;left:106"><nobr>means that they calculate weights of the output layer by converting nonlinear output functions into linear functions,</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:10279;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="9"><b>Page 9</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:11421;left:441"><nobr>9</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:10389;left:106"><nobr>and use a modified Gram-Schmidt method instead of iterative methods to find the weights of the output layer. A</nobr></div>
+<div style="position:absolute;top:10425;left:106"><nobr>comparison with EBP is shown in the following section. We selected EBP because it is one of the most popular</nobr></div>
+<div style="position:absolute;top:10460;left:106"><nobr>algorithms and implementation is very easy. It is very difficult to compare other existing methods because</nobr></div>
+<div style="position:absolute;top:10495;left:106"><nobr>researchers use different environments for their experiments, implementation is not very easy and it is also time</nobr></div>
+<div style="position:absolute;top:10530;left:106"><nobr>consuming. An implementation of the proposed methods is much more difficult than EBP because of the</nobr></div>
+<div style="position:absolute;top:10566;left:106"><nobr>complicated MGS method.</nobr></div>
+<div style="position:absolute;top:10637;left:341"><nobr><b>V. EXPERIMENTAL RESULTS</b></nobr></div>
+<div style="position:absolute;top:10671;left:106"><nobr>The proposed methods have been tested on many problems such as the parity problem, exclusive nor problem,</nobr></div>
+<div style="position:absolute;top:10707;left:106"><nobr>function approximation problem, sonar classification problem, vowel classification problem, real problems arising in</nobr></div>
+<div style="position:absolute;top:10742;left:106"><nobr>pattern recognition, and on a variety of other problems from various sources. The methods have been implemented</nobr></div>
+<div style="position:absolute;top:10777;left:106"><nobr>in C++ on an IBM PC and in C on a HP-UX 715/50 workstation.</nobr></div>
+<div style="position:absolute;top:10812;left:130"><nobr>As follows from literature, comparisons of training methods often use the number of iterations or epochs as a</nobr></div>
+<div style="position:absolute;top:10848;left:106"><nobr>machine-independent measure of training time, but this is appropriate only when the methods being compared</nobr></div>
+<div style="position:absolute;top:10883;left:106"><nobr>involve similar amounts of work per epoch. This is not the case when comparing the proposed methods with EBP.</nobr></div>
+<div style="position:absolute;top:10918;left:106"><nobr>Thus the training times given below are the CPU times required for training on a HP-UX 715/50. In experiments, an</nobr></div>
+<div style="position:absolute;top:10953;left:106"><nobr>iteration is said to be completed when all training patterns are presented and weights of the MLP are modified. The</nobr></div>
+<div style="position:absolute;top:10989;left:106"><nobr>Root-Mean-Square (RMS) error is calculated using the formula [11,12].</nobr></div>
+<div style="position:absolute;top:11024;left:106"><nobr><b>Experiment 1 Approximation of  a Function.</b></nobr></div>
+<div style="position:absolute;top:11059;left:106"><nobr>The task of training a function is a stringent one. In this task, a network is presented with some sampled points of a</nobr></div>
+<div style="position:absolute;top:11094;left:106"><nobr>curve and it is asked to learn the training pairs and then generate an estimate of the original function.</nobr></div>
+<div style="position:absolute;top:11130;left:116"><nobr>In this experiment an application of the proposed approach to build a network which approximates the following</nobr></div>
+<div style="position:absolute;top:11165;left:106"><nobr>function is presented:</nobr></div>
+<div style="position:absolute;top:11201;left:130"><nobr>g(x)=0.2+0.8(x+0.7sin(2<font face="Symbol">π</font>x))</nobr></div>
+<div style="position:absolute;top:11239;left:116"><nobr>We assume 0 &lt; x &lt;= 1. The training data are taken at intervals of 0.05; thus we have 21 data points:</nobr></div>
+<div style="position:absolute;top:11274;left:130"><nobr>{(0,g(0)), (0.05, g(0.05)),....,(1,g(1))}</nobr></div>
+<div style="position:absolute;top:11310;left:116"><nobr>We use 101 evaluation points taken at intervals of 0.01. The evaluation data are used to verify the interpolative</nobr></div>
+<div style="position:absolute;top:11345;left:106"><nobr>power of the network.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:11542;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="10"><b>Page 10</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:12684;left:436"><nobr>10</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:11652;left:116"><nobr>The conventional error backpropagation did not reach the correct solution after 6000 iterations. The proposed</nobr></div>
+<div style="position:absolute;top:11688;left:106"><nobr>methods took less than 200 iterations and 20 seconds. Some proposed methods which use only direct solution</nobr></div>
+<div style="position:absolute;top:11723;left:106"><nobr>methods took even less than 3 seconds. All proposed methods for this problem are much faster than EBP. The</nobr></div>
+<div style="position:absolute;top:11758;left:106"><nobr>interpolative and generalisation power of the proposed methods is quite good. The RMGS gives the best results and</nobr></div>
+<div style="position:absolute;top:11793;left:106"><nobr>the method DRSGE is slightly better than EBP. The error is minimum for RMGS method, whereas the error for</nobr></div>
+<div style="position:absolute;top:11829;left:106"><nobr>conventional EBP is maximum at some points. Finally, we can say that the results are quite good using the proposed</nobr></div>
+<div style="position:absolute;top:11864;left:106"><nobr>methods for approximation of a function.</nobr></div>
+<div style="position:absolute;top:11900;left:106"><nobr><b>Experiment 2 Pattern Recognition Problem.</b></nobr></div>
+<div style="position:absolute;top:11934;left:106"><nobr>The proposed methods have been tested using a pattern recognition problem, consisting of the recognition of</nobr></div>
+<div style="position:absolute;top:11970;left:106"><nobr>character patterns encoded as 8 x 8 pixel matrices, according to the IBM PC VGA character set. 36 different</nobr></div>
+<div style="position:absolute;top:12005;left:106"><nobr>characters (0..9,A..Z) had to be recognised, corresponding to ASCII codes between 32 and 95. The number of input-</nobr></div>
+<div style="position:absolute;top:12040;left:106"><nobr>output pairs is thus 36, and for each pair the input is a vector of 64 binary values, corresponding to the pixel matrix</nobr></div>
+<div style="position:absolute;top:12075;left:106"><nobr>representing a character. The output is a vector of 7 binary values, representing its coded ASCII value. Therefore,</nobr></div>
+<div style="position:absolute;top:12111;left:106"><nobr>the MLPs used have 64 inputs and 7 outputs. We set all input-output pairs of values of the training set to 0.1 and 0.9</nobr></div>
+<div style="position:absolute;top:12146;left:106"><nobr>rather than to zero and one respectively, to improve convergence. Network architectures with different numbers of</nobr></div>
+<div style="position:absolute;top:12181;left:106"><nobr>hidden units are used for this problem. The results for best numbers of hidden units are presented in Table 1. Figure</nobr></div>
+<div style="position:absolute;top:12216;left:106"><nobr>3 depicts learning profiles produced for this problem and indicates that the proposed learning methods yield  much</nobr></div>
+<div style="position:absolute;top:12252;left:106"><nobr>faster learning.</nobr></div>
+<div style="position:absolute;top:12287;left:256"><nobr>Table 1. Comparative results on the pattern recognition problem.</nobr></div>
+<div style="position:absolute;top:12332;left:126"><nobr>Training</nobr></div>
+<div style="position:absolute;top:12359;left:129"><nobr>method</nobr></div>
+<div style="position:absolute;top:12332;left:211"><nobr># of hidden</nobr></div>
+<div style="position:absolute;top:12359;left:230"><nobr>units</nobr></div>
+<div style="position:absolute;top:12332;left:304"><nobr># of iterations Training time [s] Gain term</nobr></div>
+</span></font>
+<font size="3" face="Symbol"><span style="font-size:12px;font-family:Symbol">
+<div style="position:absolute;top:12355;left:524"><nobr>η</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:12332;left:574"><nobr>Training set</nobr></div>
+<div style="position:absolute;top:12359;left:598"><nobr>[%]</nobr></div>
+<div style="position:absolute;top:12332;left:664"><nobr>Test set [%]</nobr></div>
+<div style="position:absolute;top:12400;left:137"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:12400;left:237"><nobr>20</nobr></div>
+<div style="position:absolute;top:12400;left:333"><nobr>800</nobr></div>
+<div style="position:absolute;top:12400;left:434"><nobr>300</nobr></div>
+<div style="position:absolute;top:12400;left:519"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:12400;left:589"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:12400;left:683"><nobr>97.20</nobr></div>
+<div style="position:absolute;top:12439;left:127"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:12439;left:237"><nobr>20</nobr></div>
+<div style="position:absolute;top:12439;left:333"><nobr>100</nobr></div>
+<div style="position:absolute;top:12439;left:438"><nobr>45</nobr></div>
+<div style="position:absolute;top:12439;left:519"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:12439;left:589"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:12439;left:683"><nobr>97.20</nobr></div>
+<div style="position:absolute;top:12477;left:130"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:12477;left:237"><nobr>20</nobr></div>
+<div style="position:absolute;top:12477;left:341"><nobr>1</nobr></div>
+<div style="position:absolute;top:12477;left:436"><nobr>1.5</nobr></div>
+<div style="position:absolute;top:12477;left:519"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:12477;left:589"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:12477;left:683"><nobr>97.20</nobr></div>
+<div style="position:absolute;top:12516;left:127"><nobr>DRSGE</nobr></div>
+<div style="position:absolute;top:12516;left:237"><nobr>20</nobr></div>
+<div style="position:absolute;top:12516;left:337"><nobr>50</nobr></div>
+<div style="position:absolute;top:12516;left:438"><nobr>10</nobr></div>
+<div style="position:absolute;top:12516;left:519"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:12516;left:589"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:12516;left:683"><nobr>97.20</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:12805;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="11"><b>Page 11</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:13947;left:436"><nobr>11</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:4px;font-family:Times">
+<div style="position:absolute;top:13081;left:346"><nobr>0</nobr></div>
+<div style="position:absolute;top:13068;left:337"><nobr>0.02</nobr></div>
+<div style="position:absolute;top:13055;left:337"><nobr>0.04</nobr></div>
+<div style="position:absolute;top:13042;left:337"><nobr>0.06</nobr></div>
+<div style="position:absolute;top:13029;left:337"><nobr>0.08</nobr></div>
+<div style="position:absolute;top:13016;left:340"><nobr>0.1</nobr></div>
+<div style="position:absolute;top:13003;left:337"><nobr>0.12</nobr></div>
+<div style="position:absolute;top:12990;left:337"><nobr>0.14</nobr></div>
+<div style="position:absolute;top:12978;left:337"><nobr>0.16</nobr></div>
+<div style="position:absolute;top:12965;left:337"><nobr>0.18</nobr></div>
+<div style="position:absolute;top:12952;left:340"><nobr>0.2</nobr></div>
+<div style="position:absolute;top:12939;left:337"><nobr>0.22</nobr></div>
+<div style="position:absolute;top:13094;left:358"><nobr>0</nobr></div>
+<div style="position:absolute;top:13088;left:369"><nobr>1</nobr></div>
+<div style="position:absolute;top:13094;left:380"><nobr>10</nobr></div>
+<div style="position:absolute;top:13088;left:391"><nobr>50</nobr></div>
+<div style="position:absolute;top:13094;left:402"><nobr>100</nobr></div>
+<div style="position:absolute;top:13088;left:414"><nobr>120</nobr></div>
+<div style="position:absolute;top:13094;left:425"><nobr>150</nobr></div>
+<div style="position:absolute;top:13088;left:438"><nobr>200</nobr></div>
+<div style="position:absolute;top:13094;left:449"><nobr>250</nobr></div>
+<div style="position:absolute;top:13088;left:461"><nobr>300</nobr></div>
+<div style="position:absolute;top:13094;left:473"><nobr>350</nobr></div>
+<div style="position:absolute;top:13088;left:485"><nobr>400</nobr></div>
+<div style="position:absolute;top:13094;left:497"><nobr>500</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:8px;font-family:Times">
+<div style="position:absolute;top:12927;left:364"><nobr>Pattern recognition problem</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:7px;font-family:Times">
+<div style="position:absolute;top:13103;left:396"><nobr>Number of iterations</nobr></div>
+<div style="position:absolute;top:13015;left:338"><nobr>R</nobr></div>
+<div style="position:absolute;top:13009;left:338"><nobr>M</nobr></div>
+<div style="position:absolute;top:13001;left:338"><nobr>S</nobr></div>
+<div style="position:absolute;top:12993;left:338"><nobr>erro</nobr></div>
+<div style="position:absolute;top:12978;left:338"><nobr>r</nobr></div>
+<div style="position:absolute;top:12944;left:454"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:12959;left:454"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:12975;left:454"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:12990;left:454"><nobr>DRSGE</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:9px;font-family:Times">
+<div style="position:absolute;top:13006;left:411"><nobr>#hidden units=20</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:11px;font-family:Times">
+<div style="position:absolute;top:13149;left:265"><nobr>Figure 3. RMS vs. # of iterations for the pattern recognition problem.</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:13216;left:106"><nobr><b>Experiment 3 Sonar Problem, Mines vs. Rocks.</b></nobr></div>
+<div style="position:absolute;top:13251;left:106"><nobr>This is the data set used by Gorman and Sejnowski [19] in their study of the classification of sonar signals using a</nobr></div>
+<div style="position:absolute;top:13286;left:106"><nobr>neural network. The task is to train a network to discriminate between sonar signals bounced off a metal cylinder and</nobr></div>
+<div style="position:absolute;top:13321;left:106"><nobr>those bounced off a roughly cylindrical rock. The data set, is in the standard CMU Neural Network Benchmark</nobr></div>
+<div style="position:absolute;top:13357;left:106"><nobr>format. The data has 60 continuous inputs and 1 enumerated output. This data set can be used in a number of</nobr></div>
+<div style="position:absolute;top:13392;left:106"><nobr>different ways to test learning speed, quality of ultimate learning, ability to generalise, or combinations of these</nobr></div>
+<div style="position:absolute;top:13427;left:106"><nobr>factors. There are 208 patterns in total with 111 belonging to the "metal" class and 97 belonging to the "rock" class.</nobr></div>
+<div style="position:absolute;top:13462;left:106"><nobr>These 208 patterns are divided between the 104-member training set and the 104-member test set.</nobr></div>
+<div style="position:absolute;top:13498;left:130"><nobr>The purpose of this experiment is to compare the performances of the proposed methods and the conventional</nobr></div>
+<div style="position:absolute;top:13533;left:106"><nobr>EBP algorithm with different numbers of hidden units. A learning rate of 0.2 and momentum of 0.5 is used. Errors</nobr></div>
+<div style="position:absolute;top:13568;left:106"><nobr>less than 0.2 are treated as zero. Initial weights are uniform random values in the range -0.3 to +0.3.</nobr></div>
+<div style="position:absolute;top:13604;left:130"><nobr>Experimental Results showed that the performance of both the proposed methods and the conventional EBP</nobr></div>
+<div style="position:absolute;top:13639;left:106"><nobr>algorithm goes up with the increase in the number of hidden units, and drops after a peak has been reached. The</nobr></div>
+<div style="position:absolute;top:13674;left:106"><nobr>accuracy of  all methods except RMGS goes up with the increase of the number of iterations till 350, and drops after</nobr></div>
+<div style="position:absolute;top:13709;left:106"><nobr>350 iterations for testing examples and remains unchanged for training examples (100%). Note that the proposed</nobr></div>
+<div style="position:absolute;top:13745;left:106"><nobr>DRSGE method gives best performance (91%) for test examples and (100%) for training examples (Table 2), the</nobr></div>
+<div style="position:absolute;top:13780;left:106"><nobr>other proposed method; EBUDS is second in performance and the last one is conventional error backpropagation.</nobr></div>
+<div style="position:absolute;top:13815;left:106"><nobr>This experiment proves that the combined supervised and unsupervised training methods (DRSGE) can have better</nobr></div>
+<div style="position:absolute;top:13850;left:106"><nobr>generalisation than the supervised EBP method.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:14068;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="12"><b>Page 12</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:15210;left:436"><nobr>12</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:14178;left:246"><nobr>Table 2. Comparative results on the sonar problem, Mines vs. Rocks</nobr></div>
+<div style="position:absolute;top:14224;left:111"><nobr>Training method# of hidden units # of iterations Training time</nobr></div>
+<div style="position:absolute;top:14250;left:436"><nobr>[s]</nobr></div>
+<div style="position:absolute;top:14225;left:498"><nobr>Gain term <font face="Symbol">η </font>Training set %</nobr></div>
+<div style="position:absolute;top:14250;left:605"><nobr>right on</nobr></div>
+<div style="position:absolute;top:14224;left:709"><nobr>Test set</nobr></div>
+<div style="position:absolute;top:14250;left:703"><nobr>% right on</nobr></div>
+<div style="position:absolute;top:14289;left:139"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:14289;left:252"><nobr>88</nobr></div>
+<div style="position:absolute;top:14289;left:350"><nobr>1</nobr></div>
+<div style="position:absolute;top:14289;left:436"><nobr>15</nobr></div>
+<div style="position:absolute;top:14289;left:524"><nobr>0.0</nobr></div>
+<div style="position:absolute;top:14289;left:608"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:14289;left:715"><nobr>83.00</nobr></div>
+<div style="position:absolute;top:14327;left:146"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:14327;left:252"><nobr>22</nobr></div>
+<div style="position:absolute;top:14327;left:343"><nobr>500</nobr></div>
+<div style="position:absolute;top:14327;left:432"><nobr>300</nobr></div>
+<div style="position:absolute;top:14327;left:524"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:14327;left:608"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:14327;left:715"><nobr>86.50</nobr></div>
+<div style="position:absolute;top:14366;left:135"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:14366;left:252"><nobr>22</nobr></div>
+<div style="position:absolute;top:14366;left:343"><nobr>150</nobr></div>
+<div style="position:absolute;top:14366;left:436"><nobr>65</nobr></div>
+<div style="position:absolute;top:14366;left:524"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:14366;left:608"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:14366;left:715"><nobr>86.50</nobr></div>
+<div style="position:absolute;top:14404;left:135"><nobr>DRSGE</nobr></div>
+<div style="position:absolute;top:14404;left:252"><nobr>22</nobr></div>
+<div style="position:absolute;top:14431;left:248"><nobr>104</nobr></div>
+<div style="position:absolute;top:14404;left:347"><nobr>60</nobr></div>
+<div style="position:absolute;top:14431;left:343"><nobr>350</nobr></div>
+<div style="position:absolute;top:14404;left:432"><nobr>100</nobr></div>
+<div style="position:absolute;top:14431;left:432"><nobr>600</nobr></div>
+<div style="position:absolute;top:14404;left:524"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:14431;left:524"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:14404;left:608"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:14431;left:608"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:14404;left:719"><nobr>86.5</nobr></div>
+<div style="position:absolute;top:14431;left:715"><nobr>91.35</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:5px;font-family:Times">
+<div style="position:absolute;top:14665;left:335"><nobr>0</nobr></div>
+<div style="position:absolute;top:14644;left:329"><nobr>0.1</nobr></div>
+<div style="position:absolute;top:14623;left:329"><nobr>0.2</nobr></div>
+<div style="position:absolute;top:14601;left:329"><nobr>0.3</nobr></div>
+<div style="position:absolute;top:14579;left:329"><nobr>0.4</nobr></div>
+<div style="position:absolute;top:14558;left:329"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:14537;left:329"><nobr>0.6</nobr></div>
+<div style="position:absolute;top:14515;left:329"><nobr>0.7</nobr></div>
+<div style="position:absolute;top:14494;left:329"><nobr>0.8</nobr></div>
+<div style="position:absolute;top:14682;left:349"><nobr>0</nobr></div>
+<div style="position:absolute;top:14675;left:363"><nobr>1</nobr></div>
+<div style="position:absolute;top:14682;left:375"><nobr>10</nobr></div>
+<div style="position:absolute;top:14675;left:389"><nobr>20</nobr></div>
+<div style="position:absolute;top:14682;left:404"><nobr>50</nobr></div>
+<div style="position:absolute;top:14675;left:416"><nobr>100</nobr></div>
+<div style="position:absolute;top:14682;left:430"><nobr>120</nobr></div>
+<div style="position:absolute;top:14675;left:445"><nobr>150</nobr></div>
+<div style="position:absolute;top:14682;left:459"><nobr>200</nobr></div>
+<div style="position:absolute;top:14675;left:473"><nobr>250</nobr></div>
+<div style="position:absolute;top:14682;left:487"><nobr>300</nobr></div>
+<div style="position:absolute;top:14675;left:502"><nobr>500</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:10px;font-family:Times">
+<div style="position:absolute;top:14479;left:376"><nobr>Sonar problem</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:9px;font-family:Times">
+<div style="position:absolute;top:14693;left:390"><nobr>Number of iterations</nobr></div>
+<div style="position:absolute;top:14587;left:327"><nobr>R</nobr></div>
+<div style="position:absolute;top:14579;left:327"><nobr>M</nobr></div>
+<div style="position:absolute;top:14569;left:327"><nobr>S</nobr></div>
+<div style="position:absolute;top:14560;left:327"><nobr>erro</nobr></div>
+<div style="position:absolute;top:14541;left:327"><nobr>r</nobr></div>
+<div style="position:absolute;top:14498;left:467"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:14518;left:467"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:14536;left:467"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:14554;left:467"><nobr>DRSGE</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:14574;left:407"><nobr># hidden units=22</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:11px;font-family:Times">
+<div style="position:absolute;top:14743;left:301"><nobr>Figure 4. RMS vs. # of iterations for the sonar problem.</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:14810;left:106"><nobr><b>Experiment 4 Vowel Recognition Problem.</b></nobr></div>
+<div style="position:absolute;top:14845;left:106"><nobr>This is the data set used by Robinson [20] in their study of the speaker independent recognition of the eleven steady</nobr></div>
+<div style="position:absolute;top:14880;left:106"><nobr>state vowels of British English using a specified training set of lpc derived log area ratios. The data set is in the</nobr></div>
+<div style="position:absolute;top:14916;left:106"><nobr>standard CMU Neural Network Benchmark format. The data has 10 inputs and 11 outputs. Initial weights are</nobr></div>
+<div style="position:absolute;top:14951;left:106"><nobr>uniform random values in the range -0.3 to +0.3. This data set can be used in a number of different ways to test</nobr></div>
+<div style="position:absolute;top:14986;left:106"><nobr>learning speed, quality of ultimate learning, ability to generalise, or combinations of these factors. There are 860</nobr></div>
+<div style="position:absolute;top:15021;left:106"><nobr>patterns in total. These patterns are divided between the 430-member training set and the 430-member test set.</nobr></div>
+<div style="position:absolute;top:15057;left:116"><nobr>The networks used have 10 input nodes, 11 output nodes and have varying  number of hidden units. A summary of</nobr></div>
+<div style="position:absolute;top:15092;left:106"><nobr>results using different methods is presented in Table 3. As shown in Table 3 the training time for the proposed</nobr></div>
+<div style="position:absolute;top:15127;left:106"><nobr>methods is less than the EBP method. The recognition rate for the proposed methods and the conventional EBP</nobr></div>
+<div style="position:absolute;top:15163;left:106"><nobr>method is nearly the same, in some cases it is better for the proposed methods.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:15331;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="13"><b>Page 13</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:16473;left:436"><nobr>13</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:15441;left:116"><nobr>The experiment showed that the performance of both the proposed methods and conventional EBP for the training</nobr></div>
+<div style="position:absolute;top:15477;left:106"><nobr>set goes up with the increase in the number of hidden units, and for the test set it goes up but drops after a peak has</nobr></div>
+<div style="position:absolute;top:15512;left:106"><nobr>been reached. Figure 5 depicts the learning profiles produced for this problem and indicates that the proposed</nobr></div>
+<div style="position:absolute;top:15547;left:106"><nobr>learning methods yield much faster learning.</nobr></div>
+<div style="position:absolute;top:15582;left:259"><nobr>Table 3. Comparative results on the vowel recognition problem.</nobr></div>
+<div style="position:absolute;top:15628;left:98"><nobr>Training method # of hidden units # of iterations Training time</nobr></div>
+<div style="position:absolute;top:15654;left:441"><nobr>[s]</nobr></div>
+<div style="position:absolute;top:15629;left:499"><nobr>Gain term <font face="Symbol">η</font></nobr></div>
+<div style="position:absolute;top:15628;left:592"><nobr>Training set    %</nobr></div>
+<div style="position:absolute;top:15654;left:611"><nobr>right on</nobr></div>
+<div style="position:absolute;top:15628;left:723"><nobr>Test set</nobr></div>
+<div style="position:absolute;top:15654;left:717"><nobr>% right on</nobr></div>
+<div style="position:absolute;top:15693;left:126"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:15693;left:244"><nobr>40</nobr></div>
+<div style="position:absolute;top:15693;left:351"><nobr>1</nobr></div>
+<div style="position:absolute;top:15693;left:442"><nobr>45</nobr></div>
+<div style="position:absolute;top:15693;left:525"><nobr>0.0</nobr></div>
+<div style="position:absolute;top:15693;left:617"><nobr>98.50</nobr></div>
+<div style="position:absolute;top:15693;left:729"><nobr>40.69</nobr></div>
+<div style="position:absolute;top:15731;left:133"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:15731;left:244"><nobr>40</nobr></div>
+<div style="position:absolute;top:15731;left:344"><nobr>500</nobr></div>
+<div style="position:absolute;top:15731;left:438"><nobr>760</nobr></div>
+<div style="position:absolute;top:15731;left:525"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:15731;left:613"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:15731;left:729"><nobr>55.00</nobr></div>
+<div style="position:absolute;top:15770;left:123"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:15770;left:244"><nobr>40</nobr></div>
+<div style="position:absolute;top:15770;left:344"><nobr>100</nobr></div>
+<div style="position:absolute;top:15770;left:438"><nobr>300</nobr></div>
+<div style="position:absolute;top:15770;left:525"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:15770;left:613"><nobr>100.00</nobr></div>
+<div style="position:absolute;top:15770;left:729"><nobr>55.00</nobr></div>
+<div style="position:absolute;top:15808;left:123"><nobr>DRSGE</nobr></div>
+<div style="position:absolute;top:15808;left:244"><nobr>40</nobr></div>
+<div style="position:absolute;top:15808;left:348"><nobr>50</nobr></div>
+<div style="position:absolute;top:15808;left:438"><nobr>150</nobr></div>
+<div style="position:absolute;top:15808;left:525"><nobr>0.5</nobr></div>
+<div style="position:absolute;top:15808;left:617"><nobr>98.50</nobr></div>
+<div style="position:absolute;top:15808;left:729"><nobr>56.00</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:5px;font-family:Times">
+<div style="position:absolute;top:16039;left:321"><nobr>0</nobr></div>
+<div style="position:absolute;top:16012;left:311"><nobr>0.05</nobr></div>
+<div style="position:absolute;top:15985;left:315"><nobr>0.1</nobr></div>
+<div style="position:absolute;top:15958;left:311"><nobr>0.15</nobr></div>
+<div style="position:absolute;top:15931;left:315"><nobr>0.2</nobr></div>
+<div style="position:absolute;top:15904;left:311"><nobr>0.25</nobr></div>
+<div style="position:absolute;top:15876;left:315"><nobr>0.3</nobr></div>
+<div style="position:absolute;top:16055;left:337"><nobr>0</nobr></div>
+<div style="position:absolute;top:16048;left:352"><nobr>1</nobr></div>
+<div style="position:absolute;top:16055;left:366"><nobr>10</nobr></div>
+<div style="position:absolute;top:16048;left:382"><nobr>20</nobr></div>
+<div style="position:absolute;top:16055;left:398"><nobr>50</nobr></div>
+<div style="position:absolute;top:16048;left:411"><nobr>100</nobr></div>
+<div style="position:absolute;top:16055;left:427"><nobr>120</nobr></div>
+<div style="position:absolute;top:16048;left:443"><nobr>150</nobr></div>
+<div style="position:absolute;top:16055;left:458"><nobr>200</nobr></div>
+<div style="position:absolute;top:16048;left:474"><nobr>250</nobr></div>
+<div style="position:absolute;top:16055;left:490"><nobr>300</nobr></div>
+<div style="position:absolute;top:16048;left:506"><nobr>500</nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:9px;font-family:Times">
+<div style="position:absolute;top:15862;left:389"><nobr>Vowel problem    </nobr></div>
+</span></font>
+<font size="2" face="Times"><span style="font-size:8px;font-family:Times">
+<div style="position:absolute;top:16065;left:383"><nobr>Number of iterations</nobr></div>
+<div style="position:absolute;top:15965;left:311"><nobr>R</nobr></div>
+<div style="position:absolute;top:15957;left:311"><nobr>M</nobr></div>
+<div style="position:absolute;top:15948;left:311"><nobr>S</nobr></div>
+<div style="position:absolute;top:15939;left:311"><nobr>e</nobr></div>
+<div style="position:absolute;top:15934;left:311"><nobr>rro</nobr></div>
+<div style="position:absolute;top:15922;left:311"><nobr>r</nobr></div>
+<div style="position:absolute;top:15881;left:467"><nobr>EBP</nobr></div>
+<div style="position:absolute;top:15899;left:467"><nobr>EBUDS</nobr></div>
+<div style="position:absolute;top:15917;left:467"><nobr>RMGS</nobr></div>
+<div style="position:absolute;top:15934;left:467"><nobr>DRSGE</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:11px;font-family:Times">
+<div style="position:absolute;top:15949;left:404"><nobr># hidden units=40</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:16115;left:257"><nobr>Figure 5. RMS vs. # of iterations for vowel recognition problem.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:16594;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="14"><b>Page 14</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:17736;left:436"><nobr>14</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:16705;left:344"><nobr><b>VI. CONCLUDING REMARKS</b></nobr></div>
+<div style="position:absolute;top:16739;left:106"><nobr>In this paper, we proposed methods for fast training of multilayer perceptrons. A number of experiments for</nobr></div>
+<div style="position:absolute;top:16775;left:106"><nobr>classification as well as for approximation have been conducted and some of them are presented above. The</nobr></div>
+<div style="position:absolute;top:16810;left:106"><nobr>experiments show that the proposed methods are without local minima and able to train the MLPs much faster than</nobr></div>
+<div style="position:absolute;top:16845;left:106"><nobr>EBP. To demonstrate the generalisation and interpolative power of our methods we have presented some</nobr></div>
+<div style="position:absolute;top:16880;left:106"><nobr>experimental results in Tables 1-3. Figures 3-5 show the comparison of RMS error vs. number of iterations for</nobr></div>
+<div style="position:absolute;top:16916;left:106"><nobr>different problems. As follows from these tables and figures our methods performed well in all test cases considered</nobr></div>
+<div style="position:absolute;top:16951;left:106"><nobr>and demonstrated a good generalisation capability. We conclude that our methods should be useful for many real</nobr></div>
+<div style="position:absolute;top:16986;left:106"><nobr>world problems.</nobr></div>
+<div style="position:absolute;top:17022;left:396"><nobr><b>REFERENCES</b></nobr></div>
+<div style="position:absolute;top:17056;left:106"><nobr>[1]. D. E. Rumelhart, G. E. Hinton, and R. J. Williams, "Learning internal representation by error propagation," in</nobr></div>
+<div style="position:absolute;top:17092;left:147"><nobr>Parallel Distributed  Processing, vol. 1, Cambridge, MA: M.I.T. Press, 1986.</nobr></div>
+<div style="position:absolute;top:17127;left:106"><nobr>[2].  J. Hertz and A. Krogh,  "Introduction to the Theory of Neural Computation," Addison-Wesley Publishing</nobr></div>
+<div style="position:absolute;top:17162;left:147"><nobr>Company, CA, 1991.</nobr></div>
+<div style="position:absolute;top:17198;left:106"><nobr>[3]. P. D. Wasserman , "Neural Computing Theory and Practice," Van Nostrand Reinhold, NY, 1989.</nobr></div>
+<div style="position:absolute;top:17233;left:106"><nobr>[4].  J. J. Mulawka, and B. K. Verma, "Improving the Training Time of the Backpropagation Algorithm,"</nobr></div>
+<div style="position:absolute;top:17268;left:147"><nobr>International Journal of     Microcomputer Applications, vol. 13, no.2, pp.85-89, Canada, 1994.</nobr></div>
+<div style="position:absolute;top:17303;left:106"><nobr>[5]. Y. Liping, and Y. Wanzhen, "Backpropagation with Homotopy," Neural Computation, vol. 5, no. 3, pp.</nobr></div>
+<div style="position:absolute;top:17339;left:147"><nobr>363-366, 1993.</nobr></div>
+<div style="position:absolute;top:17374;left:106"><nobr>[6].  B. K. Verma and J.J. Mulawka, "A Modified Backpropagation Algorithm," Proc. of the World Congress on</nobr></div>
+<div style="position:absolute;top:17409;left:147"><nobr>Computational Intelligence, vol.2, pp.840-846 26 June-2 July, Orlando,  USA, 1994.</nobr></div>
+<div style="position:absolute;top:17445;left:106"><nobr>[7].  Y. Yam and T. Chow, "Extended Backpropagation Algorithm," Electronic Letters, vol. 29, no. 19, pp.1701-</nobr></div>
+<div style="position:absolute;top:17480;left:147"><nobr>1702, 1993.</nobr></div>
+<div style="position:absolute;top:17515;left:106"><nobr>[8]. J. A. Freeman, "BP and its variants," Addison-Wesley Publishing Company, Inc., NY. 1994.</nobr></div>
+<div style="position:absolute;top:17550;left:106"><nobr>[9].  M. Fukumi and Sigeru Omatu, "A New Back-Propagation Algorithm with Coupled Neuron," IEEE Trans. on</nobr></div>
+<div style="position:absolute;top:17586;left:147"><nobr>Neural Networks, vol. 2, no. 5, pp.535-538.</nobr></div>
+<div style="position:absolute;top:17621;left:106"><nobr>[10]. F. Biegler and F. Barmann, "A Learning Algorithm for Multilayer Perceptrons:Layer by Layer," IEEE Trans.</nobr></div>
+<div style="position:absolute;top:17656;left:147"><nobr>on Neural Networks,"   vol. 6, no. 1, 1995.</nobr></div>
+</span></font>
+
+<div style="position:absolute;top:17857;left:0"><hr><table border="0" width="100%"><tbody><tr><td bgcolor="eeeeee" align="right"><font face="arial,sans-serif"><a name="15"><b>Page 15</b></a></font></td></tr></tbody></table></div><font size="3" face="Courier"><span style="font-size:16px;font-family:Courier">
+<div style="position:absolute;top:18999;left:436"><nobr>15</nobr></div>
+</span></font>
+<font size="3" face="Times"><span style="font-size:12px;font-family:Times">
+<div style="position:absolute;top:17967;left:106"><nobr>[11]. B. K. Verma and J. J. Mulawka, "Training of the Multilayer Perceptron Using Direct Solution Methods,"</nobr></div>
+<div style="position:absolute;top:18003;left:147"><nobr>Proc. of the Twelfth     IASTED International Conference, Applied Informatics, pp. 18-24, May 17-20,</nobr></div>
+<div style="position:absolute;top:18038;left:147"><nobr>Annecy, France, 1994.</nobr></div>
+<div style="position:absolute;top:18073;left:106"><nobr>[12].  B. K. Verma, "New methods of Training the MLP," PhD Dissertation, Warsaw Univ. of Technology, Warsaw,</nobr></div>
+<div style="position:absolute;top:18108;left:147"><nobr>1995.</nobr></div>
+<div style="position:absolute;top:18144;left:106"><nobr>[13].  S. D Hunt and J.R Deller, "Efficient Training of Feedforward Artificial Neural Networks Based on Matrix</nobr></div>
+<div style="position:absolute;top:18179;left:147"><nobr>Perturbation Theory," Submitted to International Journal on Neural Systems, London, UK.</nobr></div>
+<div style="position:absolute;top:18214;left:106"><nobr>[14]. Andre Neubauer, "Robust Learning Algorithms for Multi-Layer Perceptrons with Discretized Synaptic</nobr></div>
+<div style="position:absolute;top:18250;left:147"><nobr>Weights," Proc. of the IEEE International Conference on Neural Networks, ICNN’95, pp. 3154, Australia,</nobr></div>
+<div style="position:absolute;top:18285;left:147"><nobr>1995.</nobr></div>
+<div style="position:absolute;top:18320;left:106"><nobr>[15]. M. H Brugge and J.A. Nijhuis, "On the Representation of Data for Optimal Learning," Proc. of the IEEE</nobr></div>
+<div style="position:absolute;top:18355;left:147"><nobr>International Conference on Neural Networks, ICNN’95, pp. 3180, Australia, 1995.</nobr></div>
+<div style="position:absolute;top:18391;left:106"><nobr>[16]. M. R. Azmi and R. Liou, "Fast learning process of MLP NNs using Recursive Least Squares Methods," IEEE</nobr></div>
+<div style="position:absolute;top:18426;left:147"><nobr>Trans. on Signal Processing, vol. 4, no. 2, pp. 446-450, 1993.</nobr></div>
+<div style="position:absolute;top:18461;left:106"><nobr>[17]. A. Kielbasinski  and H. Schwetlick, "Numerical Linear Algebra," Warsaw, 1992.</nobr></div>
+<div style="position:absolute;top:18497;left:106"><nobr>[18]. A. Bjorck and G. Dahlquist, G., "Numerical Methods," Printice-Hall, Inc., New Jersey, 1974.</nobr></div>
+<div style="position:absolute;top:18532;left:106"><nobr>[19]. R. P. Gorman and T. J. Sejnowski, "Analysis of Hidden Units in a Layered Network Trained to Classify</nobr></div>
+<div style="position:absolute;top:18567;left:147"><nobr>Sonar Targets," Neural Networks, vol. 1, pp. 75-89, 1988.</nobr></div>
+<div style="position:absolute;top:18602;left:106"><nobr>[20]. A. J. Robinson and F. Fallside, "Static and Dynamic Error Propagation Networks with Applications to Speech</nobr></div>
+<div style="position:absolute;top:18638;left:147"><nobr>Coding," Neural Information Processing Systems, pp. 632-641, USA, 1988.</nobr></div>
+</span></font>
+
+
+</div></body></html>
