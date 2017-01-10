@@ -19,8 +19,6 @@ public:
 
 private:
 
-	
-
 	void RandomWeights();
 
 	void PropagateSignal();
@@ -29,7 +27,13 @@ private:
 
 	void Simulate(double* input, double* output, double* target, bool training);
 
+	double* ComputeOutputs(double* xValues, int size);
 
+	void ZeroOutArray(double* ary, int size);
+
+	void ZeroOutMat(double** matrix);
+
+	double MeanSquaredError(double** trainData, double* weights, int size)
 
 };
 
