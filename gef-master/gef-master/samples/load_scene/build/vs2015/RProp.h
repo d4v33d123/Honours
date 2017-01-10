@@ -29,11 +29,13 @@ private:
 
 	double* ComputeOutputs(double* xValues, int size);
 
+	double Accuracy(double** testData, double* weights)
+
 	void ZeroOutArray(double* ary, int size);
 
 	void ZeroOutMat(double** matrix);
 
-	double MeanSquaredError(double** trainData, double* weights, int size)
+	double MeanSquaredError(double** trainData, double* weights, int size);
 
 };
 
