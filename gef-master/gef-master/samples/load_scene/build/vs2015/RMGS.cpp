@@ -128,6 +128,15 @@ void RMGS::RandomWeights()
 
 void RMGS::MBD()
 {
+	// for all of the neurons in the hidden layer 
+
+	// x - w squared 
+
+	// multiplied by (current neuron / neurons in layer)
+
+	// add the values together to get the net value 
+
+	// Square root of the values 
 
 }
 
