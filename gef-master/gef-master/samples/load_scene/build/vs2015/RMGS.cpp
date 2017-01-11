@@ -1,0 +1,177 @@
+#include "RMGS.h"
+#include <math.h>
+
+RMGS::RMGS(int nl, int npl[])
+{
+	num_layers = 0;
+	layers = 0;
+	dMSE = 0;
+	dMAE = 0;
+	dEta = 0.25;
+	dAlpha = 0.9;
+	dGain = 1.0;
+	dAvgTestError = 0.0;
+
+	int i, j;
+
+	num_layers = nl;
+	layers = new Layer[nl];
+
+	for (i = 0; i < nl; i++)
+	{
+		layers[i].num_Neurons = npl[i];
+		layers[i].neurons = new Neuron[npl[i]];
+
+		for (j = 0; j < npl[i]; j++)
+		{
+			layers[i].neurons[j].output = 1.0;
+			layers[i].neurons[j].error = 0.0;
+
+			if (i > 0)
+			{
+				layers[i].neurons[j].weight = new double[npl[i - 1]];
+				layers[i].neurons[j].pre_Weight = new double[npl[i - 1]];
+				layers[i].neurons[j].saved_weight = new double[npl[i - 1]];
+
+			}
+			else
+			{
+				layers[i].neurons[j].weight = NULL;
+				layers[i].neurons[j].pre_Weight = NULL;
+				layers[i].neurons[j].saved_weight = NULL;
+			}
+		}
+	}
+}
+
+RMGS::~RMGS()
+{
+	int i, j;
+
+	for (i = 0; i < num_layers; i++)
+	{
+		if (layers[i].neurons)
+		{
+			for (j = 0; j < layers[i].num_Neurons; j++)
+			{
+				if (layers[i].neurons[j].weight)
+					delete layers[i].neurons[j].weight;
+				if (layers[i].neurons[j].pre_Weight)
+					delete layers[i].neurons[j].pre_Weight;
+				if (layers[i].neurons[j].saved_weight)
+					delete layers[i].neurons[j].saved_weight;
+			}
+		}
+		delete[] layers[i].neurons;
+	}
+	delete[] layers;
+}
+
+int RMGS::Train(const char * fnames)
+{
+	// 1. 3 layer perceptron 2 hidden 1 output.
+
+	// 2. initialise the weights of the first hidden layer with random weights
+	RandomWeights();
+	// 3. present input vectors (x1, x2....xn) and desired output vectors (d1, d2....dn)
+
+	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
+	MBD();
+
+	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
+
+	// 6. Develop a linear system of equations for the output layer
+		// Use equation (10) and convert the output nonlinear activation function to a linear function.
+
+		// Use equations (11) and develop a linear system of equations as shown in Equation (12)
+
+	// 7. Calaulate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve(12)
+
+	// Repeat step 6 and 7 for each neuron in the hidden layer
+	return 0;
+}
+
+int RMGS::Test(const char * fname)
+{
+
+	return 0;
+}
+
+int RMGS::Evaluate()
+{
+
+	return 0;
+}
+
+void RMGS::Run(const char * fname, const int & maxiter)
+{
+
+}
+
+void RMGS::RandomWeights()
+{
+	int i, j, k;
+	for (i = 1; i < num_layers; i++)
+	{
+		for (j = 0; j < layers[i].num_Neurons; j++)
+		{
+			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.5, 0.5);
+				layers[i].neurons[j].pre_Weight[k] = 0.0;
+				layers[i].neurons[j].saved_weight[k] = 0.0;
+			}
+
+		}
+	}
+}
+
+void RMGS::MBD()
+{
+
+}
+
+void RMGS::GramSchmidt()
+{
+
+}
+
+void RMGS::PropagateSignal()
+{
+	int i, j, k;
+	for (i = 1; i < num_layers; i++)
+	{
+		for (j = 0; j < layers[i].num_Neurons; j++)
+		{
+			double sum = 0;
+			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
+				double output = layers[i - 1].neurons[k].output;
+				double weight = layers[i].neurons[j].weight[k];
+				sum += weight*output;
+			}
+			// activation funciton
+			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
+		}
+	}
+}
+
+void RMGS::ComputeOutputError(double * target)
+{
+
+}
+
+void RMGS::BackPropagateError()
+{
+
+}
+
+void RMGS::AdjustWeights()
+{
+
+}
+
+void RMGS::Simulate(double * input, double * output, double * target, bool training)
+{
+
+}
