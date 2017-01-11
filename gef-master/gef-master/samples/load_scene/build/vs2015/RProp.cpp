@@ -108,7 +108,7 @@ RProp::~RProp()
 	delete[] layers;
 }
 
-int RProp::Train(const char* fnames)
+int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 {
 	double* hGradTerms = new double[layers[1].num_Neurons];
 	double* oGradTerms = new double[layers[2].num_Neurons];
@@ -135,6 +135,8 @@ int RProp::Train(const char* fnames)
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 10000;
 
+	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[2].num_Neurons);
+
 	int epoch = 0;
 	while (epoch < maxEpochs)
 	{
@@ -155,12 +157,12 @@ int RProp::Train(const char* fnames)
 
 		double* xValues = new double[layers[0].num_Neurons]; // inputs
 		double* tValues = new double[layers[2].num_Neurons]; // target values
-		for (int row = 0; row < trainData.Length; ++row)  // walk thru all training data
+		for (int row = 0; row < trainDataSize; ++row)  // walk thru all training data
 		{
 			// no need to visit in random order because all rows processed before any updates ('batch')
 			copy_array_noindex(trainData[row], xValues, layers[0].num_Neurons); // get the inputs
 			copy_array_index(trainData[row], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // get the target values
-			double* outputs = ComputeOutputs(xValues); // copy xValues in, compute outputs using curr weights (and store outputs internally)
+			double* outputs = ComputeOutputs(xValues, layers[0].num_Neurons); // copy xValues in, compute outputs using curr weights (and store outputs internally)
 
 									 // compute the h-o gradient term/component as in regular back-prop
 									 // this term usually is lower case Greek delta but there are too many other deltas below
@@ -355,10 +357,10 @@ int RProp::Train(const char* fnames)
 
 int RProp::Test(const char* fname)
 {
-	
+	return 0;
 }
 
-double RProp::Accuracy(double** testData, double* weights)
+double RProp::Accuracy(double** testData, double* weights, int sizeOfData)
 {
 	// no need to set the weights as they are aleady set in the layers variable
 	//this.SetWeights(weights);
@@ -369,12 +371,12 @@ double RProp::Accuracy(double** testData, double* weights)
 	double* tValues = new double[layers[2].num_Neurons]; // targets
 	double* yValues; // computed Y
 
-	for (int i = 0; i < testData.Length; ++i)
+	for (int i = 0; i < sizeOfData; ++i)
 	{
 		copy_array_noindex(testData[i], xValues, layers[0].num_Neurons); // parse data into x-values and t-values
 		copy_array_index(testData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons);
-		yValues = ComputeOutputs(xValues);
-		int maxIndex = MaxIndex(yValues, /*test data length?*/); // which cell in yValues has largest value?
+		yValues = ComputeOutputs(xValues, layers[0].num_Neurons);
+		int maxIndex = MaxIndex(yValues, layers[2].num_Neurons/*test data length?*/); // which cell in yValues has largest value?
 
 		if (tValues[maxIndex] == 1.0) // ugly. consider AreEqual(double x, double y, double epsilon)
 			++numCorrect;
@@ -535,4 +537,47 @@ double* RProp::ComputeOutputs(double* xValues, int size)
 	return softOut;
 }
 
+double** RProp::fillTrainingData(const char* fname, int rows, int cols)
+{
+	double** result = 0;
+	result = new double*[rows];
+	int count = 0;
+	int nbi = 0;
+	int nbt = 0;
+	FILE* fp;
+	errno_t err;
 
+	if ((err = fopen_s(&fp, fname, "r")) != 0)
+	{
+		printf("couldn't open file");
+		return 0;
+	}
+
+	while (!feof(fp))
+	{
+		double dNumber;
+		if (read_number(fp, &dNumber))
+		{
+			result[count] = new double[count];
+			if (nbi < layers[0].num_Neurons)
+				result[count][nbi++] = dNumber;
+			else if (nbt < layers[num_layers - 1].num_Neurons)
+				result[count][nbt++] = dNumber;
+
+			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
+			{
+				nbi = 0;
+				nbt = 0;
+				count++;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (fp) fclose(fp);
+	
+	return result;
+}

@@ -11,7 +11,7 @@ public:
 	RProp(int nl, int npl[]);
 	~RProp();
 
-	int Train(const char* fnames);
+	int Train(const char* fnames, int trainDataSize, int numInAndOut);
 	int Test(const char* fname);
 	int Evaluate();
 
@@ -29,11 +29,13 @@ private:
 
 	double* ComputeOutputs(double* xValues, int size);
 
-	double Accuracy(double** testData, double* weights)
+	double Accuracy(double** testData, double* weights, int sizeOfData);
 
 	void ZeroOutArray(double* ary, int size);
 
 	void ZeroOutMat(double** matrix);
+
+	double** fillTrainingData(const char* fname, int rows, int cols);
 
 	double MeanSquaredError(double** trainData, double* weights, int size);
 
