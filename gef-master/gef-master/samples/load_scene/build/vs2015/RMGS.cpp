@@ -142,7 +142,7 @@ void RMGS::MBD()
 
 void RMGS::GramSchmidt()
 {
-
+	// see MGStesting solution 
 }
 
 void RMGS::PropagateSignal()
