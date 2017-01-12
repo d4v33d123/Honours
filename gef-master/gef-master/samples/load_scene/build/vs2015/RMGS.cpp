@@ -86,8 +86,10 @@ int RMGS::Train(const char * fnames)
 		// Use equations (11) and develop a linear system of equations as shown in Equation (12)
 
 	// 7. Calaulate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve(12)
-
+	GramSchmidt();
 	// Repeat step 6 and 7 for each neuron in the hidden layer
+
+
 	return 0;
 }
 
