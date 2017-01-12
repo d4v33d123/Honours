@@ -139,12 +139,12 @@ void RMGS::MBD()
 	// add the values together to get the net value 
 
 	// Square root of the values 
-
 }
 
 void RMGS::GramSchmidt()
 {
 	// see MGStesting solution 
+
 }
 
 void RMGS::PropagateSignal()
