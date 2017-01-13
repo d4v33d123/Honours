@@ -20,8 +20,9 @@ public:
 private:
 
 	void RandomWeights();
-	void MBD();
+	void MBD(double** trainingData);
 	void GramSchmidt();
+	double** fillTrainingData(const char* fname, int rows, int cols);
 
 
 	void PropagateSignal();

@@ -69,6 +69,8 @@ RMGS::~RMGS()
 
 int RMGS::Train(const char * fnames)
 {
+	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[2].num_Neurons);
+
 	// 1. 3 layer perceptron 2 hidden 1 output.
 
 	// 2. initialise the weights of the first hidden layer with random weights
@@ -76,7 +78,7 @@ int RMGS::Train(const char * fnames)
 	// 3. present input vectors (x1, x2....xn) and desired output vectors (d1, d2....dn)
 
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	MBD();
+	MBD(trainData);
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
 
@@ -128,8 +130,15 @@ void RMGS::RandomWeights()
 	}
 }
 
-void RMGS::MBD()
+void RMGS::MBD(double** trainingData)
 {
+	// take the first training data input 
+	double** first_data = trainingData[0][0];
+
+	// compare it to all of the neurons which are weights of the rest of the training data inputs
+
+	// this techniques essentially uses the MLP 2nd hidden layer like a Self organising map for comparing the inputs to
+
 	// for all of the neurons in the hidden layer 
 
 	// x - w squared 
@@ -185,4 +194,49 @@ void RMGS::AdjustWeights()
 void RMGS::Simulate(double * input, double * output, double * target, bool training)
 {
 
+}
+
+double** RMGS::fillTrainingData(const char* fname, int rows, int cols)
+{
+	double** result = 0;
+	result = new double*[rows];
+	int count = 0;
+	int nbi = 0;
+	int nbt = 0;
+	FILE* fp;
+	errno_t err;
+
+	if ((err = fopen_s(&fp, fname, "r")) != 0)
+	{
+		printf("couldn't open file");
+		return 0;
+	}
+
+	while (!feof(fp))
+	{
+		double dNumber;
+		if (read_number(fp, &dNumber))
+		{
+			result[count] = new double[count];
+			if (nbi < layers[0].num_Neurons)
+				result[count][nbi++] = dNumber;
+			else if (nbt < layers[num_layers - 1].num_Neurons)
+				result[count][nbt++] = dNumber;
+
+			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
+			{
+				nbi = 0;
+				nbt = 0;
+				count++;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	if (fp) fclose(fp);
+
+	return result;
 }
