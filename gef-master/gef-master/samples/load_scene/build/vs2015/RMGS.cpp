@@ -130,13 +130,19 @@ void RMGS::RandomWeights()
 	}
 }
 
-void RMGS::MBD(double** trainingData)
+void RMGS::MBD(double** trainingData, int size)
 {
 	// take the first training data input 
-	double** first_data = trainingData[0][0];
+	double* first_data = trainingData[0];
 
 	// compare it to all of the neurons which are weights of the rest of the training data inputs
-
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		for (int j = 0; j < layers[1].num_Neurons; j++)
+		{
+			layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+		}
+	}
 	// this techniques essentially uses the MLP 2nd hidden layer like a Self organising map for comparing the inputs to
 
 	// for all of the neurons in the hidden layer 
