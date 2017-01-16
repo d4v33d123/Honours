@@ -70,25 +70,36 @@ RMGS::~RMGS()
 int RMGS::Train(const char * fnames)
 {
 	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[2].num_Neurons);
+	int datasize = layers[2].num_Neurons;
 
 	// 1. 3 layer perceptron 2 hidden 1 output.
 
+
 	// 2. initialise the weights of the first hidden layer with random weights
 	RandomWeights();
+
+
 	// 3. present input vectors (x1, x2....xn) and desired output vectors (d1, d2....dn)
 
+
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	MBD(trainData);
+	MBD(trainData, datasize);
+
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
+
 
 	// 6. Develop a linear system of equations for the output layer
 		// Use equation (10) and convert the output nonlinear activation function to a linear function.
 
+
 		// Use equations (11) and develop a linear system of equations as shown in Equation (12)
+
 
 	// 7. Calaulate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve(12)
 	GramSchmidt();
+
+
 	// Repeat step 6 and 7 for each neuron in the hidden layer
 
 
@@ -143,17 +154,25 @@ void RMGS::MBD(double** trainingData, int size)
 			layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
 		}
 	}
+	
 	// this techniques essentially uses the MLP 2nd hidden layer like a Self organising map for comparing the inputs to
+	
 
 	// for all of the neurons in the hidden layer 
 
+
 	// x - w squared 
+
 
 	// multiplied by (current neuron / neurons in layer)
 
+
 	// add the values together to get the net value 
 
+
 	// Square root of the values 
+	
+
 }
 
 void RMGS::GramSchmidt()
