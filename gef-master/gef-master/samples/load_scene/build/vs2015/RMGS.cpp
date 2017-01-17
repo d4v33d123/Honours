@@ -83,7 +83,7 @@ int RMGS::Train(const char * fnames)
 
 
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	MBD(trainData, datasize);
+	MBD(trainData, datasize, true);
 
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
@@ -141,44 +141,55 @@ void RMGS::RandomWeights()
 	}
 }
 
-void RMGS::MBD(double** trainingData, int size)
+void RMGS::MBD(double** trainingData, int size, bool training)
 {
-	// take the first training data input 
-	double* first_data = trainingData[0];
 
-	// compare it to all of the neurons which are weights of the rest of the training data inputs
-	for (int i = 0; i < layers[2].num_Neurons; i++)
+	if (training)
 	{
-		for (int j = 0; j < layers[1].num_Neurons; j++)
+		// take the first training data input 
+		double* first_data = trainingData[0];
+
+		// compare it to all of the neurons which are weights of the rest of the training data inputs
+		for (int i = 0; i < layers[2].num_Neurons; i++)
 		{
-			layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+			for (int j = 0; j < layers[1].num_Neurons; j++)
+			{
+				layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+			}
 		}
 	}
+	
 	
 	// this techniques essentially uses the MLP 2nd hidden layer like a Self organising map for comparing the inputs to
 	
 
 	// for all of the neurons in the hidden layer 
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		double output = 0;
+		for (int j = 0; j < layers[1].num_Neurons; j++)
+		{
+			//layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+			// Total of all the  x - w s
+			output += layers[1].neurons[j].output - layers[2].neurons[i].weight[j];
+		}
+		// squared
+		double outputsquared = output * output;
+		// mulitplied by current neuron / total neurons
+		outputsquared = outputsquared * (i / layers[2].num_Neurons);
+		// square root of said value
+		layers[2].neurons[i].output = sqrt(outputsquared);
 
-
-	// x - w squared 
-
-
-	// multiplied by (current neuron / neurons in layer)
-
-
-	// add the values together to get the net value 
-
-
-	// Square root of the values 
-	
+		// put the value through the fitness function
+		layers[2].neurons[i].output = 1 - tanh(layers[2].neurons[i].output);
+	}
 
 }
 
 void RMGS::GramSchmidt()
 {
 	// see MGStesting solution 
-
+	
 }
 
 void RMGS::PropagateSignal()

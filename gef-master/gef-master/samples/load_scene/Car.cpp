@@ -71,10 +71,10 @@ Car::Car(b2World* world)
 
 	//set up sprite
 
-	carBodySprite.set_width(6);
-	carBodySprite.set_height(10);
+	carBodySprite.set_width(5.5);
+	carBodySprite.set_height(9);
 	carBodySprite.set_colour(0xffffffff);
-	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y + 45, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
 }
@@ -100,10 +100,10 @@ void Car::Update(int controlState) {
 	switch (controlState & (TDC_LEFT | TDC_RIGHT)) 
 	{
 		case TDC_LEFT:  
-			desiredAngle = lockAngle;  
+			desiredAngle = -lockAngle;  
 			break;
 		case TDC_RIGHT: 
-			desiredAngle = -lockAngle; 
+			desiredAngle = lockAngle; 
 			break;
 		default:;//nothing
 	}
