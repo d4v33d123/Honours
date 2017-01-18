@@ -69,7 +69,7 @@ RMGS::~RMGS()
 
 int RMGS::Train(const char * fnames)
 {
-	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[2].num_Neurons);
+	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[3].num_Neurons);
 	int datasize = layers[2].num_Neurons;
 
 	// 1. 3 layer perceptron 2 hidden 1 output.
