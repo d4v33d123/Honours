@@ -72,6 +72,9 @@ int RMGS::Train(const char * fnames)
 	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[3].num_Neurons);
 	int datasize = layers[2].num_Neurons;
 
+	double** MBDOutput = MakeMatrix(datasize, layers[2].num_Neurons);
+	double** FirstHiddenOutput = SetZeros(datasize, layers[1].num_Neurons);
+
 	// 1. 3 layer perceptron 2 hidden 1 output.
 
 
@@ -80,10 +83,32 @@ int RMGS::Train(const char * fnames)
 
 
 	// 3. present input vectors (x1, x2....xn) and desired output vectors (d1, d2....dn)
+	for (int i = 0; i < datasize; i++)
+	{
+		for (int j = 0; j < layers[0].num_Neurons; j++)
+		{
+			layers[0].neurons[j].output = trainData[i][j];
+		}
 
+		for (int j = 0; j < layers[1].num_Neurons; j++)
+		{
+			double sum = 0;
+			for (int k = 0; k < layers[0].num_Neurons; k++)
+			{
+				double output = layers[0].neurons[k].output;
+				double weight = layers[1].neurons[j].weight[k];
+				sum += weight*output;
+			}
+			// activation funciton
+			layers[1].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
+			FirstHiddenOutput[i][j] = layers[1].neurons[j].output;
+		}
+
+	}
+	
 
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	MBD(trainData, datasize, true);
+	MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
 
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
@@ -141,48 +166,53 @@ void RMGS::RandomWeights()
 	}
 }
 
-void RMGS::MBD(double** trainingData, int size, bool training)
+void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, double** MBDOutput)
 {
 
-	if (training)
-	{
-		// take the first training data input 
-		double* first_data = trainingData[0];
+	// take the first training data input 
+	//double* first_data = trainingData[0];
 
-		// compare it to all of the neurons which are weights of the rest of the training data inputs
-		for (int i = 0; i < layers[2].num_Neurons; i++)
+	// compare it to all of the neurons which are weights of the rest of the training data inputs
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		for (int j = 0; j < layers[1].num_Neurons; j++)
 		{
-			for (int j = 0; j < layers[1].num_Neurons; j++)
-			{
-				layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
-			}
+				layers[2].neurons[i].weight[j] = trainingData[i][j];
 		}
 	}
+	
 	
 	
 	// this techniques essentially uses the MLP 2nd hidden layer like a Self organising map for comparing the inputs to
 	
-
-	// for all of the neurons in the hidden layer 
-	for (int i = 0; i < layers[2].num_Neurons; i++)
+	// for all of the test data
+	for (int d = 0; d < size; d++)
 	{
-		double output = 0;
-		for (int j = 0; j < layers[1].num_Neurons; j++)
+		for (int i = 0; i < layers[2].num_Neurons; i++)
 		{
-			//layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
-			// Total of all the  x - w s
-			output += layers[1].neurons[j].output - layers[2].neurons[i].weight[j];
-		}
-		// squared
-		double outputsquared = output * output;
-		// mulitplied by current neuron / total neurons
-		outputsquared = outputsquared * (i / layers[2].num_Neurons);
-		// square root of said value
-		layers[2].neurons[i].output = sqrt(outputsquared);
+			double output = 0;
+			for (int j = 0; j < layers[1].num_Neurons; j++)
+			{
+				//layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+				// Total of all the  x - w s
+				//output += layers[1].neurons[j].output - layers[2].neurons[i].weight[j];
+				output += FirstHiddenOutput[d][j] - layers[2].neurons[i].weight[j];
+			}
+			// squared
+			double outputsquared = output * output;
+			// mulitplied by current neuron / total neurons
+			outputsquared = outputsquared * (i / layers[2].num_Neurons);
+			// square root of said value
+			layers[2].neurons[i].output = sqrt(outputsquared);
 
-		// put the value through the fitness function
-		layers[2].neurons[i].output = 1 - tanh(layers[2].neurons[i].output);
+			// put the value through the fitness function
+			layers[2].neurons[i].output = 1 - tanh(layers[2].neurons[i].output);
+
+			MBDOutput[d][i] = output;
+		}
 	}
+	// for all of the neurons in the hidden layer 
+	
 
 }
 
@@ -211,6 +241,7 @@ void RMGS::PropagateSignal()
 		}
 	}
 }
+
 
 void RMGS::ComputeOutputError(double * target)
 {
