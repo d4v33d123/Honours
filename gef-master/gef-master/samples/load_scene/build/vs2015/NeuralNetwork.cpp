@@ -121,3 +121,34 @@ double* Network::MakeVector(int len, double v) // helper for Train
 		result[i] = v;
 	return result;
 }
+
+double* Network::MinusVectors(double* Vec1, double* Vec2, int size)
+{
+	double* ret = MakeVector(size, 0);
+	for (int i = 0; i < size; i++)
+	{
+		ret[i] = Vec1[i] - Vec2[i];
+	}
+	return ret;
+}
+
+double Network::DotProduct(double* Vec1, double* Vec2, int size)
+{
+	double ret = 0;
+	for (int i = 0; i < size; i++)
+	{
+		ret += Vec1[i] * Vec2[i];
+	}
+	return ret;
+}
+
+double* Network::MultiplyVector(double * Vec, double value, int size)
+{
+	double* ret = MakeVector(size, 0);
+
+	for (int i = 0; i < size; i++)
+	{
+		ret[i] = Vec[i] * value;
+	}
+	return ret;
+}

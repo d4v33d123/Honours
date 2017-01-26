@@ -72,8 +72,8 @@ int RMGS::Train(const char * fnames)
 	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[3].num_Neurons);
 	int datasize = layers[2].num_Neurons;
 
-	double** MBDOutput = MakeMatrix(datasize, layers[2].num_Neurons);
-	double** FirstHiddenOutput = SetZeros(datasize, layers[1].num_Neurons);
+	double** MBDOutput = MakeMatrix(datasize, layers[2].num_Neurons, 0);
+	double** FirstHiddenOutput = MakeMatrix(datasize, layers[1].num_Neurons, 0);
 
 	// 1. 3 layer perceptron 2 hidden 1 output.
 
@@ -216,11 +216,46 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 
 }
 
-void RMGS::GramSchmidt()
+void RMGS::GramSchmidt(double** firstHidden, double** secondHidden, int size)
 {
 	// see MGStesting solution 
+	double** Q = MakeMatrix(size, layers[2].num_Neurons, 0);
+	double** R = MakeMatrix(size, layers[2].num_Neurons, 0);
+	double** V = MakeMatrix(size, layers[2].num_Neurons, 0);
+	// QR Decomposition of matrix 
+	double* Qvals = MakeVector(layers[2].num_Neurons, 0);
 	
+	// Firstly we need to get Q 
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			Qvals[i] += secondHidden[j][i];
+		}
+		Qvals[i] = sqrt(Qvals[i]);
+	}
+
+	V = secondHidden;
+
+	for (int i = 0; i < size; i++)
+	{
+		R[i][i] = Qvals[i];
+		for (int j = 0; j < size; j++)
+		{
+			Q[j][i] = V[j][i] / Qvals[i];
+		}
+		
+		for (int j = i + 1; j < layers[2].num_Neurons; j++)
+		{
+			R[i][j] = DotProduct(Q[i], V[j], size);
+			double* QRMult = MakeVector(size, 0);
+			QRMult = MultiplyVector(Q[i] , R[i][j], size);
+			V[j] = MinusVectors(V[j], QRMult, size);
+		}
+	}
+
 }
+
 
 void RMGS::PropagateSignal()
 {

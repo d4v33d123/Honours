@@ -21,7 +21,7 @@ private:
 
 	void RandomWeights();
 	void MBD(double** trainingData, int size, double** FirstHiddenOutput, double** MBDOutput);
-	void GramSchmidt();
+	void GramSchmidt(double** firstHidden, double** secondHidden, int size);
 	double** fillTrainingData(const char* fname, int rows, int cols);
 
 
@@ -29,7 +29,6 @@ private:
 	void ComputeOutputError(double* target);
 	void BackPropagateError();
 	void AdjustWeights();
-	double** SetZeros(int rows, int cols);
 
 	void Simulate(double* input, double* output, double* target, bool training);
 

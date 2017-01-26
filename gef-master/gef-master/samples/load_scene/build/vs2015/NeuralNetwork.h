@@ -62,6 +62,9 @@ public:
 	double RandomEqualREAL(double Low, double High);
 	double** MakeMatrix(int rows, int cols, double v);
 	double*	MakeVector(int len, double v);
+	double* MinusVectors(double* Vec1, double* Vec2, int size);
+	double DotProduct(double* Vec1, double* Vec2, int size);
+	double* MultiplyVector(double* Vec, double value, int size);
 
 	virtual void PropagateSignal() {}
 	virtual void ComputeOutputError(double* target) {}
