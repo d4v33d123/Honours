@@ -21,7 +21,7 @@ private:
 
 	void RandomWeights();
 	void MBD(double** trainingData, int size, double** FirstHiddenOutput, double** MBDOutput);
-	void GramSchmidt(double** firstHidden, double** secondHidden, int size);
+	void GramSchmidt(double** hidden, double** output, int size, int currentLayer);
 	double** fillTrainingData(const char* fname, int rows, int cols);
 
 

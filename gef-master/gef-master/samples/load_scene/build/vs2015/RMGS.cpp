@@ -216,28 +216,31 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 
 }
 
-void RMGS::GramSchmidt(double** firstHidden, double** secondHidden, int size)
+// outputs must be arranged in the following [(neurons in current layer + 1) X size]
+// hidden must be arranged in the following [size X (neurons in current layer)]
+void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentLayer)
 {
 	// see MGStesting solution 
-	double** Q = MakeMatrix(size, layers[2].num_Neurons, 0);
-	double** R = MakeMatrix(size, layers[2].num_Neurons, 0);
-	double** V = MakeMatrix(size, layers[2].num_Neurons, 0);
+	double** Q = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
+	double** R = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
+	double** V = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
+	double* B = MakeVector(size, 0);
 	// QR Decomposition of matrix 
-	double* Qvals = MakeVector(layers[2].num_Neurons, 0);
+	double* Qvals = MakeVector(layers[currentLayer].num_Neurons, 0);
 	
 	// Firstly we need to get Q 
-	for (int i = 0; i < layers[2].num_Neurons; i++)
+	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 	{
 		for (int j = 0; j < size; j++)
 		{
-			Qvals[i] += secondHidden[j][i];
+			Qvals[i] += hidden[j][i];
 		}
 		Qvals[i] = sqrt(Qvals[i]);
 	}
 
-	V = secondHidden;
+	V = hidden;
 
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 	{
 		R[i][i] = Qvals[i];
 		for (int j = 0; j < size; j++)
@@ -245,7 +248,7 @@ void RMGS::GramSchmidt(double** firstHidden, double** secondHidden, int size)
 			Q[j][i] = V[j][i] / Qvals[i];
 		}
 		
-		for (int j = i + 1; j < layers[2].num_Neurons; j++)
+		for (int j = i + 1; j < layers[currentLayer].num_Neurons; j++)
 		{
 			R[i][j] = DotProduct(Q[i], V[j], size);
 			double* QRMult = MakeVector(size, 0);
@@ -258,15 +261,69 @@ void RMGS::GramSchmidt(double** firstHidden, double** secondHidden, int size)
 	// we must firstly do Transpose(Q) * net = y
 	// then we can do a back substitution of  R * w = y; to find w 
 
-	double** TQ = MakeMatrix(layers[2].num_Neurons, size, 0);
+	double** TQ = MakeMatrix(layers[currentLayer].num_Neurons, size, 0);
 
 	for (int i = 0; i < size; i++)
 	{
-		for (int j = 0; j < layers[2].num_Neurons; j++)
+		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 		{
-
+			TQ[j][i] = Q[i][j];
 		}
 	}
+
+	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
+	{
+		B = outputs[n];
+		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
+
+		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+		{
+			for (int j = 0; j < size; j++)
+			{
+				Y[i] += (TQ[i][j] * B[j]);
+			}
+		}
+
+		// now that we have y we can do the gaussian elimination using R and Y to get W
+		// since R is already in  an upper triangular matrice there is no need to change it before the calculation
+
+		// we must now set up the augmented matrix involving R and y
+		double** RYAug = MakeMatrix(layers[currentLayer].num_Neurons, layers[currentLayer].num_Neurons + 1, 0);
+
+		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+		{
+			for (int j = 0; j < (layers[currentLayer].num_Neurons + 1); j++)
+			{
+				if (j = layers[currentLayer].num_Neurons)
+				{
+					RYAug[i][j] = Y[i];
+				}
+				else
+				{
+					RYAug[i][j] = R[i][j];
+				}
+			}
+		}
+
+
+		double* W = MakeVector(layers[currentLayer].num_Neurons, 0);
+		for (int i = layers[currentLayer].num_Neurons; i > 0; i--)
+		{
+			W[i] = RYAug[i][layers[currentLayer].num_Neurons + 1] / RYAug[i][i];
+			for (int k = i - 1; k > 0; k--)
+			{
+				RYAug[k][layers[currentLayer].num_Neurons + 1] -= RYAug[k][i] * W[i];
+			}
+		}
+
+		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+		{
+			layers[currentLayer].neurons[i].weight[n] = W[i];
+		}
+	}
+
+	
+
 
 
 }
