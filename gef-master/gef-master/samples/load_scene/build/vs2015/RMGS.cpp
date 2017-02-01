@@ -254,6 +254,21 @@ void RMGS::GramSchmidt(double** firstHidden, double** secondHidden, int size)
 		}
 	}
 
+	// now that we have  R and Q we can do some calcualtions, these are all the same for each of the output neurons.
+	// we must firstly do Transpose(Q) * net = y
+	// then we can do a back substitution of  R * w = y; to find w 
+
+	double** TQ = MakeMatrix(layers[2].num_Neurons, size, 0);
+
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = 0; j < layers[2].num_Neurons; j++)
+		{
+
+		}
+	}
+
+
 }
 
 
