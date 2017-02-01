@@ -52,6 +52,7 @@ private:
 	void SetupCamera();
 	void SetupLights();
 	void HandleInput();
+	void LoadMap();
 
 	gef::InputManager* input_manager_;
 

@@ -67,6 +67,12 @@ void SceneApp::Init()
 		groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
 		groundAreaFixture->SetUserData(new GroundAreaFUD(0.2f, false));
 	}
+
+	// build track
+	{
+
+
+	}
 	
 	car = new Car(world);
 
