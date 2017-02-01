@@ -122,11 +122,23 @@ int RMGS::Train(const char * fnames)
 
 
 	// 7. Calaulate the weights of the output layer. Use the modified Gram-Schmidt algorithm to solve(12)
-	GramSchmidt();
+
+	// extract our outputs from our training data
+	double** ExpectedOutputs = MakeMatrix(layers[3].num_Neurons, datasize, 0);
+	for (int i = 0; i < layers[3].num_Neurons; i++)
+	{
+		for (int j = 0; j < datasize; j++)
+		{
+			ExpectedOutputs[i][j] = trainData[j][layers[1].num_Neurons + i];
+		}
+	}
+
+	// perfrom gram schmidt on the output layer
+	GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
 
 
-	// Repeat step 6 and 7 for each neuron in the hidden layer
-
+	// Repeat step 6 and 7 for each neuron in the second hidden layer
+	GramSchmidt(FirstHiddenOutput, MBDOutput, datasize, 1);
 
 	return 0;
 }
