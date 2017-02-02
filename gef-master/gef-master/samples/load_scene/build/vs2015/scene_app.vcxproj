@@ -162,6 +162,7 @@
     <ClCompile Include="..\..\main_d3d11.cpp" />
     <ClCompile Include="..\..\scene_app.cpp" />
     <ClCompile Include="..\..\Tire.cpp" />
+    <ClCompile Include="AICar.cpp" />
     <ClCompile Include="BackPropagation.cpp" />
     <ClCompile Include="Barrier.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="..\..\Car.h" />
     <ClInclude Include="..\..\scene_app.h" />
     <ClInclude Include="..\..\Tire.h" />
+    <ClInclude Include="AICar.h" />
     <ClInclude Include="BackPropagation.h" />
     <ClInclude Include="Barrier.h" />
     <ClInclude Include="NeuralNetwork.h" />

@@ -1,7 +1,32 @@
 #include "Waypoint.h"
 
-Waypoint::Waypoint(float width, float height, float x, float y, float angle, b2World* world)
+Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, int Number)
 {
+	WaypointNumber = Number;
+
+
+	float wayx, wayy;
+	float width, height;
+	float angle;
+
+	// must do some calculations on our positions to get the angle and our waypoint position
+	// we are going to use 1-tan of Opposite over adjacent
+	
+	wayx = x - CAPx;
+	wayx /= 2;
+	wayx += x;
+
+	wayy = y - CAPy;
+	wayy /= 2;
+	wayy += y;
+
+	width = sqrt((pow((x - CAPx), 2) + (pow((y - CAPy), 2))));
+	height = 0.1;
+
+	angle = atan((y - CAPy) / (x - CAPx));
+
+
+
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	body = world->CreateBody(&bodyDef);
@@ -9,7 +34,7 @@ Waypoint::Waypoint(float width, float height, float x, float y, float angle, b2W
 	b2PolygonShape polygonShape;
 	polygonShape.SetAsBox(width, height);
 	b2Fixture* fixture = body->CreateFixture(&polygonShape, 5);//shape, density
-	body->SetTransform(b2Vec2(x, y), angle);
+	body->SetTransform(b2Vec2(wayx, wayy), angle);
 
 	body->SetUserData(this);
 

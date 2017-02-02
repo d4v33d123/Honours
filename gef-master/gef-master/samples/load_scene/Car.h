@@ -14,6 +14,7 @@
 
 class Car
 {
+protected:
 	b2Body* body;
 	std::vector<Tire*> tires;
 	b2RevoluteJoint *flJoint, *frJoint;

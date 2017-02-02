@@ -70,6 +70,7 @@ void SceneApp::Init()
 
 	// build track
 	{
+		// load data from text file
 
 
 	}
@@ -77,6 +78,8 @@ void SceneApp::Init()
 	car = new Car(world);
 
 	controlState = 0;
+
+	game_state = GAME;
 
 
 }
@@ -101,7 +104,6 @@ bool SceneApp::Update(float frame_time)
 
 	world->Step(frame_time, 4, 6);
 	HandleInput();
-	car->Update(controlState);
 
 	switch (game_state)
 	{
@@ -400,7 +402,7 @@ static const char* key_names[] =
 
 void SceneApp::StartUpdate()
 {
-
+	StartInput();
 }
 
 void SceneApp::StartRender()
@@ -434,7 +436,7 @@ void SceneApp::StartInput()
 
 void SceneApp::MenuUpdate()
 {
-
+	MenuInput();
 }
 
 void SceneApp::MenuRender()
@@ -468,7 +470,9 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameUpdate()
 {
+	GameInput();
 
+	car->Update(controlState);
 }
 
 void SceneApp::GameRender()

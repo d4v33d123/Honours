@@ -2,6 +2,7 @@
 #define WAYPOINT_H
 
 #include "Box2D\Box2D.h"
+#include <math.h>
 #include <set>
 #include <vector>
 #include <graphics/sprite.h>
@@ -9,7 +10,7 @@
 
 class Waypoint
 {
-	Waypoint(float width, float height, float x, float y, float angle, b2World* world);
+	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, int number);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;
@@ -17,6 +18,11 @@ class Waypoint
 	void UpdateSprite();
 
 	void draw(gef::SpriteRenderer* sprite_renderer);
+
+	int WaypointNumber;
+
+	bool Passed;
+
 
 
 };
