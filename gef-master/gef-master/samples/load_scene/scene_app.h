@@ -23,6 +23,15 @@ namespace gef
 	class Scene;
 }
 
+enum GState
+{
+	STARTUP,
+	MENU,
+	GAME,
+	GAMEOVER,
+	EXIT
+};
+
 
 class MyDestructionListener : public b2DestructionListener
 {
@@ -58,6 +67,25 @@ private:
 
 	gef::SpriteRenderer* sprite_renderer_;
 	class gef::Renderer3D* renderer_3d_;
+
+	// Gamestate Related functions and variables
+	void StartUpdate();
+	void StartRender();
+	void StartInput();
+	
+	void MenuUpdate();
+	void MenuRender();
+	void MenuInput();
+
+	void GameUpdate();
+	void GameRender();
+	void GameInput();
+
+	void GameOverUpdate();
+	void GameOverRender();
+	void GameOverInput();
+
+	GState game_state;
 
 	gef::Font* font_;
 

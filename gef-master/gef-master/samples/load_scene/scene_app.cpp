@@ -103,13 +103,36 @@ bool SceneApp::Update(float frame_time)
 	HandleInput();
 	car->Update(controlState);
 
+	switch (game_state)
+	{
+	case STARTUP:
+		break;
+
+	case MENU:
+		MenuUpdate();
+		break;
+
+	case GAME:
+		GameUpdate();
+		break;
+
+	case GAMEOVER:
+		GameOverUpdate();
+		break;
+
+	case EXIT:
+		break;
+	
+	}
+
+
 
 	return true;
 }
 
 void SceneApp::Render()
 {
-	gef::Matrix44 projection_matrix;
+	
 
 #if 0
 	gef::Matrix44 view_matrix;
@@ -125,25 +148,30 @@ void SceneApp::Render()
 #endif
 
 
-	// setup the sprite renderer, but don't clear the frame buffer
-	// draw 2D sprites here
 
+	switch (game_state)
+	{
+	case STARTUP:
+		break;
 
-	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+	case MENU:
+		MenuRender();
+		break;
 
-	float screen_width = 300.0f;
-	float screen_height = screen_width / aspect_ratio;
+	case GAME:
+		GameRender();
+		break;
 
-	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width/2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
-	sprite_renderer_->set_projection_matrix(projection_matrix);
+	case GAMEOVER:
+		GameOverRender();
+		break;
 
-	sprite_renderer_->Begin();
+	case EXIT:
+		break;
 
-	car->draw(sprite_renderer_);
+	}
 
-
-	DrawHUD();
-	sprite_renderer_->End();
+	
 }
 void SceneApp::InitFont()
 {
@@ -369,3 +397,139 @@ static const char* key_names[] =
 	"PERIOD",
 	"SLASH"
 };
+
+void SceneApp::StartUpdate()
+{
+
+}
+
+void SceneApp::StartRender()
+{
+	// setup the sprite renderer, but don't clear the frame buffer
+	// draw 2D sprites here
+
+	gef::Matrix44 projection_matrix;
+
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	sprite_renderer_->set_projection_matrix(projection_matrix);
+
+	sprite_renderer_->Begin();
+
+	car->draw(sprite_renderer_);
+
+
+	DrawHUD();
+	sprite_renderer_->End();
+}
+
+void SceneApp::StartInput()
+{
+
+}
+
+void SceneApp::MenuUpdate()
+{
+
+}
+
+void SceneApp::MenuRender()
+{
+	// setup the sprite renderer, but don't clear the frame buffer
+	// draw 2D sprites here
+
+	gef::Matrix44 projection_matrix;
+
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	sprite_renderer_->set_projection_matrix(projection_matrix);
+
+	sprite_renderer_->Begin();
+
+	car->draw(sprite_renderer_);
+
+
+	DrawHUD();
+	sprite_renderer_->End();
+}
+
+void SceneApp::MenuInput()
+{
+
+}
+
+void SceneApp::GameUpdate()
+{
+
+}
+
+void SceneApp::GameRender()
+{
+	// setup the sprite renderer, but don't clear the frame buffer
+	// draw 2D sprites here
+
+	gef::Matrix44 projection_matrix;
+
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	sprite_renderer_->set_projection_matrix(projection_matrix);
+
+	sprite_renderer_->Begin();
+
+	car->draw(sprite_renderer_);
+
+
+	DrawHUD();
+	sprite_renderer_->End();
+}
+
+void SceneApp::GameInput()
+{
+
+}
+
+void SceneApp::GameOverUpdate()
+{
+
+}
+
+void SceneApp::GameOverRender()
+{
+	// setup the sprite renderer, but don't clear the frame buffer
+	// draw 2D sprites here
+
+	gef::Matrix44 projection_matrix;
+
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	sprite_renderer_->set_projection_matrix(projection_matrix);
+
+	sprite_renderer_->Begin();
+
+	car->draw(sprite_renderer_);
+
+
+	DrawHUD();
+	sprite_renderer_->End();
+}
+
+void SceneApp::GameOverInput()
+{
+
+}

@@ -167,6 +167,7 @@
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="RMGS.cpp" />
     <ClCompile Include="RProp.cpp" />
+    <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Car.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="RMGS.h" />
     <ClInclude Include="RProp.h" />
+    <ClInclude Include="Waypoint.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
