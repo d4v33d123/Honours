@@ -26,6 +26,7 @@ class AICar : public Car
 	BProp ebpNN;
 
 	int control_state;
+	double* prev_control_states;
 	float angle_to_waypoint;
 	float distance_to_side;
 	float speed;

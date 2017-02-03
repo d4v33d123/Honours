@@ -148,17 +148,37 @@ void AICar::UpdateNN(double* outputs)
 	switch (net_type)
 	{
 	case EBP:
-		double* inputsignal = new double(angle_to_waypoint, distance_to_side, speed, tire_angle);
+		double inputsignal[4];
+		inputsignal[0] = angle_to_waypoint;
+		inputsignal[1] = distance_to_side;
+		inputsignal[2] = speed;
+		inputsignal[3] = tire_angle;
 		ebpNN.SetInputSignal(inputsignal);
 		ebpNN.PropagateSignal();
 		ebpNN.GetOutputSignal(outputs);
 		break;
 
 	case RPROP:
+		double inputsignal[4];
+		inputsignal[0] = angle_to_waypoint;
+		inputsignal[1] = distance_to_side;
+		inputsignal[2] = speed;
+		inputsignal[3] = tire_angle;
+		rpNN.SetInputSignal(inputsignal);
+		rpNN.PropagateSignal();
+		rpNN.GetOutputSignal(outputs);
 
 		break;
 
 	case RMGSN:
+		double inputsignal[4];
+		inputsignal[0] = angle_to_waypoint;
+		inputsignal[1] = distance_to_side;
+		inputsignal[2] = speed;
+		inputsignal[3] = tire_angle;
+		rmgsNN.SetInputSignal(inputsignal);
+		rmgsNN.PropagateSignal();
+		rmgsNN.GetOutputSignal(outputs);
 
 		break;
 

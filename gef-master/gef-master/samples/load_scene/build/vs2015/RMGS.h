@@ -14,6 +14,7 @@ public:
 	int Train(const char* fnames);
 	int Test(const char* fname);
 	int Evaluate();
+	void PropagateSignal();
 
 	void Run(const char* fname, const int& maxiter);
 
@@ -25,7 +26,7 @@ private:
 	double** fillTrainingData(const char* fname, int rows, int cols);
 
 
-	void PropagateSignal();
+	
 	void ComputeOutputError(double* target);
 	void BackPropagateError();
 	void AdjustWeights();

@@ -14,6 +14,7 @@ public:
 	int Train(const char* fnames, int trainDataSize, int numInAndOut);
 	int Test(const char* fname);
 	int Evaluate();
+	void PropagateSignal();
 
 	void Run(const char* fname, const int& maxiter);
 
@@ -21,7 +22,7 @@ private:
 
 	void RandomWeights();
 
-	void PropagateSignal();
+	
 
 	void AdjustWeights();
 
