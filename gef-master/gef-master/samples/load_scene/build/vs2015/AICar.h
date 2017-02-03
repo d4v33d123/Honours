@@ -1,8 +1,8 @@
 #ifndef AICAR_H
 #define AICAR_H
 
+#include <Box2D/Box2D.h>
 #include "Car.h"
-#include "NeuralNetwork.h"
 #include "BackPropagation.h"
 #include "RProp.h"
 #include "RMGS.h"
@@ -17,16 +17,20 @@ enum Net
 
 class AICar : public Car
 {
-	AICar(b2World* world, Net network);
+	AICar(b2World* world, Net network, int ds);
+	void Train(const char* fname);
 	void Update();
 	void UpdateNN(double* outputs);
+	void UpdateButtons();
 
-	RProp rpNN;
-	RMGS rmgsNN;
-	BProp ebpNN;
+	RProp* rpNN;
+	RMGS* rmgsNN;
+	BProp* ebpNN;
 
 	int control_state;
-	double* prev_control_states;
+	int dataSize;
+	double current_control_states[4];
+	double prev_control_states[4];
 	float angle_to_waypoint;
 	float distance_to_side;
 	float speed;

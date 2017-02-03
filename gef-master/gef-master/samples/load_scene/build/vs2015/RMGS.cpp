@@ -67,10 +67,10 @@ RMGS::~RMGS()
 	delete[] layers;
 }
 
-int RMGS::Train(const char * fnames)
+int RMGS::Train(const char * fnames, int ds)
 {
 	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[3].num_Neurons);
-	int datasize = layers[2].num_Neurons;
+	int datasize = ds;
 
 	double** MBDOutput = MakeMatrix(datasize, layers[2].num_Neurons, 0);
 	double** FirstHiddenOutput = MakeMatrix(datasize, layers[1].num_Neurons, 0);
@@ -333,10 +333,6 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			layers[currentLayer].neurons[i].weight[n] = W[i];
 		}
 	}
-
-	
-
-
 
 }
 

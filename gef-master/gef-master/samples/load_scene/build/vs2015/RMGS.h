@@ -11,7 +11,7 @@ public:
 	RMGS(int nl, int npl[]);
 	~RMGS();
 
-	int Train(const char* fnames);
+	int Train(const char* fnames, int ds);
 	int Test(const char* fname);
 	int Evaluate();
 	void PropagateSignal();

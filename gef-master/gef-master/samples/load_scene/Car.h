@@ -23,6 +23,7 @@ protected:
 
 public:
 	Car(b2World* world);
+	Car() {};
 	~Car();
 	void Update(int controlState);
 	void draw(gef::SpriteRenderer* sprite_renderer);

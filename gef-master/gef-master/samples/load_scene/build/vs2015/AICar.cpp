@@ -1,6 +1,6 @@
 #include "AICar.h"
 
-AICar::AICar(b2World* world, Net network)
+AICar::AICar(b2World* world, Net network, int ds)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -80,29 +80,55 @@ AICar::AICar(b2World* world, Net network)
 
 
 	// set up our neural network depending on what input was recieved
-	net_type = network;
 	
+	dataSize = ds;
+	net_type = network;
+	int nnl[] = { 4, 4, 10, 4 };
 	switch (net_type)
 	{
 	case EBP:
-		int nnl[] = { 4, 4, 10, 4 };
-		ebpNN = BProp::BProp(4, nnl);
+		
+		ebpNN = new BProp(4, nnl);
 		break;
 	case RPROP:
-		int nnl[] = { 4, 4, 10, 4 };
-		rpNN = RProp::RProp(4, nnl);
+		
+		rpNN = new RProp(4, nnl);
 		break;
 	case RMGSN:
-		int nnl[] = { 4, 4, 10, 4 };
-		rmgsNN = RMGS::RMGS(4, nnl);
+		
+		rmgsNN =  new RMGS(4, nnl);
 		break;
 	}
+	current_control_states[0] = 0;
+	current_control_states[1] = 0;
+	current_control_states[2] = 0;
+	current_control_states[3] = 0;
 
-	
+
+}
+
+void AICar::Train(const char* fname)
+{
+	switch (net_type)
+	{
+	case EBP:
+		ebpNN->Train(fname);
+		break;
+	case RPROP:
+		rpNN->Train(fname, dataSize, 1);
+		break;
+	case RMGSN:
+		rmgsNN->Train(fname, dataSize);
+		break;
+	}
 }
 
 void AICar::Update()
 {
+	
+	UpdateNN(current_control_states);
+	UpdateButtons();
+
 	for (int i = 0; i < tires.size(); i++)
 		tires[i]->updateFriction();
 	for (int i = 0; i < tires.size(); i++)
@@ -145,40 +171,41 @@ void AICar::Update()
 
 void AICar::UpdateNN(double* outputs)
 {
+	double inputsignal[4];
 	switch (net_type)
 	{
 	case EBP:
-		double inputsignal[4];
+		
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
 		inputsignal[3] = tire_angle;
-		ebpNN.SetInputSignal(inputsignal);
-		ebpNN.PropagateSignal();
-		ebpNN.GetOutputSignal(outputs);
+		ebpNN->SetInputSignal(inputsignal);
+		ebpNN->PropagateSignal();
+		ebpNN->GetOutputSignal(outputs);
 		break;
 
 	case RPROP:
-		double inputsignal[4];
+		
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
 		inputsignal[3] = tire_angle;
-		rpNN.SetInputSignal(inputsignal);
-		rpNN.PropagateSignal();
-		rpNN.GetOutputSignal(outputs);
+		rpNN->SetInputSignal(inputsignal);
+		rpNN->PropagateSignal();
+		rpNN->GetOutputSignal(outputs);
 
 		break;
 
 	case RMGSN:
-		double inputsignal[4];
+		
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
 		inputsignal[3] = tire_angle;
-		rmgsNN.SetInputSignal(inputsignal);
-		rmgsNN.PropagateSignal();
-		rmgsNN.GetOutputSignal(outputs);
+		rmgsNN->SetInputSignal(inputsignal);
+		rmgsNN->PropagateSignal();
+		rmgsNN->GetOutputSignal(outputs);
 
 		break;
 
@@ -186,4 +213,35 @@ void AICar::UpdateNN(double* outputs)
 
 
 
+}
+
+void AICar::UpdateButtons()
+{
+
+	if(current_control_states[0] >= 0.5 && prev_control_states[0] < 0.5)
+		control_state |= TDC_LEFT;
+	else if (current_control_states[0] < 0.5 && prev_control_states[0] >= 0.5)
+		control_state &= ~TDC_LEFT;
+
+	if (current_control_states[1] >= 0.5 && prev_control_states[1] < 0.5)
+		control_state |= TDC_RIGHT;
+	else if (current_control_states[1] < 0.5 && prev_control_states[1] >= 0.5)
+		control_state &= ~TDC_RIGHT;
+
+	if (current_control_states[2] >= 0.5 && prev_control_states[2] < 0.5)
+		control_state |= TDC_UP;
+	else if (current_control_states[2] < 0.5 && prev_control_states[2] >= 0.5)
+		control_state &= ~TDC_UP;
+
+	if (current_control_states[3] >= 0.5 && prev_control_states[3] < 0.5)
+		control_state |= TDC_DOWN;
+	else if (current_control_states[3] < 0.5 && prev_control_states[3] >= 0.5)
+		control_state &= ~TDC_DOWN;
+
+
+	for (int i = 0; i < 4; i++)
+	{
+		prev_control_states[i] = current_control_states[i];
+		current_control_states[i] = 0;
+	}
 }

@@ -168,6 +168,7 @@
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="RMGS.cpp" />
     <ClCompile Include="RProp.cpp" />
+    <ClCompile Include="Track.cpp" />
     <ClCompile Include="Waypoint.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -180,6 +181,7 @@
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="RMGS.h" />
     <ClInclude Include="RProp.h" />
+    <ClInclude Include="Track.h" />
     <ClInclude Include="Waypoint.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
