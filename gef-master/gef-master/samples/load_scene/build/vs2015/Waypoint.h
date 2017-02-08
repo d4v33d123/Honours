@@ -10,16 +10,19 @@
 
 class Waypoint
 {
-	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, int number);
+public:
+	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;
 
 	void UpdateSprite();
 
+	void setVal(char Val) { WaypointVal = Val; }
+
 	void draw(gef::SpriteRenderer* sprite_renderer);
 
-	int WaypointNumber;
+	char WaypointVal;
 
 	bool Passed;
 

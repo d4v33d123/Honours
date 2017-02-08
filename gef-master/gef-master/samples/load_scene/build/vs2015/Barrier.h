@@ -8,12 +8,18 @@
 #include <graphics/sprite.h>
 #include <graphics/sprite_renderer.h>
 
+#define BARWIDTH 5
+#define BARHEIGHT 5
+
 class barrier
 {
-	barrier(float width, float height, float x, float y, float angle, b2World* world);
+public:
+	barrier(float x, float y, b2World* world);
+	barrier(float x, float y, b2World* world, char myWay);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;
+	char WaypointVal;
 
 	void UpdateSprite();
 

@@ -17,12 +17,17 @@ class Track
 {
 	Track(const char * fname);
 
-	void LoadTrack();
-	
-	bool read_barrier(FILE* fp, barrier* b);
+	void LoadTrack(FILE* fp);
+	void SetUpTrack(b2World* world);
+	void SetUpWaypoints(b2World* world);
+
+	void WaypointBuildLetter(barrier* bar, char higher, b2World* world);
+	void WaypointBuildNumber(barrier* bar, char higher, b2World* world);
 
 	std::vector<barrier*> Barriers;
 	std::vector<Waypoint*> WayPoints;
+
+	char** map;
 
 };
 

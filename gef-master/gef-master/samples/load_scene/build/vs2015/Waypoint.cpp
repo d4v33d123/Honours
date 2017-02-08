@@ -1,9 +1,8 @@
 #include "Waypoint.h"
 
-Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, int Number)
+Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val)
 {
-	WaypointNumber = Number;
-
+	WaypointVal = val;
 
 	float wayx, wayy;
 	float width, height;
