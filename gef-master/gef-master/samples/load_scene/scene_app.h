@@ -9,6 +9,8 @@
 #include <graphics/mesh_instance.h>
 #include <Box2D/Box2D.h>
 #include "Car.h"
+#include "build/vs2015/AICar.h"
+#include "build/vs2015/Track.h"
 
 
 // FRAMEWORK FORWARD DECLARATIONS
@@ -69,17 +71,23 @@ private:
 	class gef::Renderer3D* renderer_3d_;
 
 	// Gamestate Related functions and variables
+	void StartInit();
 	void StartUpdate();
 	void StartRender();
 	void StartInput();
+	bool startupinited;
 	
+	void MenuInit();
 	void MenuUpdate();
 	void MenuRender();
 	void MenuInput();
+	bool menuinited;
 
+	void GameInit();
 	void GameUpdate();
 	void GameRender();
 	void GameInput();
+	bool gameinited;
 
 	void GameOverUpdate();
 	void GameOverRender();
@@ -97,6 +105,15 @@ private:
 	float camera_fov;
 	float near_plane;
 	float far_plane;
+
+	// menu related variables
+	Net net_type;
+
+
+	// ----- Game Related Variables -----
+	// Track
+	Track* level_;
+	int trackNum_;
 
 	// box2d related functions
 
@@ -116,6 +133,10 @@ private:
 	MyDestructionListener destructionListener;
 	b2Body* groundBody;
 	Car* car;
+
+	// time trial related variables
+	double AiTime;
+	double PlayerTime;
 
 
 

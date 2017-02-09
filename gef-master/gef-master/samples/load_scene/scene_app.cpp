@@ -20,7 +20,11 @@ SceneApp::SceneApp(gef::Platform& platform) :
 	Application(platform),
 	sprite_renderer_(NULL),
 	font_(NULL),
-	renderer_3d_(NULL)
+	renderer_3d_(NULL),
+	menuinited(false),
+	startupinited(false),
+	gameinited(false),
+	trackNum_(1)
 {
 }
 
@@ -108,13 +112,29 @@ bool SceneApp::Update(float frame_time)
 	switch (game_state)
 	{
 	case STARTUP:
+		if (startupinited == false)
+		{
+			StartInit();
+			startupinited = true;
+		}
+		StartUpdate();
 		break;
 
 	case MENU:
+		if (menuinited == false)
+		{
+			MenuInit();
+			menuinited = true;
+		}
 		MenuUpdate();
 		break;
 
 	case GAME:
+		if (gameinited == false)
+		{
+			GameInit();
+			gameinited = true;
+		}
 		GameUpdate();
 		break;
 
@@ -154,14 +174,18 @@ void SceneApp::Render()
 	switch (game_state)
 	{
 	case STARTUP:
+		if(startupinited)
+			StartRender();
 		break;
 
 	case MENU:
-		MenuRender();
+		if(menuinited)
+			MenuRender();
 		break;
 
 	case GAME:
-		GameRender();
+		if(gameinited)
+			GameRender();
 		break;
 
 	case GAMEOVER:
@@ -270,135 +294,15 @@ void SceneApp::tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaF
 
 void SceneApp::HandleInput()
 {
-	input_manager_->Update();
-
-	const gef::Keyboard* keyboard = input_manager_->keyboard();
-	if (keyboard)
-	{
-		
-			if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_A))
-				controlState |= TDC_LEFT;
-			else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_A))
-				controlState &= ~TDC_LEFT;
-
-			if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_D))
-				controlState |= TDC_RIGHT;
-			else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
-				controlState &= ~TDC_RIGHT;
-
-			if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_W))
-				controlState |= TDC_UP;
-			else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_W))
-				controlState &= ~TDC_UP;
-
-			if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_S))
-				controlState |= TDC_DOWN;
-			else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_S))
-				controlState &= ~TDC_DOWN;		
-	}
+	
 	
 
 }
 
-static const char* key_names[] =
+void SceneApp::StartInit()
 {
-	"0",
-	"1",
-	"2",
-	"3",
-	"4",
-	"5",
-	"6",
-	"7",
-	"8",
-	"9",
-	"A",
-	"B",
-	"C",
-	"D",
-	"E",
-	"F",
-	"G",
-	"H",
-	"I",
-	"J",
-	"K",
-	"L",
-	"M",
-	"N",
-	"O",
-	"P",
-	"Q",
-	"R",
-	"S",
-	"T",
-	"U",
-	"V",
-	"W",
-	"X",
-	"Y",
-	"Z",
-	"F1",
-	"F2",
-	"F3",
-	"F4",
-	"F5",
-	"F6",
-	"F7",
-	"F8",
-	"F9",
-	"F10",
-	"F11",
-	"F12",
-	"F13",
-	"F14",
-	"F15",
-	"NUMPAD0",
-	"NUMPAD1",
-	"NUMPAD2",
-	"NUMPAD3",
-	"NUMPAD4",
-	"NUMPAD5",
-	"NUMPAD6",
-	"NUMPAD7",
-	"NUMPAD8",
-	"NUMPAD9",
-	"NUMPADENTER",
-	"NUMPADSTAR",
-	"NUMPADEQUALS",
-	"NUMPADMINUS",
-	"NUMPADPLUS",
-	"NUMPADPERIOD",
-	"NUMPADSLASH",
-	"ESCAPE",
-	"TAB",
-	"LSHIFT",
-	"RSHIFT",
-	"LCONTROL",
-	"RCONTROL",
-	"BACKSPACE",
-	"RETURN",
-	"LALT",
-	"SPACE",
-	"CAPSLOCK",
-	"NUMLOCK",
-	"SCROLL",
-	"RALT",
-	"AT",
-	"COLON",
-	"UNDERLINE",
-	"MINUS",
-	"EQUALS",
-	"LBRACKET",
-	"RBRACKET",
-	"SEMICOLON",
-	"APOSTROPHE",
-	"GRAVE",
-	"BACKSLASH",
-	"COMMA",
-	"PERIOD",
-	"SLASH"
-};
+	// set up our initial game, load the splash screen along with loading any big files
+}
 
 void SceneApp::StartUpdate()
 {
@@ -431,7 +335,21 @@ void SceneApp::StartRender()
 
 void SceneApp::StartInput()
 {
+	input_manager_->Update();
 
+	const gef::Keyboard* keyboard = input_manager_->keyboard();
+	if (keyboard)
+	{
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
+			game_state = MENU;
+	}
+
+}
+
+void SceneApp::MenuInit()
+{
+	// load the menu assests
 }
 
 void SceneApp::MenuUpdate()
@@ -465,7 +383,55 @@ void SceneApp::MenuRender()
 
 void SceneApp::MenuInput()
 {
+	input_manager_->Update();
 
+	const gef::Keyboard* keyboard = input_manager_->keyboard();
+	if (keyboard)
+	{
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
+			game_state = GAME;
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
+		{
+			if (net_type == EBP)
+			{
+				net_type = RPROP;
+			}
+			else if (net_type == RPROP)
+			{
+				net_type == RMGSN;
+			}
+		}
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_W))
+		{
+			if (net_type == RMGSN)
+			{
+				net_type = RPROP;
+			}
+			else if (net_type == RPROP)
+			{
+				net_type == EBP;
+			}
+		}
+
+	}
+}
+
+void SceneApp::GameInit()
+{
+	switch (trackNum_)
+	{
+	case 1:
+		level_ = new Track("racetrack.txt", world);
+		break;
+	case 2:
+		break;
+	case 3:
+		break;
+	
+	}
+		
 }
 
 void SceneApp::GameUpdate()
@@ -494,6 +460,8 @@ void SceneApp::GameRender()
 
 	car->draw(sprite_renderer_);
 
+	level_->DrawTrack(sprite_renderer_, true);
+
 
 	DrawHUD();
 	sprite_renderer_->End();
@@ -501,7 +469,32 @@ void SceneApp::GameRender()
 
 void SceneApp::GameInput()
 {
+	input_manager_->Update();
 
+	const gef::Keyboard* keyboard = input_manager_->keyboard();
+	if (keyboard)
+	{
+
+		if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_A))
+			controlState |= TDC_LEFT;
+		else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_A))
+			controlState &= ~TDC_LEFT;
+
+		if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_D))
+			controlState |= TDC_RIGHT;
+		else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
+			controlState &= ~TDC_RIGHT;
+
+		if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_W))
+			controlState |= TDC_UP;
+		else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_W))
+			controlState &= ~TDC_UP;
+
+		if (keyboard->IsKeyPressed(gef::Keyboard::KeyCode::KC_S))
+			controlState |= TDC_DOWN;
+		else if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_S))
+			controlState &= ~TDC_DOWN;
+	}
 }
 
 void SceneApp::GameOverUpdate()
@@ -535,5 +528,13 @@ void SceneApp::GameOverRender()
 
 void SceneApp::GameOverInput()
 {
+	input_manager_->Update();
 
+	const gef::Keyboard* keyboard = input_manager_->keyboard();
+	if (keyboard)
+	{
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
+			game_state = MENU;
+	}
 }

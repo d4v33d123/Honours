@@ -15,14 +15,17 @@
 
 class Track
 {
-	Track(const char * fname);
+public:
+	Track(const char * fname, b2World* world);
 
 	void LoadTrack(FILE* fp);
 	void SetUpTrack(b2World* world);
 	void SetUpWaypoints(b2World* world);
 
-	void WaypointBuildLetter(barrier* bar, char higher, b2World* world);
+	void WaypointBuildLetter(barrier* bar, char upper, b2World* world);
 	void WaypointBuildNumber(barrier* bar, char higher, b2World* world);
+
+	void DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug);
 
 	std::vector<barrier*> Barriers;
 	std::vector<Waypoint*> WayPoints;

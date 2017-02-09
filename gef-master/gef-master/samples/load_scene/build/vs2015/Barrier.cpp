@@ -9,7 +9,7 @@ barrier::barrier(float x, float y, b2World* world)
 	b2PolygonShape polygonShape;
 	polygonShape.SetAsBox(BARWIDTH, BARHEIGHT);
 	b2Fixture* fixture = body->CreateFixture(&polygonShape, 5);//shape, density
-	body->SetTransform(b2Vec2(x, y), 0);
+	body->SetTransform(b2Vec2((x*BARWIDTH), (y*BARHEIGHT)), 0);
 
 	body->SetUserData(this);
 
