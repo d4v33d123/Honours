@@ -426,8 +426,10 @@ void SceneApp::GameInit()
 		level_ = new Track("racetrack.txt", world);
 		break;
 	case 2:
+		level_ = new Track("racetrack2.txt", world);
 		break;
 	case 3:
+		level_ = new Track("racetrack3.txt", world);
 		break;
 	
 	}
@@ -439,6 +441,7 @@ void SceneApp::GameUpdate()
 	GameInput();
 
 	car->Update(controlState);
+	level_->UpdateSprites();
 }
 
 void SceneApp::GameRender()

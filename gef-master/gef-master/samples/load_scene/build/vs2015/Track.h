@@ -26,6 +26,7 @@ public:
 	void WaypointBuildNumber(barrier* bar, char higher, b2World* world);
 
 	void DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug);
+	void UpdateSprites();
 
 	std::vector<barrier*> Barriers;
 	std::vector<Waypoint*> WayPoints;

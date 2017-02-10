@@ -1,4 +1,5 @@
 #include "Track.h"
+#include "system\debug_log.h"
 
 Track::Track(const char* fname, b2World* world)
 {
@@ -24,7 +25,7 @@ void Track::LoadTrack(FILE* fp)
 	for (int i = 0; i < 40; i++)
 	{
 		map[i] = new char[40];
-		for (int j = 0; j < 40; j++)
+		for (int j = 0; j < 41; j++)
 		{
 			map[i][j] = char(fgetc(fp));
 		}
@@ -42,7 +43,7 @@ void Track::SetUpTrack(b2World * world)
 			if (map[i][j] != '-')
 			{
 				// if the barrier is a '#' make a regular barrier
-				if (map[i][j] = '#')
+				if (map[i][j] == '#')
 				{
 					Barriers.push_back(new barrier(i, j, world));
 				}
@@ -52,9 +53,12 @@ void Track::SetUpTrack(b2World * world)
 					Barriers.push_back(new barrier(i, j, world, map[i][j]));
 				}
 			}
+			printf("%c",map[i][j]);
+			gef::DebugOut("%c", map[i][j]);
 				
 				
 		}
+		gef::DebugOut("\n");
 	}
 
 
@@ -237,6 +241,21 @@ void Track::DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug)
 		{
 			WayPoints[it]->draw(sprite_renderer);
 		}
+	}
+	
+
+}
+
+void Track::UpdateSprites()
+{
+	for (std::vector<barrier*>::size_type it = 0; it != Barriers.size(); it++)
+	{
+		Barriers[it]->UpdateSprite();
+	}
+
+	for (std::vector<Waypoint*>::size_type it = 0; it != WayPoints.size(); it++)
+	{
+		WayPoints[it]->UpdateSprite();
 	}
 	
 

@@ -8,8 +8,8 @@
 #include <graphics/sprite.h>
 #include <graphics/sprite_renderer.h>
 
-#define BARWIDTH 5
-#define BARHEIGHT 5
+#define BARWIDTH 20
+#define BARHEIGHT 20
 
 class barrier
 {

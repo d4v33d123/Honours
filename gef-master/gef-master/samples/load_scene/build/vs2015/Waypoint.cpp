@@ -32,14 +32,14 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, cha
 
 	b2PolygonShape polygonShape;
 	polygonShape.SetAsBox(width, height);
-	b2Fixture* fixture = body->CreateFixture(&polygonShape, 5);//shape, density
+	b2Fixture* fixture = body->CreateFixture(&polygonShape, 0);//shape, density
 	body->SetTransform(b2Vec2(wayx, wayy), angle);
 
 	body->SetUserData(this);
 
 	barrierSprite.set_width(width);
 	barrierSprite.set_height(height);
-	barrierSprite.set_colour(0xffffffff);
+	barrierSprite.set_colour(0xff0000ff);
 	barrierSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	barrierSprite.set_rotation(-body->GetAngle());
 }
