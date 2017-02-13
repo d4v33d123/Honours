@@ -63,7 +63,7 @@ public:
 	float traction;
 	gef::Sprite tireSprite;
 
-	Tire(b2World* world);
+	Tire(b2World* world, uint16 categoryBits, uint16 maskBits);
 	~Tire();
 	void setCharacteristics(float maxForwardSpeed, float maxBackwardSpeed, float maxDriveForce, float maxLateralImpulse);
 

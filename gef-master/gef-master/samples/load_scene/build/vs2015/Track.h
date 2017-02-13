@@ -12,6 +12,13 @@
 #include <graphics/sprite.h>
 #include <graphics/sprite_renderer.h>
 
+enum CollisionCategories
+{
+	CARCAT = 0x0001,
+	TIRECAT = 0x0002,
+	WAYPOINTCAT = 0x0004,
+	BARRIERCAT = 0x0008
+};
 
 class Track
 {

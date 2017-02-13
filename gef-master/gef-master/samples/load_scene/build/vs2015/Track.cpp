@@ -45,12 +45,12 @@ void Track::SetUpTrack(b2World * world)
 				// if the barrier is a '#' make a regular barrier
 				if (map[i][j] == '#')
 				{
-					Barriers.push_back(new barrier(i, j, world));
+					Barriers.push_back(new barrier(i, j, world, BARRIERCAT, CARCAT | TIRECAT));
 				}
 				else
 				{
 					// if it is anything else, set the vale too, so that we can build waypoints with the information
-					Barriers.push_back(new barrier(i, j, world, map[i][j]));
+					Barriers.push_back(new barrier(i, j, world, BARRIERCAT, CARCAT | TIRECAT, map[i][j]));
 				}
 			}
 			printf("%c",map[i][j]);
@@ -211,7 +211,7 @@ void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == upper && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, upper));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, upper, WAYPOINTCAT, 0));
 	}
 }
 
@@ -223,7 +223,7 @@ void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == higher && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, higher));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, higher, WAYPOINTCAT, 0));
 	}
 }
 

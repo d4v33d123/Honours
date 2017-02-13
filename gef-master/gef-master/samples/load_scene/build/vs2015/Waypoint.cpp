@@ -1,6 +1,6 @@
 #include "Waypoint.h"
 
-Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val)
+Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val, uint16 categoryBits, uint16 maskBits)
 {
 	WaypointVal = val;
 
@@ -11,11 +11,11 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, cha
 	// must do some calculations on our positions to get the angle and our waypoint position
 	// we are going to use 1-tan of Opposite over adjacent
 	
-	wayx = x - CAPx;
+	wayx = CAPx - x;
 	wayx /= 2;
 	wayx += x;
 
-	wayy = y - CAPy;
+	wayy = CAPy - y;
 	wayy /= 2;
 	wayy += y;
 
@@ -32,7 +32,13 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, cha
 
 	b2PolygonShape polygonShape;
 	polygonShape.SetAsBox(width, height);
-	b2Fixture* fixture = body->CreateFixture(&polygonShape, 0);//shape, density
+
+	b2FixtureDef fixturedef;
+	fixturedef.shape = &polygonShape;
+	fixturedef.density = 5;
+	fixturedef.filter.categoryBits = categoryBits;
+	fixturedef.filter.maskBits = maskBits;
+	body->CreateFixture(&fixturedef);
 	body->SetTransform(b2Vec2(wayx, wayy), angle);
 
 	body->SetUserData(this);

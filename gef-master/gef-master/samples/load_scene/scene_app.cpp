@@ -79,7 +79,7 @@ void SceneApp::Init()
 
 	}
 	
-	car = new Car(world);
+	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
 
 	controlState = 0;
 

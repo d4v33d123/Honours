@@ -1,6 +1,6 @@
 #include "Tire.h"
 
-Tire::Tire(b2World* world)
+Tire::Tire(b2World* world, uint16 categoryBits, uint16 maskBits)
 {
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -8,7 +8,12 @@ Tire::Tire(b2World* world)
 
 	b2PolygonShape polygonShape;
 	polygonShape.SetAsBox(0.5f, 1.25f);
-	b2Fixture* fixture = body->CreateFixture(&polygonShape, 1);//shape, density
+	b2FixtureDef fixturedef;
+	fixturedef.shape = &polygonShape;
+	fixturedef.density = 1;
+	fixturedef.filter.categoryBits = categoryBits;
+	fixturedef.filter.maskBits = maskBits;
+	b2Fixture* fixture = body->CreateFixture(&fixturedef);//shape, density
 	fixture->SetUserData(new CarTireFUD());
 
 	body->SetUserData(this);

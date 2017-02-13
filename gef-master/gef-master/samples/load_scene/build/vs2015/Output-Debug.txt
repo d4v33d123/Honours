@@ -1,0 +1,128 @@
+﻿'scene_app.exe' (Win32): Loaded '\\StuHome\HomeDrive1$\1301031\honours_project\Github\Honours\gef-master\gef-master\samples\load_scene\build\vs2015\Win32\Debug\scene_app.exe'. Symbols loaded.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ntdll.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\kernel32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\KernelBase.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\d3d11.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcrt.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dxgi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\user32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\gdi32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\lpk.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\usp10.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\advapi32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sechost.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\rpcrt4.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\sspicli.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cryptbase.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\version.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dwmapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dinput8.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msvcp140d.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\vcruntime140d.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ucrtbased.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-timezone-l1-1-0.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-file-l2-1-0.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-localization-l1-2-0.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-synch-l1-2-0.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-processthreads-l1-1-1.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\api-ms-win-core-file-l1-2-0.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\d3dcompiler_47.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\imm32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msctf.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\uxtheme.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ole32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\dxgidebug.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\setupapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cfgmgr32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oleaut32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\devobj.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\wintrust.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\crypt32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\msasn1.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\setupapi.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\devobj.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\oleaut32.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\cfgmgr32.dll'
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\setupapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cfgmgr32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oleaut32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\devobj.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\setupapi.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\devobj.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\oleaut32.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\cfgmgr32.dll'
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\nvwgf2um.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\psapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\bcrypt.dll'. Cannot find or open the PDB file.
+The thread 0x20a8 has exited with code 0 (0x0).
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\shell32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\shlwapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cryptsp.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\rsaenh.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\bcryptprimitives.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\hid.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\setupapi.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\cfgmgr32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\oleaut32.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\devobj.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\winmm.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\ntmarta.dll'. Cannot find or open the PDB file.
+'scene_app.exe' (Win32): Loaded 'C:\Windows\SysWOW64\Wldap32.dll'. Cannot find or open the PDB file.
+---##E#E#######G#######H######I#I#I-----
+--E--------------------------------I----
+-#----------------------------------I---
+D------e#######g#######h######i------I##
+#-----d-----L##L######K#######j------J##
+C----c-----L------------------------J---
+#----#----L------------------------J----
+#----#---L-----l######k#######J#J#J-----
+#----#---M-----m#########N#N#######-----
+B----b----M------------------N----------
+#----#-----M------------------N---------
+#----#------M##M#########n-----N--------
+#----#------------------1-----N---------
+#----#-----------------2-----1----------
+A----a----------------3-----2-----------
+#----#---------------4-----3------------
+#----#--------------5-----4-------------
+#----#-------------6-----5--------------
+F----f------------O-----6#Q#Q#Q#Q#Q-----
+#----#-----------#-----o##---------#----
+#----#-----------O------p-----------Q---
+#----#-----------#-------------------#--
+X----x------------P---------P##q------#-
+#----#-------------#P###P##P####r-----R-
+#----#------U###U######T#######s------#-
+#----#-----U--------------------------R-
+#----#----7--------------------------R--
+W----w---8-------u#####t#######S####R---
+#------v--------7-----------------------
+V--------------8------------------------
+#-------------V-------------------------
+-V##V##V##V###--------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+----------------------------------------
+The thread 0x225c has exited with code 0 (0x0).
+The thread 0x1fd4 has exited with code 0 (0x0).
+The thread 0x4b8 has exited with code 0 (0x0).
+The thread 0x2ebc has exited with code 0 (0x0).
+The thread 0x3124 has exited with code 0 (0x0).
+The thread 0x23b0 has exited with code 0 (0x0).
+The thread 0x2484 has exited with code 0 (0x0).
+The thread 0x2ec4 has exited with code 0 (0x0).
+The thread 0x2fa4 has exited with code 0 (0x0).
+The thread 0x2034 has exited with code 0 (0x0).
+The thread 0x1c60 has exited with code 0 (0x0).
+The thread 0x1e0c has exited with code 0 (0x0).
+The thread 0x1938 has exited with code 0 (0x0).
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\nvwgf2um.dll'
+'scene_app.exe' (Win32): Unloaded 'C:\Windows\SysWOW64\psapi.dll'
+The thread 0x2754 has exited with code 0 (0x0).
+The thread 0x2168 has exited with code 0 (0x0).
+The program '[1380] scene_app.exe' has exited with code 0 (0x0).

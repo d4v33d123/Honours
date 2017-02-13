@@ -8,14 +8,14 @@
 #include <graphics/sprite.h>
 #include <graphics/sprite_renderer.h>
 
-#define BARWIDTH 20
-#define BARHEIGHT 20
+#define BARWIDTH 30
+#define BARHEIGHT 30
 
 class barrier
 {
 public:
-	barrier(float x, float y, b2World* world);
-	barrier(float x, float y, b2World* world, char myWay);
+	barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits);
+	barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits, char myWay);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;

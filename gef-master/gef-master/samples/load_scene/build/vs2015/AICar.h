@@ -17,7 +17,7 @@ enum Net
 
 class AICar : public Car
 {
-	AICar(b2World* world, Net network, int ds);
+	AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
 	void Train(const char* fname);
 	void Update();
 	void UpdateNN(double* outputs);

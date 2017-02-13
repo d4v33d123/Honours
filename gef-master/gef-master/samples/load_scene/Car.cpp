@@ -1,6 +1,6 @@
 #include "Car.h"
 
-Car::Car(b2World* world)
+Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -18,8 +18,17 @@ Car::Car(b2World* world)
 	vertices[6].Set(-3, 2.5);
 	vertices[7].Set(-1.5, 0);
 	b2PolygonShape polygonShape;
-	polygonShape.Set(vertices, 8);
-	b2Fixture* fixture = body->CreateFixture(&polygonShape, 0.1f);//shape, density
+	polygonShape.SetAsBox(6, 10);
+
+	b2FixtureDef fixturedef;
+	fixturedef.shape = &polygonShape;
+	fixturedef.density = 0.1;
+	fixturedef.filter.categoryBits = categoryBits;
+	fixturedef.filter.maskBits = maskBits;
+	body->CreateFixture(&fixturedef);
+
+
+	body->SetTransform(b2Vec2((150), (150)), 0);
 
 																	//prepare common joint parameters
 	b2RevoluteJointDef jointDef;
@@ -37,7 +46,7 @@ Car::Car(b2World* world)
 	float frontTireMaxLateralImpulse = 75; // 7.5
 
 	//back left tire
-	Tire* tire = new Tire(world);
+	Tire* tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(-3, 0.75); // -3, 0.75
@@ -45,7 +54,7 @@ Car::Car(b2World* world)
 	tires.push_back(tire);
 
 	//back right tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(3, 0.75); // 3, 0.75
@@ -53,7 +62,7 @@ Car::Car(b2World* world)
 	tires.push_back(tire);
 
 	//front left tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(-3, 8.75); // -3, 8.75
@@ -61,7 +70,7 @@ Car::Car(b2World* world)
 	tires.push_back(tire);
 
 	//front right tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(3, 8.75); // 3, 8.75
@@ -71,10 +80,10 @@ Car::Car(b2World* world)
 
 	//set up sprite
 
-	carBodySprite.set_width(5.5);
-	carBodySprite.set_height(9);
-	carBodySprite.set_colour(0xffffffff);
-	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y + 45, 0.0f);
+	carBodySprite.set_width(6);
+	carBodySprite.set_height(10);
+	carBodySprite.set_colour(0xffffff00);
+	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
 }

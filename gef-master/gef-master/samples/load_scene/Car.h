@@ -22,7 +22,7 @@ protected:
 	void UpdateSprites();
 
 public:
-	Car(b2World* world);
+	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
 	Car() {};
 	~Car();
 	void Update(int controlState);

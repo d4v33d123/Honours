@@ -1,6 +1,6 @@
 #include "AICar.h"
 
-AICar::AICar(b2World* world, Net network, int ds)
+AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -19,7 +19,13 @@ AICar::AICar(b2World* world, Net network, int ds)
 	vertices[7].Set(-1.5, 0);
 	b2PolygonShape polygonShape;
 	polygonShape.Set(vertices, 8);
-	b2Fixture* fixture = body->CreateFixture(&polygonShape, 0.1f);//shape, density
+
+	b2FixtureDef fixturedef;
+	fixturedef.shape = &polygonShape;
+	fixturedef.density = 0.1;
+	fixturedef.filter.categoryBits = categoryBits;
+	fixturedef.filter.maskBits = maskBits;
+	b2Fixture* fixture = body->CreateFixture(&fixturedef);//shape, density
 
 																  //prepare common joint parameters
 	b2RevoluteJointDef jointDef;
@@ -37,7 +43,7 @@ AICar::AICar(b2World* world, Net network, int ds)
 	float frontTireMaxLateralImpulse = 75; // 7.5
 
 										   //back left tire
-	Tire* tire = new Tire(world);
+	Tire* tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(-3, 0.75); // -3, 0.75
@@ -45,7 +51,7 @@ AICar::AICar(b2World* world, Net network, int ds)
 	tires.push_back(tire);
 
 	//back right tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(3, 0.75); // 3, 0.75
@@ -53,7 +59,7 @@ AICar::AICar(b2World* world, Net network, int ds)
 	tires.push_back(tire);
 
 	//front left tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(-3, 8.75); // -3, 8.75
@@ -61,7 +67,7 @@ AICar::AICar(b2World* world, Net network, int ds)
 	tires.push_back(tire);
 
 	//front right tire
-	tire = new Tire(world);
+	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
 	jointDef.localAnchorA.Set(3, 8.75); // 3, 8.75
@@ -73,8 +79,8 @@ AICar::AICar(b2World* world, Net network, int ds)
 
 	carBodySprite.set_width(5.5);
 	carBodySprite.set_height(9);
-	carBodySprite.set_colour(0xffffffff);
-	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y + 45, 0.0f);
+	carBodySprite.set_colour(0xffff00ff);
+	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
 
