@@ -11,22 +11,18 @@
 class Waypoint
 {
 public:
-	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val, uint16 categoryBits, uint16 maskBits);
+	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;
 
 	void UpdateSprite();
 
-	void setVal(char Val) { WaypointVal = Val; }
-
 	void draw(gef::SpriteRenderer* sprite_renderer);
-
-	char WaypointVal;
 
 	bool Passed;
 
-
+	int WaypointOrderVal;
 
 };
 #endif // !WAYPOINT_H

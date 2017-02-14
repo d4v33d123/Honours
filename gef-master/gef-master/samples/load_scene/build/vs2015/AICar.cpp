@@ -1,4 +1,5 @@
 #include "AICar.h"
+#include "system\debug_log.h"
 
 AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
 {
@@ -79,7 +80,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	carBodySprite.set_width(5.5);
 	carBodySprite.set_height(9);
-	carBodySprite.set_colour(0xffff00ff);
+	carBodySprite.set_colour(0xffffffff);
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
@@ -89,20 +90,25 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	
 	dataSize = ds;
 	net_type = network;
-	int nnl[] = { 4, 4, 10, 4 };
+
+	int ennl[] = { 4, 10, 4 };
+	int rpnnl[] = { 4, 10, 4 };
+	int rmnnl[] = { 4, 4, 10, 4 };
+
+
 	switch (net_type)
 	{
 	case EBP:
 		
-		ebpNN = new BProp(4, nnl);
+		ebpNN = new BProp(3, ennl);
 		break;
 	case RPROP:
 		
-		rpNN = new RProp(4, nnl);
+		rpNN = new RProp(3, rpnnl);
 		break;
 	case RMGSN:
 		
-		rmgsNN =  new RMGS(4, nnl);
+		rmgsNN =  new RMGS(4, rmnnl);
 		break;
 	}
 	current_control_states[0] = 0;
@@ -110,7 +116,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	current_control_states[2] = 0;
 	current_control_states[3] = 0;
 
-
+	currentWaypoint = 0;
+	control_state = 0;
 }
 
 void AICar::Train(const char* fname)
@@ -118,21 +125,28 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Train(fname);
+		ebpNN->Run(fname, 300);
+		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
-		rpNN->Train(fname, dataSize, 1);
+		rpNN->Train(fname, dataSize, 4);
+		gef::DebugOut("trained RPROP");
 		break;
 	case RMGSN:
 		rmgsNN->Train(fname, dataSize);
+		gef::DebugOut("trained RMGS");
 		break;
 	}
 }
 
-void AICar::Update()
+void AICar::Update(std::vector<Waypoint*> wps)
 {
 	
-	UpdateNN(current_control_states);
+	UpdateNN(current_control_states, wps);
+	for (int i = 0; i < 4; i++)
+	{
+		gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
+	}
 	UpdateButtons();
 
 	for (int i = 0; i < tires.size(); i++)
@@ -162,6 +176,7 @@ void AICar::Update()
 	flJoint->SetLimits(newAngle, newAngle);
 	frJoint->SetLimits(newAngle, newAngle);
 
+	tire_angle = newAngle;
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -169,19 +184,43 @@ void AICar::Update()
 		tires[it]->updateDrive(control_state);
 		tires[it]->updateTurn(control_state);
 	}
-
-
+	
 	UpdateSprites();
 
 }
 
-void AICar::UpdateNN(double* outputs)
+void AICar::UpdateNN(double* outputs, std::vector<Waypoint*> wps)
 {
+	// set up our values for our speed
+	float tire_speed = 0;
+	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
+	{
+		tire_speed += tires[it]->getSpeed();
+	}
+	speed = (tire_speed / 4);
+
+	for (std::vector<Waypoint*>::size_type it = 0; it != wps.size(); it++)
+	{
+		if (currentWaypoint == wps[it]->WaypointOrderVal)
+		{
+			angle_to_waypoint = wps[it]->body->GetAngle() - 90;
+		}
+	}
+
+	distance_to_side = 0;
+
+	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
+	{
+		tire_speed += tires[it]->getSpeed();
+	}
+	
+	// tire angle is set in the update method;
+
 	double inputsignal[4];
 	switch (net_type)
 	{
 	case EBP:
-		
+
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
@@ -192,7 +231,7 @@ void AICar::UpdateNN(double* outputs)
 		break;
 
 	case RPROP:
-		
+
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
@@ -204,7 +243,7 @@ void AICar::UpdateNN(double* outputs)
 		break;
 
 	case RMGSN:
-		
+
 		inputsignal[0] = angle_to_waypoint;
 		inputsignal[1] = distance_to_side;
 		inputsignal[2] = speed;
@@ -216,8 +255,17 @@ void AICar::UpdateNN(double* outputs)
 		break;
 
 	}
+}
 
+void AICar::draw(gef::SpriteRenderer* sprite_renderer)
+{
 
+	sprite_renderer->DrawSprite(carBodySprite);
+
+	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
+	{
+		tires[it]->draw(sprite_renderer);
+	}
 
 }
 

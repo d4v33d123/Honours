@@ -65,7 +65,8 @@ bool Network::read_number(FILE* fp, double* number)
 			(b == '6') ||
 			(b == '7') ||
 			(b == '8') ||
-			(b == '9'))
+			(b == '9') ||
+			(b == '-'))
 		{
 			szWord[i++] = (char)b;
 		}
@@ -104,7 +105,7 @@ double** Network::MakeMatrix(int rows, int cols, double v) // helper for ctor, T
 
 	for (int r = 0; r < rows; r++)
 	{
-		result[r] = new double[r];
+		result[r] = new double[cols];
 
 		for (int c = 0; c < cols; c++)
 		{

@@ -72,19 +72,12 @@ void SceneApp::Init()
 		groundAreaFixture->SetUserData(new GroundAreaFUD(0.2f, false));
 	}
 
-	// build track
-	{
-		// load data from text file
-
-
-	}
-	
-	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
-
 	controlState = 0;
 
 	game_state = GAME;
 
+
+	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
 
 }
 
@@ -420,6 +413,11 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameInit()
 {
+	// FOR TESTING
+	net_type = EBP;
+
+	dataSize = 56;
+
 	switch (trackNum_)
 	{
 	case 1:
@@ -431,8 +429,28 @@ void SceneApp::GameInit()
 	case 3:
 		level_ = new Track("racetrack3.txt", world);
 		break;
-	
 	}
+	
+	switch (net_type)
+	{
+	case EBP:
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		
+		break;
+
+	case RPROP:
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		break;
+
+	case RMGSN:
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		break;
+
+	}
+
+	_aiCar->Train("trainingData.txt");
+	
+
 		
 }
 
@@ -441,6 +459,7 @@ void SceneApp::GameUpdate()
 	GameInput();
 
 	car->Update(controlState);
+	_aiCar->Update(level_->getWaypoints());
 	level_->UpdateSprites();
 }
 
@@ -462,9 +481,9 @@ void SceneApp::GameRender()
 	sprite_renderer_->Begin();
 
 	car->draw(sprite_renderer_);
+	_aiCar->draw(sprite_renderer_);
 
 	level_->DrawTrack(sprite_renderer_, true);
-
 
 	DrawHUD();
 	sprite_renderer_->End();

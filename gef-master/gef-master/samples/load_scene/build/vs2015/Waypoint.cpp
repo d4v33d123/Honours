@@ -1,15 +1,22 @@
 #include "Waypoint.h"
+#include "system\debug_log.h"
 
-Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, char val, uint16 categoryBits, uint16 maskBits)
+Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder)
 {
-	WaypointVal = val;
-
 	float wayx, wayy;
 	float width, height;
 	float angle;
 
 	// must do some calculations on our positions to get the angle and our waypoint position
 	// we are going to use 1-tan of Opposite over adjacent
+	for (int i = 0; i < 78; i++)
+	{
+		if ((waypointOrder[i][0] - 1) == (x/30) && (waypointOrder[i][1] - 1) == (y/30))
+		{
+			WaypointOrderVal = i;
+		}
+	}
+
 	
 	wayx = CAPx - x;
 	wayx /= 2;

@@ -5,6 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "system\debug_log.h"
 
 struct Neuron
 {

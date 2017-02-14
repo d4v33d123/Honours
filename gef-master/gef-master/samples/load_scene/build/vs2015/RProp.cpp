@@ -131,11 +131,21 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 	double etaPlus = 1.2; // values are from the paper
 	double etaMinus = 0.5;
-	double deltaMax = 50.0;
+	double deltaMax = 2.0;
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 10000;
 
-	double** trainData = fillTrainingData(fnames, layers[0].num_Neurons, layers[2].num_Neurons);
+	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
+
+	for (int i = 0; i < trainDataSize; i++)
+	{
+		for (int j = 0; j < 8; j++)
+		{
+			gef::DebugOut("val: %f  ", trainData[i][j]);
+		}
+		gef::DebugOut("\n");
+	}
+
 
 	int epoch = 0;
 	while (epoch < maxEpochs)
@@ -539,8 +549,7 @@ double* RProp::ComputeOutputs(double* xValues, int size)
 
 double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 {
-	double** result = 0;
-	result = new double*[rows];
+	double** result = MakeMatrix(rows, cols, 0);
 	int count = 0;
 	int nbi = 0;
 	int nbt = 0;
@@ -558,11 +567,20 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 		double dNumber;
 		if (read_number(fp, &dNumber))
 		{
-			result[count] = new double[count];
+			gef::DebugOut("val: %f", dNumber);
 			if (nbi < layers[0].num_Neurons)
-				result[count][nbi++] = dNumber;
+			{
+				result[count][nbi] = dNumber;
+				nbi++;
+			}
+
 			else if (nbt < layers[num_layers - 1].num_Neurons)
-				result[count][nbt++] = dNumber;
+			{
+				result[count][nbi + nbt] = dNumber;
+				nbt++;
+			}
+
+			gef::DebugOut("nbi: %i, nbt:%i", nbi, nbt);
 
 			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
 			{
@@ -575,9 +593,10 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 		{
 			break;
 		}
+		gef::DebugOut("\n");
 	}
 
 	if (fp) fclose(fp);
-	
+
 	return result;
 }

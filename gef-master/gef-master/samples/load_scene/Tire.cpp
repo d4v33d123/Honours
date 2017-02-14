@@ -134,3 +134,11 @@ void Tire::draw(gef::SpriteRenderer* sprite_renderer)
 {
 	sprite_renderer->DrawSprite(tireSprite);
 }
+
+float Tire::getSpeed()
+{
+	b2Vec2 currentForwardNormal = body->GetWorldVector(b2Vec2(0, 1));
+	float currentSpeed = b2Dot(getForwardVelocity(), currentForwardNormal);
+
+	return currentSpeed;
+}

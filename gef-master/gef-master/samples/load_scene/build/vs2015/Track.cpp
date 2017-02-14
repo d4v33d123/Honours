@@ -12,6 +12,7 @@ Track::Track(const char* fname, b2World* world)
 	}
 
 	LoadTrack(fp);
+	fclose(fp);
 	SetUpTrack(world);
 	SetUpWaypoints(world);
 
@@ -31,7 +32,71 @@ void Track::LoadTrack(FILE* fp)
 		}
 	}
 
+	// now we need to load in the waypoints order from the file so that we are only accessing the file in one function for efficency
+
+	waypointOrderPositions = new double*[78];
+	for (int i = 0; i < 78; i++)
+	{
+		waypointOrderPositions[i] = new double[2];
+
+	}
+	int xVals = 0;
+	int yVals = 0;
+
+	while (!feof(fp))
+	{
+		double number;
+		if (read_number(fp, &number))
+		{
+			if (xVals < 2)
+			{
+				waypointOrderPositions[yVals][xVals] = number;
+				gef::DebugOut("%f ", waypointOrderPositions[yVals][xVals]);
+				xVals++;
+			}
+
+			if (xVals == 2)
+			{
+				yVals++;
+				xVals = 0;
+				gef::DebugOut("\n");
+			}
+			// success
+		}
+		else
+		{
+			//error
+			gef::DebugOut("Finished Loading numbers");
+			break;
+		}
+	}
+
+
 }
+
+/*while (!feof(fp))
+	{
+		double dNumber;
+		if (read_number(fp, &dNumber))
+		{
+			result[count] = new double[cols];
+			if (nbi < layers[0].num_Neurons)
+				result[count][nbi++] = dNumber;
+			else if (nbt < layers[num_layers - 1].num_Neurons)
+				result[count][nbt++] = dNumber;
+
+			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
+			{
+				nbi = 0;
+				nbt = 0;
+				count++;
+			}
+		}
+		else
+		{
+			break;
+		}
+	}*/
 
 void Track::SetUpTrack(b2World * world)
 {
@@ -192,14 +257,9 @@ void Track::SetUpWaypoints(b2World* world)
 	}
 
 	// once we have built all the waypoints, we must order them.
-	// there are a number of ways this could be achieved
-	// 1. we could put some kind of key in our txt file, but this would jepordise the easy 40x40 structure we have laid out
-	// 2. we could order them in alpabetical order, however this becomes a problem when multiple waypoints use the same letter or we come
-	//	  across the numbered waypoints, which can be placed anywhere. This also becomes an issue if we do not put waypoints in order, a->c->s...etc
-	// 3. we search the map for the closest waypoint, this can be an issue if the track loops back on itself or the waypoints are too infrequent.
-	//
-	// option 3 will be used as the other two have bigger flaws than it.
-
+	// we can do this by sorting the vector with using the waypoint val variable
+	//at the moment we will just leave them unordered and search for the right one, firx this for efficency
+	//std::sort(WayPoints.begin(), WayPoints.end(), CompareWaypoints());
 
 }
 
@@ -211,7 +271,7 @@ void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == upper && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, upper, WAYPOINTCAT, 0));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, WAYPOINTCAT, 0, waypointOrderPositions));
 	}
 }
 
@@ -223,7 +283,7 @@ void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == higher && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, higher, WAYPOINTCAT, 0));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, WAYPOINTCAT, 0, waypointOrderPositions));
 	}
 }
 
@@ -259,4 +319,41 @@ void Track::UpdateSprites()
 	}
 	
 
+}
+
+bool Track::read_number(FILE* fp, double* number)
+{
+	char szWord[256];
+	int i = 0;
+	int b;
+
+	*number = 0;
+
+	szWord[0] = '\0';
+	while (((b = fgetc(fp)) != EOF) && (i < 255))
+	{
+		if ((b == '.') ||
+			(b == '0') ||
+			(b == '1') ||
+			(b == '2') ||
+			(b == '3') ||
+			(b == '4') ||
+			(b == '5') ||
+			(b == '6') ||
+			(b == '7') ||
+			(b == '8') ||
+			(b == '9'))
+		{
+			szWord[i++] = (char)b;
+		}
+		else
+			if (i > 0) break;
+	}
+	szWord[i] = '\0';
+
+	if (i == 0) return false;
+
+	*number = atof(szWord);
+
+	return true;
 }

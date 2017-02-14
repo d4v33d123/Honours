@@ -133,11 +133,12 @@ private:
 	MyDestructionListener destructionListener;
 	b2Body* groundBody;
 	Car* car;
+	AICar* _aiCar;
 
 	// time trial related variables
 	double AiTime;
 	double PlayerTime;
-
+	int dataSize;
 
 
 };

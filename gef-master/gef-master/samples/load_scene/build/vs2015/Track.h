@@ -11,6 +11,7 @@
 #include <vector>
 #include <graphics/sprite.h>
 #include <graphics/sprite_renderer.h>
+#include <algorithm>
 
 enum CollisionCategories
 {
@@ -35,11 +36,16 @@ public:
 	void DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug);
 	void UpdateSprites();
 
+	bool read_number(FILE* fp, double* number);
+
+	std::vector<Waypoint*> getWaypoints() { return WayPoints; }
+
 	std::vector<barrier*> Barriers;
 	std::vector<Waypoint*> WayPoints;
 
 	char** map;
-
+	double** waypointOrderPositions;
+	
 };
 
 

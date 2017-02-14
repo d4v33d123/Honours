@@ -15,11 +15,7 @@
 class Car
 {
 protected:
-	b2Body* body;
-	std::vector<Tire*> tires;
-	b2RevoluteJoint *flJoint, *frJoint;
-	gef::Sprite carBodySprite;
-	void UpdateSprites();
+	
 
 public:
 	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
@@ -29,6 +25,12 @@ public:
 	void draw(gef::SpriteRenderer* sprite_renderer);
 	float getXPosition();
 	float getYPosition();
+	gef::Sprite carBodySprite;
+	void UpdateSprites();
+
+	b2Body* body;
+	std::vector<Tire*> tires;
+	b2RevoluteJoint *flJoint, *frJoint;
 };
 
 

@@ -76,6 +76,8 @@ public:
 
 	b2Vec2 getForwardVelocity();
 
+	float getSpeed();
+
 	void updateFriction();
 
 	void updateDrive(int controlState);

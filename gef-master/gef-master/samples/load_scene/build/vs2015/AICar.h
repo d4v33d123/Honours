@@ -6,6 +6,7 @@
 #include "BackPropagation.h"
 #include "RProp.h"
 #include "RMGS.h"
+#include "Waypoint.h"
 
 enum Net
 {
@@ -17,11 +18,14 @@ enum Net
 
 class AICar : public Car
 {
+public:
+
 	AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
 	void Train(const char* fname);
-	void Update();
-	void UpdateNN(double* outputs);
+	void Update(std::vector<Waypoint*> wps);
+	void UpdateNN(double* outputs, std::vector<Waypoint*> wps);
 	void UpdateButtons();
+	void draw(gef::SpriteRenderer* sprite_renderer);
 
 	RProp* rpNN;
 	RMGS* rmgsNN;
@@ -35,6 +39,7 @@ class AICar : public Car
 	float distance_to_side;
 	float speed;
 	float tire_angle;
+	int currentWaypoint;
 
 	Net net_type;
 };
