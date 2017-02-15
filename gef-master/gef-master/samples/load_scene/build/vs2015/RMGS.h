@@ -3,6 +3,8 @@
 #define RMGS_H
 
 #include "NeuralNetwork.h"
+#include <math.h>
+#include <complex.h>
 
 class RMGS : public Network
 {

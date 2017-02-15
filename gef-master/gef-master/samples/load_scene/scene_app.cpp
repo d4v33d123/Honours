@@ -128,6 +128,7 @@ bool SceneApp::Update(float frame_time)
 			GameInit();
 			gameinited = true;
 		}
+
 		GameUpdate();
 		break;
 
@@ -414,9 +415,9 @@ void SceneApp::MenuInput()
 void SceneApp::GameInit()
 {
 	// FOR TESTING
-	net_type = EBP;
+	net_type = RMGSN;
 
-	dataSize = 56;
+	dataSize = 55;
 
 	switch (trackNum_)
 	{

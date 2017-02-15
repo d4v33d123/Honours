@@ -9,6 +9,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	body = world->CreateBody(&bodyDef);
 	body->SetAngularDamping(3);
 
+	//body->SetTransform(b2Vec2(200, 200), 0);
+
 	b2Vec2 vertices[8];
 	vertices[0].Set(1.5, 0);
 	vertices[1].Set(3, 2.5);
@@ -76,6 +78,9 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	tires.push_back(tire);
 
 
+	
+	
+	
 	//set up sprite
 
 	carBodySprite.set_width(5.5);
@@ -125,7 +130,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, 300);
+		ebpNN->Run(fname, 3000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -143,10 +148,19 @@ void AICar::Update(std::vector<Waypoint*> wps)
 {
 	
 	UpdateNN(current_control_states, wps);
+
 	for (int i = 0; i < 4; i++)
 	{
 		gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 	}
+	if (net_type == RPROP)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			current_control_states[i] -= 0.5;
+		}
+	}
+
 	UpdateButtons();
 
 	for (int i = 0; i < tires.size(); i++)
@@ -176,7 +190,7 @@ void AICar::Update(std::vector<Waypoint*> wps)
 	flJoint->SetLimits(newAngle, newAngle);
 	frJoint->SetLimits(newAngle, newAngle);
 
-	tire_angle = newAngle;
+	tire_angle = newAngle * RADTODEG;
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -203,7 +217,7 @@ void AICar::UpdateNN(double* outputs, std::vector<Waypoint*> wps)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
-			angle_to_waypoint = wps[it]->body->GetAngle() - 90;
+			angle_to_waypoint = (wps[it]->body->GetAngle() * RADTODEG) + 90;
 		}
 	}
 

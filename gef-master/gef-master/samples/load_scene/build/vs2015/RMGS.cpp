@@ -141,8 +141,9 @@ int RMGS::Train(const char* fnames, int ds)
 		for (int j = 0; j < datasize; j++)
 		{
 			ExpectedOutputs[i][j] = trainData[j][layers[1].num_Neurons + i];
-
+			gef::DebugOut("outp: %f", ExpectedOutputs[i][j]);
 		}
+		gef::DebugOut("\n");
 	}
 
 	// perfrom gram schmidt on the output layer
@@ -223,14 +224,15 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 				output += FirstHiddenOutput[d][j] - layers[2].neurons[i].weight[j];
 			}
 			// squared
-			double outputsquared = output * output;
+			double outputsquared = (output * output);
 			// mulitplied by current neuron / total neurons
-			outputsquared = outputsquared * (i / layers[2].num_Neurons);
+			outputsquared *= (double(i+1) / double(layers[2].num_Neurons));
 			// square root of said value
 			layers[2].neurons[i].output = sqrt(outputsquared);
 
 			// put the value through the fitness function
-			layers[2].neurons[i].output = 1 - tanh(layers[2].neurons[i].output);
+			double nout = double(1) - tanh(layers[2].neurons[i].output);
+			layers[2].neurons[i].output = nout;
 
 			MBDOutput[d][i] = output;
 		}
@@ -259,7 +261,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		{
 			Qvals[i] += hidden[j][i];
 		}
-		Qvals[i] = sqrt(Qvals[i]);
+		double qsqrt = Qvals[i];
+		Qvals[i] = sqrt(fabs(qsqrt));
 	}
 
 	V = hidden;
@@ -298,6 +301,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
 	{
 		B = outputs[n];
+		for (int i = 0; i < size; i++)
+		{
+			gef::DebugOut("b:%f     ", B[i]);
+		}
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
@@ -305,7 +312,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			for (int j = 0; j < size; j++)
 			{
 				Y[i] += (TQ[i][j] * B[j]);
+				gef::DebugOut("TQ:%f    ", TQ[i][j]);
+				gef::DebugOut("Y:%f    ", Y[i]);
 			}
+			gef::DebugOut("\n");
 		}
 
 		// now that we have y we can do the gaussian elimination using R and Y to get W

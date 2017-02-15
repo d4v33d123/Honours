@@ -82,6 +82,7 @@ RProp::RProp(int nl, int npl[])
 			}
 		}
 	}
+	RandomWeights();
 
 }
 
@@ -124,16 +125,16 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* hPrevBiasGradsAcc = new double[layers[1].num_Neurons];
 
 	// must save previous weight deltas
-	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.01);
-	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.01);
-	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
-	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
+	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.1);
+	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.1);
+	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
+	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
 
 	double etaPlus = 1.2; // values are from the paper
 	double etaMinus = 0.5;
-	double deltaMax = 2.0;
+	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 10000;
+	int maxEpochs = 20;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -151,14 +152,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	while (epoch < maxEpochs)
 	{
 		++epoch;
-		/* update this with getting the current weights of all the layers
-		if (epoch % 100 == 0 && epoch != maxEpochs)
+		// update this with getting the current weights of all the layers
+		/*if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
-			double[] currWts = this.GetWeights();
-			double err = MeanSquaredError(trainData, currWts);
-			Console.WriteLine("epoch = " + epoch + " err = " + err.ToString("F4"));
-		}
-		*/
+			double* currWts = GetWeights();
+			double err = MeanSquaredError(trainData, currWts, trainDataSize);
+			gef::DebugOut("epoch = %i  err = %f", epoch, err);
+		}*/
+		
 		// 1. compute and accumulate all gradients
 		ZeroOutMat(hoWeightGradsAcc); // zero-out values from prev iteration
 		ZeroOutMat(ihWeightGradsAcc);
@@ -174,8 +175,8 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			copy_array_index(trainData[row], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // get the target values
 			double* outputs = ComputeOutputs(xValues, layers[0].num_Neurons); // copy xValues in, compute outputs using curr weights (and store outputs internally)
 
-									 // compute the h-o gradient term/component as in regular back-prop
-									 // this term usually is lower case Greek delta but there are too many other deltas below
+			// compute the h-o gradient term/component as in regular back-prop
+			// this term usually is lower case Greek delta but there are too many other deltas below
 			for (int i = 0; i < layers[2].num_Neurons; ++i)
 			{
 				double derivative = (1 - outputs[i]) * outputs[i]; // derivative of softmax = (1 - y) * y (same as log-sigmoid)
@@ -189,7 +190,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				double sum = 0.0;
 				for (int j = 0; j < layers[2].num_Neurons; ++j) // each hidden delta is the sum of numOutput terms
 				{
-					double x = oGradTerms[j] * layers[1].neurons[i].weight[j];
+					double x = oGradTerms[j] * layers[2].neurons[j].weight[i];
 					sum += x;
 				}
 				hGradTerms[i] = derivative * sum;
@@ -240,14 +241,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		{
 			for (int j = 0; j < layers[1].num_Neurons; ++j)
 			{
-				if (ihPrevWeightGradsAcc[i][j] * ihWeightGradsAcc[i][j] > 0) // no sign change, increase delta
+				if ((ihPrevWeightGradsAcc[i][j] * ihWeightGradsAcc[i][j]) > 0) // no sign change, increase delta
 				{
 					delta = ihPrevWeightDeltas[i][j] * etaPlus; // compute delta
 					if (delta > deltaMax) delta = deltaMax; // keep it in range
 					double tmp = -sgn(ihWeightGradsAcc[i][j]) * delta; // determine direction and magnitude
 					layers[1].neurons[j].weight[i] += tmp; // update weights
 				}
-				else if (ihPrevWeightGradsAcc[i][j] * ihWeightGradsAcc[i][j] < 0) // grad changed sign, decrease delta
+				else if ((ihPrevWeightGradsAcc[i][j] * ihWeightGradsAcc[i][j]) < 0) // grad changed sign, decrease delta
 				{
 					delta = ihPrevWeightDeltas[i][j] * etaMinus; // the delta (not used, but saved for later)
 					if (delta < deltaMin) delta = deltaMin; // keep it in range
@@ -271,14 +272,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		  // update (input-to-) hidden biases
 		for (int i = 0; i < layers[1].num_Neurons; ++i)
 		{
-			if (hPrevBiasGradsAcc[i] * hBiasGradsAcc[i] > 0) // no sign change, increase delta
+			if ((hPrevBiasGradsAcc[i] * hBiasGradsAcc[i]) > 0) // no sign change, increase delta
 			{
 				delta = hPrevBiasDeltas[i] * etaPlus; // compute delta
 				if (delta > deltaMax) delta = deltaMax;
 				double tmp = -sgn(hBiasGradsAcc[i]) * delta; // determine direction
 				layers[1].neurons[i].bias += tmp; // update
 			}
-			else if (hPrevBiasGradsAcc[i] * hBiasGradsAcc[i] < 0) // grad changed sign, decrease delta
+			else if ((hPrevBiasGradsAcc[i] * hBiasGradsAcc[i]) < 0) // grad changed sign, decrease delta
 			{
 				delta = hPrevBiasDeltas[i] * etaMinus; // the delta (not used, but saved later)
 				if (delta < deltaMin) delta = deltaMin;
@@ -304,14 +305,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		{
 			for (int j = 0; j < layers[2].num_Neurons; ++j)
 			{
-				if (hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j] > 0) // no sign change, increase delta
+				if ((hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j]) > 0) // no sign change, increase delta
 				{
 					delta = hoPrevWeightDeltas[i][j] * etaPlus; // compute delta
 					if (delta > deltaMax) delta = deltaMax;
 					double tmp = -sgn(hoWeightGradsAcc[i][j]) * delta; // determine direction
 					layers[2].neurons[j].weight[i] += tmp; // update
 				}
-				else if (hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j] < 0) // grad changed sign, decrease delta
+				else if ((hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j]) < 0) // grad changed sign, decrease delta
 				{
 					delta = hoPrevWeightDeltas[i][j] * etaMinus; // the delta (not used, but saved later)
 					if (delta < deltaMin) delta = deltaMin;
@@ -333,14 +334,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		  // update (hidden-to-) output biases
 		for (int i = 0; i < layers[2].num_Neurons; ++i)
 		{
-			if (oPrevBiasGradsAcc[i] * oBiasGradsAcc[i] > 0) // no sign change, increase delta
+			if ((oPrevBiasGradsAcc[i] * oBiasGradsAcc[i]) > 0) // no sign change, increase delta
 			{
 				delta = oPrevBiasDeltas[i] * etaPlus; // compute delta
 				if (delta > deltaMax) delta = deltaMax;
 				double tmp = -sgn(oBiasGradsAcc[i]) * delta; // determine direction
 				layers[2].neurons[i].bias += tmp; // update
 			}
-			else if (oPrevBiasGradsAcc[i] * oBiasGradsAcc[i] < 0) // grad changed sign, decrease delta
+			else if ((oPrevBiasGradsAcc[i] * oBiasGradsAcc[i]) < 0) // grad changed sign, decrease delta
 			{
 				delta = oPrevBiasDeltas[i] * etaMinus; // the delta (not used, but saved later)
 				if (delta < deltaMin) delta = deltaMin;
@@ -357,6 +358,9 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			oPrevBiasDeltas[i] = delta;
 			oPrevBiasGradsAcc[i] = oBiasGradsAcc[i];
 		}
+
+
+
 	} // while
 
 	//double* wts = GetWeights();
@@ -410,7 +414,20 @@ void RProp::Run(const char* fname, const int& maxiter)
 
 void RProp::RandomWeights()
 {
+	int i, j, k;
+	for (i = 1; i < num_layers; i++)
+	{
+		for (j = 0; j < layers[i].num_Neurons; j++)
+		{
+			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5);
+				layers[i].neurons[j].pre_Weight[k] = 0.0;
+				layers[i].neurons[j].saved_weight[k] = 0.0;
+			}
 
+		}
+	}
 }
 
 void RProp::PropagateSignal()
@@ -485,12 +502,14 @@ double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 		// following assumes data has all x-values first, followed by y-values!
 		copy_array_noindex(trainData[i], xValues, layers[0].num_Neurons); // extract inputs
 		copy_array_index(trainData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // extract targets
-		int sizeofy = 0;
+		int sizeofy = layers[2].num_Neurons;
 		double* yValues = ComputeOutputs(xValues, sizeofy);
 		for (int j = 0; j < sizeofy; ++j)
 			sumSquaredError += ((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
 	}
-	return sumSquaredError / size;
+	sumSquaredError /= size;
+
+	return sumSquaredError;
 }
 
 double* RProp::ComputeOutputs(double* xValues, int size)
@@ -532,6 +551,14 @@ double* RProp::ComputeOutputs(double* xValues, int size)
 	for (int i = 0; i < layers[2].num_Neurons; ++i)  // add biases to input-to-hidden sums
 		layers[2].neurons[i].output += layers[2].neurons[i].bias;
 
+	for (int i = 0; i < layers[2].num_Neurons; ++i)  // sigmoid activation
+	{
+		double sig = layers[2].neurons[i].output / (1 + fabs(layers[2].neurons[i].output));
+		layers[2].neurons[i].output = sig;
+	}
+		
+
+
 	double* valuesforsoftout = new double[layers[2].num_Neurons];
 	for (int i = 0; i < layers[2].num_Neurons; i++)
 	{
@@ -539,12 +566,12 @@ double* RProp::ComputeOutputs(double* xValues, int size)
 	}
 
 
-	double* softOut = Softmax(valuesforsoftout, layers[2].num_Neurons); // softmax activation does all outputs at once for efficiency
+	//double* softOut = Softmax(valuesforsoftout, layers[2].num_Neurons); // softmax activation does all outputs at once for efficiency
 	//Array.Copy(softOut, outputs, softOut.Length);
 
 	//double* retResult = new double[numOutput]; // could define a GetOutputs method instead
 	//Array.Copy(this.outputs, retResult, retResult.Length);
-	return softOut;
+	return valuesforsoftout;
 }
 
 double** RProp::fillTrainingData(const char* fname, int rows, int cols)
@@ -598,5 +625,23 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 
 	if (fp) fclose(fp);
 
+	return result;
+}
+
+double* RProp::GetWeights()
+{
+	int numWeights = (layers[0].num_Neurons * layers[1].num_Neurons) + (layers[1].num_Neurons * layers[2].num_Neurons) + layers[1].num_Neurons + layers[2].num_Neurons;
+	double* result = new double[numWeights];
+	int k = 0;
+	for (int i = 0; i < layers[0].num_Neurons; ++i)
+		for (int j = 0; j < layers[1].num_Neurons; ++j)
+			result[k++] = layers[0].neurons[i].weight[j];
+	for (int i = 0; i < layers[1].num_Neurons; ++i)
+		result[k++] = layers[0].neurons[i].bias;
+	for (int i = 0; i < layers[1].num_Neurons; ++i)
+		for (int j = 0; j < layers[2].num_Neurons; ++j)
+			result[k++] = layers[0].neurons[i].weight[j];
+	for (int i = 0; i < layers[2].num_Neurons; ++i)
+		result[k++] = layers[0].neurons[i].bias;
 	return result;
 }

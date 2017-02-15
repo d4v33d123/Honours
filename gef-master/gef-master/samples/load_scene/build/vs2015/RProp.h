@@ -3,6 +3,7 @@
 #define RPROP_H
 
 #include "NeuralNetwork.h"
+#include <stdio.h>
 
 class RProp : public Network
 {
@@ -37,6 +38,8 @@ private:
 	void ZeroOutMat(double** matrix);
 
 	double** fillTrainingData(const char* fname, int rows, int cols);
+
+	double * GetWeights();
 
 	double MeanSquaredError(double** trainData, double* weights, int size);
 
