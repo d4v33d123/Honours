@@ -128,7 +128,7 @@ double* Network::MinusVectors(double* Vec1, double* Vec2, int size)
 	double* ret = MakeVector(size, 0);
 	for (int i = 0; i < size; i++)
 	{
-		ret[i] = Vec1[i] - Vec2[i];
+		ret[i] = (Vec1[i] - Vec2[i]);
 	}
 	return ret;
 }
@@ -138,7 +138,8 @@ double Network::DotProduct(double* Vec1, double* Vec2, int size)
 	double ret = 0;
 	for (int i = 0; i < size; i++)
 	{
-		ret += Vec1[i] * Vec2[i];
+		double multi = (Vec1[i] * Vec2[i]);
+		ret += multi;
 	}
 	return ret;
 }
