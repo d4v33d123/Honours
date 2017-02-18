@@ -273,7 +273,46 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 	double* B = MakeVector(size, 0);
 	// QR Decomposition of matrix 
 	double* Qvals = MakeVector(layers[currentLayer].num_Neurons, 0);
-	
+
+
+	V = hidden;
+
+	/*  for k = 0 k < n k++
+		{
+			r[k][k] = ||ak||2
+			qk = 1/r[k][k] . ak
+
+			for j = k+1 j < n j++
+			{
+				rkj = qk(T) aj
+				aj := aj - rkj qk
+			}
+		}*/
+	// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap3.3.PDF
+
+
+	for (int k = 0; k < layers[currentLayer].num_Neurons; k++)
+	{
+		// get r[k][k]
+		double rkk = 0;
+		for (int j = 0; j < size; j++)
+		{
+			rkk += (pow(V[j][k], 2));
+		}
+		R[k][k] = (sqrt(rkk));
+
+		for (int j = 0; j < size; j++)
+		{
+			Q[k][j] = (V[j][k] * R[k][k]);
+		}
+
+		for (j = k + 1; k < layers[currentLayer].num_Neurons; j++)
+		{
+
+		}
+
+	}
+	/*
 	// Firstly we need to get Q 
 	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 	{
@@ -285,21 +324,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		
 		double qsqrt = Qvals[i];
 		Qvals[i] = sqrt(fabs(qsqrt));
-		gef::DebugOut("QVals %i:%f \n", i, Qvals[i]);
 	}
 
-	V = hidden;
-	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
-	{
-		for (int j = 0; j < size; j++)
-		{
-			gef::DebugOut("V %i:%f     ", j, V[j][i]);
-			gef::DebugOut("hidden %i:%f", j, hidden[j][i]);
-		}
-		gef::DebugOut("\n");
-		
-		
-	}
+
 
 	// UP TO THIS POINT IS OKAY i believe, Q in the section below on the second neuron returns -nan(idn) on the second data set. STRANGE AF;
 
@@ -320,14 +347,21 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		gef::DebugOut("\n");
 		for (int j = i + 1; j < layers[currentLayer].num_Neurons; j++)
 		{
-			R[i][j] = DotProduct(Q[i], V[j], size);
+			// issue is doing dot product on the horizontal vector instead of the vertical vector
+			R[i][j] = DotProduct(Q[i], V[j], layers[currentLayer].num_Neurons);
+			gef::DebugOut("Q %i:%f     ", i, R[i][j]);
 			double* QRMult = MakeVector(size, 0);
 			QRMult = MultiplyVector(Q[i] , R[i][j], size);
+			for (int k = 0; k < size; k++)
+			{
+				gef::DebugOut("QRMulti %i:%f     ", k, QRMult[k]);
+			}
+			
 			double* newV = MakeVector(size, 0);
 			newV = MinusVectors(V[j], QRMult, size);
 			V[j] = newV;
 		}
-	}
+	}*/
 
 	// now that we have  R and Q we can do some calcualtions, these are all the same for each of the output neurons.
 	// we must firstly do Transpose(Q) * net = y
