@@ -157,9 +157,19 @@ int RMGS::Train(const char* fnames, int ds)
 	// perfrom gram schmidt on the output layer
 	GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
 
+	// we have to transpose the MBDOutputs for the gram schmidt calculation
+	double** TMBDout = MakeMatrix(layers[2].num_Neurons, datasize, 0);
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		for (int j = 0; j < datasize; j++)
+		{
+			TMBDout[i][j] = MBDOutput[j][i];
+		}
+	}
+
 
 	// Repeat step 6 and 7 for each neuron in the second hidden layer
-	GramSchmidt(FirstHiddenOutput, MBDOutput, datasize, 1);
+	GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
 
 	return 0;
 }
@@ -268,7 +278,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 {
 	// see MGStesting solution 
 	double** Q = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
-	double** R = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
+	double** R = MakeMatrix(layers[currentLayer].num_Neurons, layers[currentLayer].num_Neurons, 0);
 	double** V = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
 	double* B = MakeVector(size, 0);
 	// QR Decomposition of matrix 
@@ -290,6 +300,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		}*/
 	// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap3.3.PDF
 
+	
 
 	for (int k = 0; k < layers[currentLayer].num_Neurons; k++)
 	{
@@ -297,84 +308,55 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		double rkk = 0;
 		for (int j = 0; j < size; j++)
 		{
-			rkk += (pow(V[j][k], 2));
+			double power = (pow(V[j][k], 2));
+			rkk += power;
 		}
 		R[k][k] = (sqrt(rkk));
+		gef::DebugOut("R:%f   ", R[k][k]);
 
 		for (int j = 0; j < size; j++)
 		{
-			Q[k][j] = (V[j][k] * R[k][k]);
+			double divide = 0;
+			if (R[k][k] != 0)
+				divide = (V[j][k] / R[k][k]);
+
+			Q[j][k] = divide;
+			gef::DebugOut("divide:%f   ", divide);
+			gef::DebugOut("Q:%f   ", Q[j][k]);
 		}
 
-		for (j = k + 1; k < layers[currentLayer].num_Neurons; j++)
+		for (int j = k + 1; j < layers[currentLayer].num_Neurons; j++)
 		{
-
-		}
-
-	}
-	/*
-	// Firstly we need to get Q 
-	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
-	{
-		for (int j = 0; j < size; j++)
-		{
-			Qvals[i] += hidden[j][i];
-			
-		}
-		
-		double qsqrt = Qvals[i];
-		Qvals[i] = sqrt(fabs(qsqrt));
-	}
-
-
-
-	// UP TO THIS POINT IS OKAY i believe, Q in the section below on the second neuron returns -nan(idn) on the second data set. STRANGE AF;
-
-
-	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
-	{
-		R[i][i] = Qvals[i];
-		for (int j = 0; j < size; j++)
-		{
-			if (Qvals[i] > 0 && V[j][i] > 0)
-				Q[j][i] = V[j][i] / Qvals[i];
-			else
-				Q[j][i] = V[j][i];
-
-
-			gef::DebugOut("Q %i:%f     ", i, Q[j][i]);
-		}
-		gef::DebugOut("\n");
-		for (int j = i + 1; j < layers[currentLayer].num_Neurons; j++)
-		{
-			// issue is doing dot product on the horizontal vector instead of the vertical vector
-			R[i][j] = DotProduct(Q[i], V[j], layers[currentLayer].num_Neurons);
-			gef::DebugOut("Q %i:%f     ", i, R[i][j]);
-			double* QRMult = MakeVector(size, 0);
-			QRMult = MultiplyVector(Q[i] , R[i][j], size);
-			for (int k = 0; k < size; k++)
+			for (int i = 0; i < size; i++)
 			{
-				gef::DebugOut("QRMulti %i:%f     ", k, QRMult[k]);
+				double multiply = (V[i][j] * Q[i][k]);
+				R[k][j] += multiply;
 			}
-			
-			double* newV = MakeVector(size, 0);
-			newV = MinusVectors(V[j], QRMult, size);
-			V[j] = newV;
+			for (int i = 0; i < size; i++)
+			{
+				double multiply = (V[i][j] * R[k][j]);
+				V[i][j] -= multiply;
+			}
 		}
-	}*/
+	}
 
 	// now that we have  R and Q we can do some calcualtions, these are all the same for each of the output neurons.
 	// we must firstly do Transpose(Q) * net = y
 	// then we can do a back substitution of  R * w = y; to find w 
 
+
+
 	double** TQ = MakeMatrix(layers[currentLayer].num_Neurons, size, 0);
 
+	// get the transpose of Q
 	for (int i = 0; i < size; i++)
 	{
 		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 		{
 			TQ[j][i] = Q[i][j];
+			gef::DebugOut("TQ %i:%f     ", i, TQ[j][i]);
 		}
+		gef::DebugOut("\n");
 	}
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
@@ -382,7 +364,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		B = outputs[n];
 		for (int i = 0; i < size; i++)
 		{
-			gef::DebugOut("b:%f     ", B[i]);
+			gef::DebugOut("b %i:%f     ",i, B[i]);
 		}
 		gef::DebugOut("\n");
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
@@ -420,11 +402,15 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			}
 		}
 
+		// LAST SECTION TO FIX
 
 		double* W = MakeVector(layers[currentLayer].num_Neurons, 0);
 		for (int i = layers[currentLayer].num_Neurons - 1; i > 0; i--)
 		{
-			W[i] = RYAug[i][layers[currentLayer].num_Neurons + 1] / RYAug[i][i];
+			double weight = 0;
+			if (RYAug[i][i] != 0)
+				weight = RYAug[i][layers[currentLayer].num_Neurons + 1] / RYAug[i][i];
+			W[i] = weight;
 			for (int k = i - 1; k > 0; k--)
 			{
 				double multi = RYAug[k][i] * W[i];
@@ -434,7 +420,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 		{
-			layers[currentLayer].neurons[i].weight[n] = W[i];
+			layers[currentLayer + 1].neurons[n].weight[i] = W[i];
 		}
 	}
 
