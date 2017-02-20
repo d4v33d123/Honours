@@ -11,7 +11,7 @@
 class Waypoint
 {
 public:
-	Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder);
+	Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder);
 
 	b2Body* body;
 	gef::Sprite barrierSprite;

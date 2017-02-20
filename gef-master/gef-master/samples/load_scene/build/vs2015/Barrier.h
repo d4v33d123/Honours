@@ -21,6 +21,8 @@ public:
 	gef::Sprite barrierSprite;
 	char WaypointVal;
 
+	int mapx, mapy;
+
 	void UpdateSprite();
 
 	void draw(gef::SpriteRenderer* sprite_renderer);

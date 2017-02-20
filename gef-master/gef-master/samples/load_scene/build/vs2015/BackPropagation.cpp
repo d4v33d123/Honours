@@ -347,24 +347,27 @@ void BProp::Run(const char* fname, const int& maxiter)
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
-
-		printf("%i \t Test Error: %f", countTrain, dAvgTestError);
+		if (countTrain % 100 == 0)
+		{
+			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
+		}
+			
 
 		if (dAvgTestError < dMinTestError)
 		{
-			printf(" -> saving weights\n");
+			//gef::DebugOut(" -> saving weights\n");
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
 		else if (dAvgTestError > 1.2 * dMinTestError)
 		{
-			printf(" -> stopping training and restoring weights\n");
+			gef::DebugOut(" -> stopping training and restoring weights\n");
 			Stop = true;
 			RestoreWeights();
 		}
 		else
 		{
-			printf(" -> ok\n");
+			gef::DebugOut(" -> ok\n");
 		}
 
 	} while ((!Stop) && (countTrain < maxiter));

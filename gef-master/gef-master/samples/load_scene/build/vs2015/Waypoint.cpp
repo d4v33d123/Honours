@@ -1,7 +1,7 @@
 #include "Waypoint.h"
 #include "system\debug_log.h"
 
-Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder)
+Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy, b2World* world, uint16 categoryBits, uint16 maskBits, double** waypointOrder)
 {
 	float wayx, wayy;
 	float width, height;
@@ -11,7 +11,7 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, b2World* world, uin
 	// we are going to use 1-tan of Opposite over adjacent
 	for (int i = 0; i < 78; i++)
 	{
-		if ((waypointOrder[i][0] - 1) == (x/30) && (waypointOrder[i][1] - 1) == (y/30))
+		if ((int((waypointOrder[i][0]))) == (mapx) && (int((waypointOrder[i][1]))) == (mapy))
 		{
 			WaypointOrderVal = i;
 		}

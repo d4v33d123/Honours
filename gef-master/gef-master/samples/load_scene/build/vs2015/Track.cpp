@@ -50,7 +50,7 @@ void Track::LoadTrack(FILE* fp)
 		{
 			if (xVals < 2)
 			{
-				waypointOrderPositions[yVals][xVals] = number;
+				waypointOrderPositions[yVals][xVals] = (number - 1.0);
 				gef::DebugOut("%f ", waypointOrderPositions[yVals][xVals]);
 				xVals++;
 			}
@@ -74,29 +74,6 @@ void Track::LoadTrack(FILE* fp)
 
 }
 
-/*while (!feof(fp))
-	{
-		double dNumber;
-		if (read_number(fp, &dNumber))
-		{
-			result[count] = new double[cols];
-			if (nbi < layers[0].num_Neurons)
-				result[count][nbi++] = dNumber;
-			else if (nbt < layers[num_layers - 1].num_Neurons)
-				result[count][nbt++] = dNumber;
-
-			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
-			{
-				nbi = 0;
-				nbt = 0;
-				count++;
-			}
-		}
-		else
-		{
-			break;
-		}
-	}*/
 
 void Track::SetUpTrack(b2World * world)
 {
@@ -271,7 +248,7 @@ void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == upper && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, WAYPOINTCAT, 0, waypointOrderPositions));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, 0, waypointOrderPositions));
 	}
 }
 
@@ -283,7 +260,7 @@ void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == higher && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, world, WAYPOINTCAT, 0, waypointOrderPositions));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, 0, waypointOrderPositions));
 	}
 }
 

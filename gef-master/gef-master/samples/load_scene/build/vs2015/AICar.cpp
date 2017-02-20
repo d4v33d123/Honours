@@ -96,7 +96,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 10, 4 };
+	int ennl[] = { 4, 20, 4 };
 	int rpnnl[] = { 4, 10, 4 };
 	int rmnnl[] = { 4, 4, 10, 4 };
 
@@ -121,7 +121,14 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	current_control_states[2] = 0;
 	current_control_states[3] = 0;
 
-	currentWaypoint = 0;
+	prev_control_states[0] = 0;
+	prev_control_states[1] = 0;
+	prev_control_states[2] = 0;
+	prev_control_states[3] = 0;
+
+	tire_angle = 0;
+
+	currentWaypoint = 6;
 	control_state = 0;
 }
 
@@ -130,7 +137,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, 3000);
+		ebpNN->Run(fname, 30000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -146,22 +153,18 @@ void AICar::Train(const char* fname)
 
 void AICar::Update(std::vector<Waypoint*> wps)
 {
-	
-	UpdateNN(current_control_states, wps);
+	UpdateNN(wps);
+	float newAngle = 0;
 
 	for (int i = 0; i < 4; i++)
 	{
 		gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 	}
-	if (net_type == RPROP)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			current_control_states[i] -= 0.5;
-		}
-	}
+
 
 	UpdateButtons();
+
+	gef::DebugOut("CONTROL STATES: %i", control_state);
 
 	for (int i = 0; i < tires.size(); i++)
 		tires[i]->updateFriction();
@@ -186,11 +189,14 @@ void AICar::Update(std::vector<Waypoint*> wps)
 	float angleNow = flJoint->GetJointAngle();
 	float angleToTurn = desiredAngle - angleNow;
 	angleToTurn = b2Clamp(angleToTurn, -turnPerTimeStep, turnPerTimeStep);
-	float newAngle = angleNow + angleToTurn;
+	newAngle = angleNow + angleToTurn;
 	flJoint->SetLimits(newAngle, newAngle);
 	frJoint->SetLimits(newAngle, newAngle);
 
-	tire_angle = newAngle * RADTODEG;
+	double newtireangle = ((newAngle * RADTODEG) / 90);
+	gef::DebugOut("newAngle: %f", newAngle);
+
+	tire_angle = newtireangle;
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -203,7 +209,7 @@ void AICar::Update(std::vector<Waypoint*> wps)
 
 }
 
-void AICar::UpdateNN(double* outputs, std::vector<Waypoint*> wps)
+void AICar::UpdateNN(std::vector<Waypoint*> wps)
 {
 	// set up our values for our speed
 	float tire_speed = 0;
@@ -211,13 +217,17 @@ void AICar::UpdateNN(double* outputs, std::vector<Waypoint*> wps)
 	{
 		tire_speed += tires[it]->getSpeed();
 	}
-	speed = (tire_speed / 4);
+	speed = ((tire_speed / 4) / 100);
 
 	for (std::vector<Waypoint*>::size_type it = 0; it != wps.size(); it++)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
-			angle_to_waypoint = (wps[it]->body->GetAngle() * RADTODEG) + 90;
+			gef::DebugOut("ayy");
+			double val = (wps[it]->body->GetAngle() * RADTODEG) - 90;
+			val += 180;
+			val /= 360;
+			angle_to_waypoint = val;
 		}
 	}
 
@@ -228,43 +238,45 @@ void AICar::UpdateNN(double* outputs, std::vector<Waypoint*> wps)
 		tire_speed += tires[it]->getSpeed();
 	}
 	
+
+
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
+	inputsignal[0] = angle_to_waypoint;
+	inputsignal[1] = distance_to_side;
+	inputsignal[2] = speed;
+	inputsignal[3] = tire_angle;
+
+	for (int i = 0; i < 4; i++)
+	{
+		gef::DebugOut("Input signals 1:%f 2:%f 3:%f 4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
+	}
+
 	switch (net_type)
 	{
 	case EBP:
 
-		inputsignal[0] = angle_to_waypoint;
-		inputsignal[1] = distance_to_side;
-		inputsignal[2] = speed;
-		inputsignal[3] = tire_angle;
+		
 		ebpNN->SetInputSignal(inputsignal);
 		ebpNN->PropagateSignal();
-		ebpNN->GetOutputSignal(outputs);
+		ebpNN->GetOutputSignal(current_control_states);
 		break;
 
 	case RPROP:
 
-		inputsignal[0] = angle_to_waypoint;
-		inputsignal[1] = distance_to_side;
-		inputsignal[2] = speed;
-		inputsignal[3] = tire_angle;
+
 		rpNN->SetInputSignal(inputsignal);
 		rpNN->PropagateSignal();
-		rpNN->GetOutputSignal(outputs);
+		rpNN->GetOutputSignal(current_control_states);
 
 		break;
 
 	case RMGSN:
 
-		inputsignal[0] = angle_to_waypoint;
-		inputsignal[1] = distance_to_side;
-		inputsignal[2] = speed;
-		inputsignal[3] = tire_angle;
 		rmgsNN->SetInputSignal(inputsignal);
 		rmgsNN->PropagateSignal();
-		rmgsNN->GetOutputSignal(outputs);
+		rmgsNN->GetOutputSignal(current_control_states);
 
 		break;
 

@@ -417,7 +417,7 @@ void SceneApp::GameInit()
 	// FOR TESTING
 	net_type = RMGSN;
 
-	dataSize = 55;
+	dataSize = 10560;
 
 	switch (trackNum_)
 	{
@@ -449,7 +449,7 @@ void SceneApp::GameInit()
 
 	}
 
-	_aiCar->Train("trainingData.txt");
+	_aiCar->Train("traindat.txt");
 	
 
 		
@@ -476,7 +476,7 @@ void SceneApp::GameRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();

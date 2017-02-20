@@ -111,6 +111,8 @@ RProp::~RProp()
 
 int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 {
+	InititaliseRandoms();
+
 	double* hGradTerms = new double[layers[1].num_Neurons];
 	double* oGradTerms = new double[layers[2].num_Neurons];
 
@@ -134,7 +136,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 20;
+	int maxEpochs = 3000;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -142,9 +144,9 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			gef::DebugOut("val: %f  ", trainData[i][j]);
+			//gef::DebugOut("val: %f  ", trainData[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 
@@ -594,7 +596,7 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 		double dNumber;
 		if (read_number(fp, &dNumber))
 		{
-			gef::DebugOut("val: %f", dNumber);
+			//gef::DebugOut("val: %f", dNumber);
 			if (nbi < layers[0].num_Neurons)
 			{
 				result[count][nbi] = dNumber;
@@ -607,7 +609,7 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 				nbt++;
 			}
 
-			gef::DebugOut("nbi: %i, nbt:%i", nbi, nbt);
+			//gef::DebugOut("nbi: %i, nbt:%i", nbi, nbt);
 
 			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
 			{
@@ -620,7 +622,7 @@ double** RProp::fillTrainingData(const char* fname, int rows, int cols)
 		{
 			break;
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	if (fp) fclose(fp);

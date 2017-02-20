@@ -18,6 +18,9 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 	body->CreateFixture(&fixturedef);
 	body->SetTransform(b2Vec2((x*BARWIDTH), (y*BARHEIGHT)), 0);
 
+	mapx = x;
+	mapy = y;
+
 	body->SetUserData(this);
 
 	barrierSprite.set_width(BARWIDTH);
@@ -43,6 +46,9 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 	fixturedef.filter.maskBits = maskBits;
 	body->CreateFixture(&fixturedef);
 	body->SetTransform(b2Vec2((x*BARWIDTH), (y*BARHEIGHT)), 0);
+
+	mapx = x;
+	mapy = y;
 
 	body->SetUserData(this);
 

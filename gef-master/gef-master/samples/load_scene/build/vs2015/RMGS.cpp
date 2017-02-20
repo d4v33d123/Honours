@@ -70,14 +70,16 @@ RMGS::~RMGS()
 
 int RMGS::Train(const char* fnames, int ds)
 {
+	InititaliseRandoms();
+
 	double** trainData = fillTrainingData(fnames, ds, layers[0].num_Neurons + layers[3].num_Neurons);
 	for (int i = 0; i < ds; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			gef::DebugOut("1:%f ", trainData[i][j]);
+			//gef::DebugOut("1:%f ", trainData[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 
@@ -113,9 +115,9 @@ int RMGS::Train(const char* fnames, int ds)
 			// activation funciton
 			layers[1].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
 			FirstHiddenOutput[i][j] = layers[1].neurons[j].output;
-			gef::DebugOut("FHO %i: %f", j, FirstHiddenOutput[i][j]);
+			//gef::DebugOut("FHO %i: %f", j, FirstHiddenOutput[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 	
 
@@ -149,9 +151,9 @@ int RMGS::Train(const char* fnames, int ds)
 	{
 		for (int j = 0; j < layers[2].num_Neurons; j++)
 		{
-			gef::DebugOut("MBD OUTPUT %i:%f     ", j, MBDOutput[i][j]);
+			//gef::DebugOut("MBD OUTPUT %i:%f     ", j, MBDOutput[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	// perfrom gram schmidt on the output layer
@@ -256,9 +258,9 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 			Out[d][i] = layers[2].neurons[i].output;
 			//gef::DebugOut("MBDout %i: %f    ", i, Output[d][i]);
 		}
-		for (int i = 0; i < layers[2].num_Neurons; i++)
-			gef::DebugOut("MBDout %i,%i: %f    ", d,i, Out[d][i]);
-		gef::DebugOut("\n");
+		//for (int i = 0; i < layers[2].num_Neurons; i++)
+			//gef::DebugOut("MBDout %i,%i: %f    ", d,i, Out[d][i]);
+		//gef::DebugOut("\n");
 	}
 	// for all of the neurons in the hidden layer 
 	
@@ -266,9 +268,9 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 	{
 		for (int i = 0; i < layers[2].num_Neurons; i++)
 		{
-			gef::DebugOut("MBD OUTPUT %i:%f     ", i, Out[d][i]);
+			//gef::DebugOut("MBD OUTPUT %i:%f     ", i, Out[d][i]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 }
 
@@ -312,7 +314,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			rkk += power;
 		}
 		R[k][k] = (sqrt(rkk));
-		gef::DebugOut("R:%f   ", R[k][k]);
+		//gef::DebugOut("R:%f   ", R[k][k]);
 
 		for (int j = 0; j < size; j++)
 		{
@@ -321,8 +323,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				divide = (V[j][k] / R[k][k]);
 
 			Q[j][k] = divide;
-			gef::DebugOut("divide:%f   ", divide);
-			gef::DebugOut("Q:%f   ", Q[j][k]);
+			//gef::DebugOut("divide:%f   ", divide);
+			//gef::DebugOut("Q:%f   ", Q[j][k]);
 		}
 
 		for (int j = k + 1; j < layers[currentLayer].num_Neurons; j++)
@@ -354,9 +356,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 		{
 			TQ[j][i] = Q[i][j];
-			gef::DebugOut("TQ %i:%f     ", i, TQ[j][i]);
+			//gef::DebugOut("TQ %i:%f     ", i, TQ[j][i]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
@@ -364,9 +366,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		B = outputs[n];
 		for (int i = 0; i < size; i++)
 		{
-			gef::DebugOut("b %i:%f     ",i, B[i]);
+			//gef::DebugOut("b %i:%f     ",i, B[i]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
@@ -375,10 +377,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			{
 				double multi = (TQ[i][j] * B[j]);
 				Y[i] += multi;
-				gef::DebugOut("TQ:%f    ", TQ[i][j]);
-				gef::DebugOut("Y:%f    ", Y[i]);
+				//gef::DebugOut("TQ:%f    ", TQ[i][j]);
+				//gef::DebugOut("Y:%f    ", Y[i]);
 			}
-			gef::DebugOut("\n");
+			//gef::DebugOut("\n");
 		}
 
 		// now that we have y we can do the gaussian elimination using R and Y to get W
@@ -488,7 +490,7 @@ double** RMGS::fillTrainingData(const char* fname, int rows, int cols)
 		double dNumber;
 		if (read_number(fp, &dNumber))
 		{
-			gef::DebugOut("val: %f", dNumber);
+			//gef::DebugOut("val: %f", dNumber);
 			if (nbi < layers[0].num_Neurons)
 			{
 				result[count][nbi] = dNumber;
@@ -501,7 +503,7 @@ double** RMGS::fillTrainingData(const char* fname, int rows, int cols)
 				nbt++;
 			}
 				
-			gef::DebugOut("nbi: %i, nbt:%i", nbi, nbt);
+			//gef::DebugOut("nbi: %i, nbt:%i", nbi, nbt);
 
 			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
 			{
@@ -514,7 +516,7 @@ double** RMGS::fillTrainingData(const char* fname, int rows, int cols)
 		{
 			break;
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	if (fp) fclose(fp);
