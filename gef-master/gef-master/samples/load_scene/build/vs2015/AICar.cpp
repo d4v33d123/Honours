@@ -30,6 +30,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	fixturedef.filter.maskBits = maskBits;
 	b2Fixture* fixture = body->CreateFixture(&fixturedef);//shape, density
 
+	//body->SetTransform(b2Vec2((150), (150)), 0);
+
 																  //prepare common joint parameters
 	b2RevoluteJointDef jointDef;
 	jointDef.bodyA = body;
@@ -96,7 +98,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 20, 4 };
+	int ennl[] = { 4, 4, 4 };
 	int rpnnl[] = { 4, 10, 4 };
 	int rmnnl[] = { 4, 4, 10, 4 };
 
@@ -128,7 +130,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 6;
+	currentWaypoint = 10;
 	control_state = 0;
 }
 
@@ -137,7 +139,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, 30000);
+		ebpNN->Run(fname, dataSize,30000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:

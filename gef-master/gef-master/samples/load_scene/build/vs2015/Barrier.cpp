@@ -7,7 +7,7 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 	body = world->CreateBody(&bodyDef);
 
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(BARWIDTH, BARHEIGHT);
+	polygonShape.SetAsBox(BARWIDTH/2, BARHEIGHT/2);
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &polygonShape;
@@ -38,7 +38,7 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 	body->SetAngularDamping(5);
 
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(BARWIDTH, BARHEIGHT);
+	polygonShape.SetAsBox(BARWIDTH/2, BARHEIGHT/2);
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &polygonShape;
 	fixturedef.density = 1;

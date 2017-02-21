@@ -29,7 +29,7 @@ private:
 
 	void Simulate(double* input, double* output, double* target, bool training);
 
-	double* ComputeOutputs(double* xValues, int size);
+	void ComputeOutputs(double* xValues, int size, double* outs);
 
 	double Accuracy(double** testData, double* weights, int sizeOfData);
 

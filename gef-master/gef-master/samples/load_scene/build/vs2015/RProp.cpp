@@ -170,12 +170,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 		double* xValues = new double[layers[0].num_Neurons]; // inputs
 		double* tValues = new double[layers[2].num_Neurons]; // target values
+		double* outputs = new double[layers[2].num_Neurons];
+
 		for (int row = 0; row < trainDataSize; ++row)  // walk thru all training data
 		{
 			// no need to visit in random order because all rows processed before any updates ('batch')
 			copy_array_noindex(trainData[row], xValues, layers[0].num_Neurons); // get the inputs
 			copy_array_index(trainData[row], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // get the target values
-			double* outputs = ComputeOutputs(xValues, layers[0].num_Neurons); // copy xValues in, compute outputs using curr weights (and store outputs internally)
+			ComputeOutputs(xValues, layers[0].num_Neurons, outputs); // copy xValues in, compute outputs using curr weights (and store outputs internally)
 
 			// compute the h-o gradient term/component as in regular back-prop
 			// this term usually is lower case Greek delta but there are too many other deltas below
@@ -385,13 +387,14 @@ double RProp::Accuracy(double** testData, double* weights, int sizeOfData)
 	int numWrong = 0;
 	double* xValues = new double[layers[0].num_Neurons]; // inputs
 	double* tValues = new double[layers[2].num_Neurons]; // targets
-	double* yValues; // computed Y
+	double* yValues = new double[layers[2].num_Neurons]; // computed Y
+	//double* outputs ;
 
 	for (int i = 0; i < sizeOfData; ++i)
 	{
 		copy_array_noindex(testData[i], xValues, layers[0].num_Neurons); // parse data into x-values and t-values
 		copy_array_index(testData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons);
-		yValues = ComputeOutputs(xValues, layers[0].num_Neurons);
+		ComputeOutputs(xValues, layers[0].num_Neurons, yValues);
 		int maxIndex = MaxIndex(yValues, layers[2].num_Neurons/*test data length?*/); // which cell in yValues has largest value?
 
 		if (tValues[maxIndex] == 1.0) // ugly. consider AreEqual(double x, double y, double epsilon)
@@ -498,6 +501,7 @@ double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 
 	double* xValues = new double[layers[0].num_Neurons]; // inputs
 	double* tValues = new double[layers[2].num_Neurons]; // targets
+	double* yValues = new double[layers[2].num_Neurons];
 	double sumSquaredError = 0.0;
 	for (int i = 0; i < size; ++i) // walk through each training data item
 	{
@@ -505,7 +509,7 @@ double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 		copy_array_noindex(trainData[i], xValues, layers[0].num_Neurons); // extract inputs
 		copy_array_index(trainData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // extract targets
 		int sizeofy = layers[2].num_Neurons;
-		double* yValues = ComputeOutputs(xValues, sizeofy);
+		ComputeOutputs(xValues, sizeofy, yValues);
 		for (int j = 0; j < sizeofy; ++j)
 			sumSquaredError += ((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
 	}
@@ -514,7 +518,7 @@ double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 	return sumSquaredError;
 }
 
-double* RProp::ComputeOutputs(double* xValues, int size)
+void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 {
 	//double* hSums = new double[numHidden]; // hidden nodes sums scratch array
 	//double* oSums = new double[numOutput]; // output nodes sums
@@ -561,19 +565,18 @@ double* RProp::ComputeOutputs(double* xValues, int size)
 		
 
 
-	double* valuesforsoftout = new double[layers[2].num_Neurons];
 	for (int i = 0; i < layers[2].num_Neurons; i++)
 	{
-		valuesforsoftout[i] = layers[2].neurons[i].output;
+		outs[i] = layers[2].neurons[i].output;
 	}
 
-
+	
 	//double* softOut = Softmax(valuesforsoftout, layers[2].num_Neurons); // softmax activation does all outputs at once for efficiency
 	//Array.Copy(softOut, outputs, softOut.Length);
 
 	//double* retResult = new double[numOutput]; // could define a GetOutputs method instead
 	//Array.Copy(this.outputs, retResult, retResult.Length);
-	return valuesforsoftout;
+	//return valuesforsoftout;
 }
 
 double** RProp::fillTrainingData(const char* fname, int rows, int cols)

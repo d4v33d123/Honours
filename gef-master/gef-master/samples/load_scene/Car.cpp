@@ -18,7 +18,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	vertices[6].Set(-3, 2.5);
 	vertices[7].Set(-1.5, 0);
 	b2PolygonShape polygonShape;
-	polygonShape.SetAsBox(6, 10);
+	polygonShape.SetAsBox(3, 5);
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &polygonShape;

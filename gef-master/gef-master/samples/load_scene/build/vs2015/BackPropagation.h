@@ -11,12 +11,13 @@ public:
 	BProp(int nl, int npl[]);
 	~BProp();
 
-	int Train(const char* fnames);
+	int Train(const char* fnames, int datasize);
+	double ** fillTrainingData(const char * fname, int rows, int cols);
 	int Test(const char* fname);
 	int Evaluate();
 	void PropagateSignal();
 
-	void Run(const char* fname, const int& maxiter);
+	void Run(const char* fname, int datasize,const int& maxiter);
 
 private:
 

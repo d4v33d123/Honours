@@ -415,22 +415,10 @@ void SceneApp::MenuInput()
 void SceneApp::GameInit()
 {
 	// FOR TESTING
-	net_type = RMGSN;
+	net_type = RPROP;
 
 	dataSize = 10560;
 
-	switch (trackNum_)
-	{
-	case 1:
-		level_ = new Track("racetrack.txt", world);
-		break;
-	case 2:
-		level_ = new Track("racetrack2.txt", world);
-		break;
-	case 3:
-		level_ = new Track("racetrack3.txt", world);
-		break;
-	}
 	
 	switch (net_type)
 	{
@@ -449,7 +437,22 @@ void SceneApp::GameInit()
 
 	}
 
+	switch (trackNum_)
+	{
+	case 1:
+		level_ = new Track("racetrack.txt", world);
+		break;
+	case 2:
+		level_ = new Track("racetrack2.txt", world);
+		break;
+	case 3:
+		level_ = new Track("racetrack3.txt", world);
+		break;
+	}
+
 	_aiCar->Train("traindat.txt");
+
+
 	
 
 		
