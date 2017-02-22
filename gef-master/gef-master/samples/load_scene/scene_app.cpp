@@ -415,9 +415,9 @@ void SceneApp::MenuInput()
 void SceneApp::GameInit()
 {
 	// FOR TESTING
-	net_type = RPROP;
+	net_type = EBP;
 
-	dataSize = 10560;
+	dataSize = 500; //10560 data1 2420 dat2 500 dat3
 
 	
 	switch (net_type)
@@ -450,7 +450,7 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	_aiCar->Train("traindat.txt");
+	_aiCar->Train("traindat3.txt");
 
 
 	

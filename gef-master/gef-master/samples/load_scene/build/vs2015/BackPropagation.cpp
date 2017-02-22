@@ -14,9 +14,9 @@ BProp::BProp(int nl, int npl[])
 	layers = 0;
 	dMSE = 0;
 	dMAE = 0;
-	dEta = 0.5; //0.25
+	dEta = 0.25; //0.25
 	dAlpha = 0.9; // 0.9
-	dGain = 1.8; // 1.0
+	dGain = 0.25; // 1.0
 	dAvgTestError = 0.0; 
 	
 	int i, j;
@@ -85,7 +85,7 @@ void BProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.5, 0.5);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.3, 0.3);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
@@ -415,7 +415,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
-		else if (dAvgTestError > 1.2 * dMinTestError)
+		else if (dAvgTestError > 2.4 * dMinTestError)
 		{
 			gef::DebugOut(" -> stopping training and restoring weights\n");
 			Stop = true;
