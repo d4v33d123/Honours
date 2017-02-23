@@ -218,17 +218,21 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	{
 		tire_speed += tires[it]->getSpeed();
 	}
-	speed = ((tire_speed / 4) / 100);
+	speed = ((tire_speed / 4) / 200);
 
 	for (std::vector<Waypoint*>::size_type it = 0; it != wps.size(); it++)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
 			gef::DebugOut("ayy");
-			double val = (wps[it]->body->GetAngle() * RADTODEG) - 90;
-			val += 180;
+			double val = ((wps[it]->body->GetAngle() - body->GetAngle()) * RADTODEG) - 90;
 			val /= 360;
+			if (val < 0)
+				val += 1;
+			else if (val > 1)
+				val -= 1;
 			angle_to_waypoint = val;
+			gef::DebugOut("Waypoint Val :%f", val);
 		}
 	}
 

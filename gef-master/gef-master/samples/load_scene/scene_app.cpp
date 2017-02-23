@@ -417,9 +417,9 @@ void SceneApp::GameInit()
 	
 	
 	// FOR TESTING
-	net_type = RPROP;
+	net_type = RMGSN;
 
-	dataSize = 500; //10560 data1 2420 dat2 500 dat3
+	dataSize = 500; //10600 dat1 2425 dat2 500 dat3
 
 
 

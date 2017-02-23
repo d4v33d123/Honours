@@ -124,6 +124,17 @@ int RMGS::Train(const char* fnames, int ds)
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
 	MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
 
+	// we have to transpose the MBDOutputs for the gram schmidt calculation
+	double** TMBDout = MakeMatrix(layers[2].num_Neurons, datasize, 0);
+	for (int i = 0; i < layers[2].num_Neurons; i++)
+	{
+		for (int j = 0; j < datasize; j++)
+		{
+			TMBDout[i][j] = MBDOutput[j][i];
+			gef::DebugOut("TMBDOut %i: %f     ", i, TMBDout[i][j]);
+		}
+		gef::DebugOut("\n");
+	}
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
 
@@ -143,7 +154,7 @@ int RMGS::Train(const char* fnames, int ds)
 	{
 		for (int j = 0; j < datasize; j++)
 		{
-			ExpectedOutputs[i][j] = trainData[j][i+layers[3].num_Neurons];
+			ExpectedOutputs[i][j] = trainData[j][i+layers[0].num_Neurons];
 		}
 	}
 
@@ -159,15 +170,7 @@ int RMGS::Train(const char* fnames, int ds)
 	// perfrom gram schmidt on the output layer
 	GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
 
-	// we have to transpose the MBDOutputs for the gram schmidt calculation
-	double** TMBDout = MakeMatrix(layers[2].num_Neurons, datasize, 0);
-	for (int i = 0; i < layers[2].num_Neurons; i++)
-	{
-		for (int j = 0; j < datasize; j++)
-		{
-			TMBDout[i][j] = MBDOutput[j][i];
-		}
-	}
+	
 
 
 	// Repeat step 6 and 7 for each neuron in the second hidden layer
@@ -325,8 +328,6 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				divide = (V[j][k] / R[k][k]);
 
 			Q[j][k] = divide;
-			gef::DebugOut("divide:%f   ", divide);
-			gef::DebugOut("Q:%f   ", Q[j][k]);
 		}
 
 		for (int j = k + 1; j < layers[currentLayer].num_Neurons; j++)
@@ -358,19 +359,13 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 		{
 			TQ[j][i] = Q[i][j];
-			//gef::DebugOut("TQ %i:%f     ", i, TQ[j][i]);
-		}
-		//gef::DebugOut("\n");
+		}	
 	}
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
 	{
 		B = outputs[n];
-		for (int i = 0; i < size; i++)
-		{
-			//gef::DebugOut("b %i:%f     ",i, B[i]);
-		}
-		//gef::DebugOut("\n");
+		
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
@@ -379,10 +374,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			{
 				double multi = (TQ[i][j] * B[j]);
 				Y[i] += multi;
-				gef::DebugOut("TQ:%f    ", TQ[i][j]);
-				gef::DebugOut("Y:%f    ", Y[i]);
 			}
-			gef::DebugOut("\n");
 		}
 
 		// now that we have y we can do the gaussian elimination using R and Y to get W
@@ -395,7 +387,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		{
 			for (int j = 0; j < (layers[currentLayer].num_Neurons + 1); j++)
 			{
-				if (j = layers[currentLayer].num_Neurons)
+				if (j == layers[currentLayer].num_Neurons)
 				{
 					RYAug[i][j] = Y[i];
 				}
@@ -403,7 +395,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				{
 					RYAug[i][j] = R[i][j];
 				}
+
+				gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
 			}
+			gef::DebugOut("\n");
 		}
 
 		// LAST SECTION TO FIX
