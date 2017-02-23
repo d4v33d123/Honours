@@ -45,39 +45,11 @@ void SceneApp::Init()
 	SetupCamera();
 
 
-	world = new b2World(b2Vec2(0, 0));
 	
-
-	// set up box 2d related 
-	
-	world->SetGravity(b2Vec2(0, 0));
-	world->SetDestructionListener(&destructionListener);
-
-	//set up ground areas
-	{
-		b2BodyDef bodyDef;
-		groundBody = world->CreateBody(&bodyDef);
-
-		b2PolygonShape polygonShape;
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &polygonShape;
-		fixtureDef.isSensor = true;
-
-		polygonShape.SetAsBox(9, 7, b2Vec2(-10, 15), 20 * DEGTORAD);
-		b2Fixture* groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
-		groundAreaFixture->SetUserData(new GroundAreaFUD(0.5f, false));
-
-		polygonShape.SetAsBox(9, 5, b2Vec2(5, 20), -40 * DEGTORAD);
-		groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
-		groundAreaFixture->SetUserData(new GroundAreaFUD(0.2f, false));
-	}
-
-	controlState = 0;
 
 	game_state = GAME;
 
 
-	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
 
 }
 
@@ -97,9 +69,7 @@ void SceneApp::CleanUp()
 
 bool SceneApp::Update(float frame_time)
 {
-	fps_ = 1.0f / frame_time;
-
-	world->Step(frame_time, 4, 6);
+	
 	HandleInput();
 
 	switch (game_state)
@@ -129,7 +99,7 @@ bool SceneApp::Update(float frame_time)
 			gameinited = true;
 		}
 
-		GameUpdate();
+		GameUpdate(frame_time);
 		break;
 
 	case GAMEOVER:
@@ -414,11 +384,52 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameInit()
 {
+	
+	world = new b2World(b2Vec2(0, 0));
+
+
+	// set up box 2d related 
+
+	world->SetGravity(b2Vec2(0, 0));
+	world->SetDestructionListener(&destructionListener);
+
+	//set up ground areas
+	{
+		b2BodyDef bodyDef;
+		groundBody = world->CreateBody(&bodyDef);
+
+		b2PolygonShape polygonShape;
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &polygonShape;
+		fixtureDef.isSensor = true;
+
+		polygonShape.SetAsBox(9, 7, b2Vec2(-10, 15), 20 * DEGTORAD);
+		b2Fixture* groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
+		groundAreaFixture->SetUserData(new GroundAreaFUD(0.5f, false));
+
+		polygonShape.SetAsBox(9, 5, b2Vec2(5, 20), -40 * DEGTORAD);
+		groundAreaFixture = groundBody->CreateFixture(&fixtureDef);
+		groundAreaFixture->SetUserData(new GroundAreaFUD(0.2f, false));
+	}
+
+	controlState = 0;
+	
+	
+	
 	// FOR TESTING
-	net_type = EBP;
+	net_type = RPROP;
 
 	dataSize = 500; //10560 data1 2420 dat2 500 dat3
 
+
+
+
+	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+	//car->body->SetTransform(b2Vec2(100, 100), 0);
+	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+	{
+		//car->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
+	}
 	
 	switch (net_type)
 	{
@@ -453,13 +464,22 @@ void SceneApp::GameInit()
 	_aiCar->Train("traindat3.txt");
 
 
-	
+	_aiCar->body->SetTransform(b2Vec2(100, 100), (DEGTORAD*180));
+	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+	{
+		_aiCar->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
+	}
+
 
 		
 }
 
-void SceneApp::GameUpdate()
+void SceneApp::GameUpdate(float frame_time)
 {
+	fps_ = 1.0f / frame_time;
+
+	world->Step(frame_time, 4, 6);
+
 	GameInput();
 
 	car->Update(controlState);

@@ -84,7 +84,7 @@ private:
 	bool menuinited;
 
 	void GameInit();
-	void GameUpdate();
+	void GameUpdate(float frame_time);
 	void GameRender();
 	void GameInput();
 	bool gameinited;

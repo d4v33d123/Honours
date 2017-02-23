@@ -136,7 +136,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 3000;
+	int maxEpochs = 30000;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 

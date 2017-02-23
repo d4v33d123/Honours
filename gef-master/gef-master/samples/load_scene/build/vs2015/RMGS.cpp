@@ -217,12 +217,14 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 	// take the first training data input 
 	//double* first_data = trainingData[0];
 
+	int radial = (size / layers[2].num_Neurons);
+
 	// compare it to all of the neurons which are weights of the rest of the training data inputs
 	for (int i = 0; i < layers[2].num_Neurons; i++)
 	{
 		for (int j = 0; j < layers[1].num_Neurons; j++)
 		{
-				layers[2].neurons[i].weight[j] = trainingData[i][j];
+				layers[2].neurons[i].weight[j] = trainingData[i*radial][j];
 		}
 	}
 	
@@ -256,11 +258,11 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 			layers[2].neurons[i].output = nout;
 
 			Out[d][i] = layers[2].neurons[i].output;
-			//gef::DebugOut("MBDout %i: %f    ", i, Output[d][i]);
+			gef::DebugOut("MBDout %i: %f    ", i, Out[d][i]);
 		}
 		//for (int i = 0; i < layers[2].num_Neurons; i++)
 			//gef::DebugOut("MBDout %i,%i: %f    ", d,i, Out[d][i]);
-		//gef::DebugOut("\n");
+		gef::DebugOut("\n");
 	}
 	// for all of the neurons in the hidden layer 
 	
@@ -314,7 +316,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			rkk += power;
 		}
 		R[k][k] = (sqrt(rkk));
-		//gef::DebugOut("R:%f   ", R[k][k]);
+		gef::DebugOut("R:%f   ", R[k][k]);
 
 		for (int j = 0; j < size; j++)
 		{
@@ -323,8 +325,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				divide = (V[j][k] / R[k][k]);
 
 			Q[j][k] = divide;
-			//gef::DebugOut("divide:%f   ", divide);
-			//gef::DebugOut("Q:%f   ", Q[j][k]);
+			gef::DebugOut("divide:%f   ", divide);
+			gef::DebugOut("Q:%f   ", Q[j][k]);
 		}
 
 		for (int j = k + 1; j < layers[currentLayer].num_Neurons; j++)
@@ -377,10 +379,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			{
 				double multi = (TQ[i][j] * B[j]);
 				Y[i] += multi;
-				//gef::DebugOut("TQ:%f    ", TQ[i][j]);
-				//gef::DebugOut("Y:%f    ", Y[i]);
+				gef::DebugOut("TQ:%f    ", TQ[i][j]);
+				gef::DebugOut("Y:%f    ", Y[i]);
 			}
-			//gef::DebugOut("\n");
+			gef::DebugOut("\n");
 		}
 
 		// now that we have y we can do the gaussian elimination using R and Y to get W

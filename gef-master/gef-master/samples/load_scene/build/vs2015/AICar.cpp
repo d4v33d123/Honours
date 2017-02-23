@@ -158,10 +158,9 @@ void AICar::Update(std::vector<Waypoint*> wps)
 	UpdateNN(wps);
 	float newAngle = 0;
 
-	for (int i = 0; i < 4; i++)
-	{
-		gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
-	}
+
+	gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
+	
 
 
 	UpdateButtons();
@@ -250,10 +249,9 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	inputsignal[2] = speed;
 	inputsignal[3] = tire_angle;
 
-	for (int i = 0; i < 4; i++)
-	{
-		gef::DebugOut("Input signals 1:%f 2:%f 3:%f 4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
-	}
+	
+	gef::DebugOut("Input signals 1:%f 2:%f 3:%f 4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
+	
 
 	switch (net_type)
 	{
