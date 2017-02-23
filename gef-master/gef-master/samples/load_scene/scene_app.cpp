@@ -417,7 +417,7 @@ void SceneApp::GameInit()
 	
 	
 	// FOR TESTING
-	net_type = RMGSN;
+	net_type = EBP;
 
 	dataSize = 500; //10600 dat1 2425 dat2 500 dat3
 
@@ -464,10 +464,10 @@ void SceneApp::GameInit()
 	_aiCar->Train("traindat3.txt");
 
 
-	_aiCar->body->SetTransform(b2Vec2(100, 100), (DEGTORAD*180));
+	_aiCar->body->SetTransform(b2Vec2(100, 400), (DEGTORAD*180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
-		_aiCar->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
+		_aiCar->tires[it]->body->SetTransform(b2Vec2(100, 400), 0);
 	}
 
 

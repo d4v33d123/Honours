@@ -96,11 +96,13 @@ int RMGS::Train(const char* fnames, int ds)
 
 
 	// 3. present input vectors (x1, x2....xn) and desired output vectors (d1, d2....dn)
+	double** Inputdata = MakeMatrix(datasize, layers[1].num_Neurons, 0);
 	for (int i = 0; i < datasize; i++)
 	{
 		for (int j = 0; j < layers[0].num_Neurons; j++)
 		{
 			layers[0].neurons[j].output = trainData[i][j];
+			Inputdata[i][j] = trainData[i][j];
 		}
 
 		for (int j = 0; j < layers[1].num_Neurons; j++)
@@ -132,6 +134,18 @@ int RMGS::Train(const char* fnames, int ds)
 		{
 			TMBDout[i][j] = MBDOutput[j][i];
 			gef::DebugOut("TMBDOut %i: %f     ", i, TMBDout[i][j]);
+		}
+		gef::DebugOut("\n");
+	}
+
+	// we have to transpose the FirstHiddenoutputs for the gram schmidt calculation
+	double** TFHO = MakeMatrix(layers[1].num_Neurons, datasize, 0);
+	for (int i = 0; i < layers[1].num_Neurons; i++)
+	{
+		for (int j = 0; j < datasize; j++)
+		{
+			TFHO[i][j] = FirstHiddenOutput[j][i];
+			gef::DebugOut("TFHO %i: %f     ", i, TFHO[i][j]);
 		}
 		gef::DebugOut("\n");
 	}
@@ -175,6 +189,11 @@ int RMGS::Train(const char* fnames, int ds)
 
 	// Repeat step 6 and 7 for each neuron in the second hidden layer
 	GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
+
+
+	// ************** ADD A FINAL GRAM SCHMIDT FOR HIDDEN TO INPUT NEURONS!!!!!! ***************************
+	GramSchmidt(Inputdata, TFHO, datasize, 0);
+
 
 	return 0;
 }
@@ -319,7 +338,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			rkk += power;
 		}
 		R[k][k] = (sqrt(rkk));
-		gef::DebugOut("R:%f   ", R[k][k]);
+		gef::DebugOut("R:%f   \n", R[k][k]);
 
 		for (int j = 0; j < size; j++)
 		{
@@ -337,6 +356,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				double multiply = (V[i][j] * Q[i][k]);
 				R[k][j] += multiply;
 			}
+			R[k][j] /= size;
 			for (int i = 0; i < size; i++)
 			{
 				double multiply = (V[i][j] * R[k][j]);
@@ -407,14 +427,18 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int i = layers[currentLayer].num_Neurons - 1; i > 0; i--)
 		{
 			double weight = 0;
-			if (RYAug[i][i] != 0)
-				weight = RYAug[i][layers[currentLayer].num_Neurons + 1] / RYAug[i][i];
+			//if (RYAug[i][i] != 0)
+				weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
 			W[i] = weight;
+			gef::DebugOut("current weight %i: %f", i, weight);
 			for (int k = i - 1; k > 0; k--)
 			{
-				double multi = RYAug[k][i] * W[i];
+				double multi = (RYAug[k][i]) * W[i];
 				RYAug[k][layers[currentLayer].num_Neurons + 1] -= multi;
+				gef::DebugOut("MULTI %i: %f        ", k, multi);
+				gef::DebugOut("Wi %i: %f          ",i, W[i]);
 			}
+			gef::DebugOut("\n");
 		}
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
