@@ -11,9 +11,9 @@ public:
 	BProp(int nl, int npl[]);
 	~BProp();
 
-	int Train(const char* fnames, int datasize);
+	int Train(const char* fnames, int datasize, double** TrainDat);
 	double ** fillTrainingData(const char * fname, int rows, int cols);
-	int Test(const char* fname);
+	int Test(const char* fname, int datasize, double** TrainDat);
 	int Evaluate();
 	void PropagateSignal();
 

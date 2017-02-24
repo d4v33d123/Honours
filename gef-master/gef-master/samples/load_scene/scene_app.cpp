@@ -425,10 +425,10 @@ void SceneApp::GameInit()
 
 
 	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
-	//car->body->SetTransform(b2Vec2(100, 100), 0);
+	car->body->SetTransform(b2Vec2(100, 100), 0);
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
-		//car->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
+		car->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
 	}
 	
 	switch (net_type)
@@ -464,10 +464,10 @@ void SceneApp::GameInit()
 	_aiCar->Train("traindat3.txt");
 
 
-	_aiCar->body->SetTransform(b2Vec2(100, 400), (DEGTORAD*180));
+	_aiCar->body->SetTransform(b2Vec2(50, 200), (DEGTORAD*180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
-		_aiCar->tires[it]->body->SetTransform(b2Vec2(100, 400), 0);
+		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
 	}
 
 

@@ -14,9 +14,9 @@ BProp::BProp(int nl, int npl[])
 	layers = 0;
 	dMSE = 0;
 	dMAE = 0;
-	dEta = 0.25; //0.25
+	dEta = 0.05; //0.25
 	dAlpha = 0.9; // 0.9
-	dGain = 0.25; // 1.0
+	dGain = 5.0; // 1.0
 	dAvgTestError = 0.0; 
 	
 	int i, j;
@@ -85,7 +85,7 @@ void BProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.3, 0.3);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.5, 0.5);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
@@ -167,8 +167,8 @@ void BProp::AdjustWeights()
 				double output = layers[i - 1].neurons[k].output;
 				double error = layers[i].neurons[j].error;
 				double preweight = layers[i].neurons[j].pre_Weight[k];
-				layers[i].neurons[j].weight[k] += dEta * output * error * dAlpha * preweight;
-				layers[i].neurons[j].pre_Weight[k] = dEta * output * error;
+				layers[i].neurons[j].weight[k] += (dEta * output * error * dAlpha * preweight); // -= is training better than += ?? WIT
+				layers[i].neurons[j].pre_Weight[k] = (dEta * output * error);
 			}
 		}
 	}
@@ -196,7 +196,7 @@ void BProp::Simulate(double* input, double* output, double* target, bool trainin
 
 
 
-int BProp::Train(const char* fname, int datasize)
+int BProp::Train(const char* fname, int datasize, double** TrainDat)
 {
 	int count = 0;
 	int nbi = 0;
@@ -204,8 +204,8 @@ int BProp::Train(const char* fname, int datasize)
 	double* input = NULL;
 	double* output = NULL;
 	double* target = NULL;
-	FILE* fp;
-	errno_t err;
+	//FILE* fp;
+	//errno_t err;
 
 	//if ((err = fopen_s(&fp, fname, "r")) != 0)
 	//{
@@ -221,8 +221,6 @@ int BProp::Train(const char* fname, int datasize)
 	if (!input) return 0;
 	if (!output) return 0;
 	if (!target) return 0;
-
-	double** TrainDat = fillTrainingData(fname, datasize, (layers[0].num_Neurons + layers[num_layers - 1].num_Neurons));
 
 	while (count < datasize)
 	{
@@ -244,11 +242,11 @@ int BProp::Train(const char* fname, int datasize)
 	}
 
 	//if (fp) fclose(fp);
-	for (int i = 0; i < datasize; i++)
+	/*for (int i = 0; i < datasize; i++)
 	{
 		delete[] TrainDat[i];
 	}
-	if (TrainDat) delete[] TrainDat;
+	if (TrainDat) delete[] TrainDat;*/
 	if (input) delete[] input;
 	if (output) delete[] output;
 	if (target) delete[] target;
@@ -310,7 +308,7 @@ double** BProp::fillTrainingData(const char* fname, int rows, int cols)
 }
 
 
-int BProp::Test(const char* fname)
+int BProp::Test(const char* fname, int datasize, double** TrainDat)
 {
 	int count = 0;
 	int nbi = 0;
@@ -318,14 +316,14 @@ int BProp::Test(const char* fname)
 	double* input = NULL;
 	double* output = NULL;
 	double* target = NULL;
-	FILE* fp;
-	errno_t err;
+	//FILE* fp;
+	//errno_t err;
 
-	if ((err = fopen_s(&fp, fname, "r")) != 0)
-	{
-		printf("couldn't open file");
-		return 0;
-	}
+	//if ((err = fopen_s(&fp, fname, "r")) != 0)
+	//{
+	//	printf("couldn't open file");
+	//	return 0;
+	//}
 
 
 	input = new double[layers[0].num_Neurons];
@@ -338,35 +336,28 @@ int BProp::Test(const char* fname)
 
 	dAvgTestError = 0;
 
-	while (!feof(fp))
+	while (count < datasize)
 	{
-		double dNumber;
-		if (read_number(fp, &dNumber))
-		{
-			if (nbi < layers[0].num_Neurons)
-				input[nbi++] = dNumber;
-			else if (nbt < layers[num_layers - 1].num_Neurons)
-				target[nbt++] = dNumber;
 
-			if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
-			{
+		if (nbi < layers[0].num_Neurons)
+			input[nbi++] = TrainDat[count][nbi];
+		else if (nbt < layers[num_layers - 1].num_Neurons)
+			target[nbt++] = TrainDat[count][(nbi + nbt)];
 
-				Simulate(input, output, target, false);
-				dAvgTestError += dMAE;
-				nbi = 0;
-				nbt = 0;
-				count++;
-			}
-		}
-		else
+		if ((nbi == layers[0].num_Neurons) && (nbt == layers[num_layers - 1].num_Neurons))
 		{
-			break;
+			Simulate(input, output, target, false);
+			dAvgTestError += dMAE;
+			nbi = 0;
+			nbt = 0;
+			count++;
 		}
+
 	}
+	
 
 	dAvgTestError /= count;
 
-	if (fp) fclose(fp);
 	if (input) delete[] input;
 	if (output) delete[] output;
 	if (target) delete[] target;
@@ -391,10 +382,12 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 	InititaliseRandoms();
 	RandomWeights();
 
+	double** TrainDat = fillTrainingData(fname, datasize, (layers[0].num_Neurons + layers[num_layers - 1].num_Neurons));
+
 	do
 	{
-		countLines += Train(fname, datasize);
-		Test(fname);
+		countLines += Train(fname, datasize, TrainDat);
+		Test(fname, datasize, TrainDat);
 		countTrain++;
 
 
@@ -403,19 +396,19 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
-		if (countTrain % 100 == 0)
-		{
+		//if (countTrain % 100 == 0)
+		//{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
-		}
+		//}
 			
 
 		if (dAvgTestError < dMinTestError)
 		{
-			//gef::DebugOut(" -> saving weights\n");
+			gef::DebugOut(" -> saving weights\n");
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
-		else if (dAvgTestError > 2.4 * dMinTestError)
+		else if (dAvgTestError > 1.2 * dMinTestError)
 		{
 			gef::DebugOut(" -> stopping training and restoring weights\n");
 			Stop = true;
