@@ -14,9 +14,9 @@ BProp::BProp(int nl, int npl[])
 	layers = 0;
 	dMSE = 0;
 	dMAE = 0;
-	dEta = 0.05; //0.25
+	dEta = 0.25; //0.25
 	dAlpha = 0.9; // 0.9
-	dGain = 5.0; // 1.0
+	dGain = 1.0; // 1.0
 	dAvgTestError = 0.0; 
 	
 	int i, j;
@@ -33,7 +33,7 @@ BProp::BProp(int nl, int npl[])
 		{
 			layers[i].neurons[j].output = 1.0;
 			layers[i].neurons[j].error = 0.0;
-
+			layers[i].neurons[j].bias = 0.05;
 			if (i > 0)
 			{
 				layers[i].neurons[j].weight = new double[npl[i - 1]];
@@ -85,7 +85,7 @@ void BProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.5, 0.5);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(-1.0, 1.0);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
@@ -109,6 +109,7 @@ void BProp::PropagateSignal()
 				double weight = layers[i].neurons[j].weight[k];
 				sum += weight*output;
 			}
+			sum += layers[i].neurons[j].bias;
 			// activation funciton
 			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
 		}
@@ -123,8 +124,9 @@ void BProp::ComputeOutputError(double* target)
 	for (i = 0; i < layers[num_layers - 1].num_Neurons; i++)
 	{
 		double output = layers[num_layers - 1].neurons[i].output;
-		double delta = target[i] - output;
-		layers[num_layers - 1].neurons[i].error = (dGain * output * (1.0 - output) * delta);
+		double delta = (target[i] - output);
+		layers[num_layers - 1].neurons[i].error = ((dGain * output * (1.0 - output)) * delta);
+
 		dMSE += (delta*delta);
 		dMAE += fabs(delta);
 	}
@@ -150,7 +152,7 @@ void BProp::BackPropagateError()
 			{
 				error += layers[i + 1].neurons[k].weight[j] * layers[i + 1].neurons[k].error;
 			}
-			layers[i].neurons[j].error = dGain * output *(1.0 - output)* error;
+			layers[i].neurons[j].error = dGain * (output *(1.0 - output))* error;
 		}
 	}
 }
@@ -167,7 +169,7 @@ void BProp::AdjustWeights()
 				double output = layers[i - 1].neurons[k].output;
 				double error = layers[i].neurons[j].error;
 				double preweight = layers[i].neurons[j].pre_Weight[k];
-				layers[i].neurons[j].weight[k] += (dEta * output * error * dAlpha * preweight); // -= is training better than += ?? WIT
+				layers[i].neurons[j].weight[k] -= ((dEta * output * error) * (dAlpha * preweight)); // -= is training better than += ?? WIT
 				layers[i].neurons[j].pre_Weight[k] = (dEta * output * error);
 			}
 		}
@@ -396,15 +398,15 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
-		//if (countTrain % 100 == 0)
-		//{
+		if (countTrain % 100 == 0)
+		{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
-		//}
+		}
 			
 
 		if (dAvgTestError < dMinTestError)
 		{
-			gef::DebugOut(" -> saving weights\n");
+			//gef::DebugOut(" -> saving weights\n");
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
@@ -416,7 +418,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 		}
 		else
 		{
-			gef::DebugOut(" -> ok\n");
+			//gef::DebugOut(" -> ok\n");
 		}
 
 	} while ((!Stop) && (countTrain < maxiter));

@@ -127,14 +127,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* hPrevBiasGradsAcc = new double[layers[1].num_Neurons];
 
 	// must save previous weight deltas
-	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.01);
-	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.01);
-	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
-	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
+	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.1);
+	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.1);
+	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
+	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
 
-	double etaPlus = 0.2; // values are from the paper
+	double etaPlus = 0.1; // values are from the paper
 	double etaMinus = 0.1;
-	double deltaMax = 5.0;
+	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 5000;
 
@@ -437,7 +437,23 @@ void RProp::RandomWeights()
 
 void RProp::PropagateSignal()
 {
-
+	int i, j, k;
+	for (i = 1; i < num_layers; i++)
+	{
+		for (j = 0; j < layers[i].num_Neurons; j++)
+		{
+			double sum = 0;
+			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
+				double output = layers[i - 1].neurons[k].output;
+				double weight = layers[i].neurons[j].weight[k];
+				sum += weight*output;
+			}
+			sum += layers[i].neurons[j].bias;
+			// activation funciton
+			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
+		}
+	}
 }
 
 void RProp::AdjustWeights()
@@ -543,7 +559,8 @@ void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 	for (int i = 0; i < layers[1].num_Neurons; ++i)   // apply activation
 	{
 		double output = layers[1].neurons[i].output;
-		layers[1].neurons[i].output = HyperTan(output); // hard-coded
+		double sig = layers[1].neurons[i].output / (1 + exp(fabs(layers[1].neurons[i].output)));
+		layers[1].neurons[i].output = sig; // hard-coded
 	}
 		
 	for (int j = 0; j < layers[2].num_Neurons; ++j)  // compute i-h sum of weights * inputs
@@ -559,7 +576,7 @@ void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 
 	for (int i = 0; i < layers[2].num_Neurons; ++i)  // sigmoid activation
 	{
-		double sig = layers[2].neurons[i].output / (1 + fabs(layers[2].neurons[i].output));
+		double sig = layers[2].neurons[i].output / (1 + exp(fabs(layers[2].neurons[i].output)));
 		layers[2].neurons[i].output = sig;
 	}
 		

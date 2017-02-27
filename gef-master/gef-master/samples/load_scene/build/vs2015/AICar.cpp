@@ -98,7 +98,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 5, 10, 5, 4 };
+	int ennl[] = { 4, 20, 10,  4 };
 	int rpnnl[] = { 4, 10, 4 };
 	int rmnnl[] = { 4, 4, 10, 4 };
 
@@ -107,7 +107,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	{
 	case EBP:
 		
-		ebpNN = new BProp(5, ennl);
+		ebpNN = new BProp(4, ennl);
 		break;
 	case RPROP:
 		
@@ -130,7 +130,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 1;
+	currentWaypoint = 10;
 	control_state = 0;
 }
 
@@ -139,7 +139,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 300000);
+		ebpNN->Run(fname, dataSize, 30000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -156,8 +156,14 @@ void AICar::Train(const char* fname)
 void AICar::Update(std::vector<Waypoint*> wps)
 {
 	UpdateNN(wps);
+
 	float newAngle = 0;
 
+	for (int i = 0; i < 4; i++)
+	{
+		
+	}
+		
 
 	gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 	

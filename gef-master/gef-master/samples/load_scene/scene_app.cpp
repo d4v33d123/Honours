@@ -417,14 +417,14 @@ void SceneApp::GameInit()
 	
 	
 	// FOR TESTING
-	net_type = EBP;
+	net_type = RPROP; //EBP is tilting me
 
-	dataSize = 500; //10600 dat1 2425 dat2 500 dat3
+	dataSize = 500; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6
+ 
 
 
 
-
-	car = new Car(world, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+	car = new Car(world, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT);
 	car->body->SetTransform(b2Vec2(100, 100), 0);
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
@@ -434,16 +434,16 @@ void SceneApp::GameInit()
 	switch (net_type)
 	{
 	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT );
 		
 		break;
 
 	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT , TIRECAT, BARRIERCAT);
 		break;
 
 	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT);
 		break;
 
 	}
@@ -461,7 +461,7 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	_aiCar->Train("traindat3.txt");
+	_aiCar->Train("traindat6.txt");
 
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), (DEGTORAD*180));

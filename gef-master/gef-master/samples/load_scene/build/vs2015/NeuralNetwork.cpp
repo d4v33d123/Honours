@@ -12,10 +12,14 @@ void Network::SetInputSignal(double* input)
 void Network::GetOutputSignal(double* output)
 {
 	int i;
-	for (i = 0; i < layers[num_layers - 1].num_Neurons; i++)
+	if (output)
 	{
-		output[i] = layers[num_layers - 1].neurons[i].output;
+		for (i = 0; i < layers[num_layers - 1].num_Neurons; i++)
+		{
+			output[i] = layers[num_layers - 1].neurons[i].output;
+		}
 	}
+	
 }
 
 void Network::SaveWeights()
