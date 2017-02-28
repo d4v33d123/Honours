@@ -99,7 +99,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	net_type = network;
 
 	int ennl[] = { 4, 20, 10,  4 };
-	int rpnnl[] = { 4, 10, 4 };
+	int rpnnl[] = { 4, 50, 4 };
 	int rmnnl[] = { 4, 4, 10, 4 };
 
 
@@ -130,7 +130,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 0;
+	currentWaypoint = 5;
 	control_state = 0;
 }
 
@@ -144,6 +144,7 @@ void AICar::Train(const char* fname)
 		break;
 	case RPROP:
 		rpNN->Train(fname, dataSize, 4);
+		rpNN->Accuracy(fname, dataSize);
 		gef::DebugOut("trained RPROP");
 		break;
 	case RMGSN:
@@ -248,7 +249,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
-	inputsignal[0] = fmod(abs(angle_to_waypoint),1) ;// +0.5;
+	inputsignal[0] = fmod(abs(angle_to_waypoint +0.5), 1);
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
 	inputsignal[3] = tire_angle;

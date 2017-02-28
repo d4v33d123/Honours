@@ -14,6 +14,8 @@ public:
 
 	int Train(const char* fnames, int trainDataSize, int numInAndOut);
 	int Test(const char* fname);
+
+	void Accuracy(const char* fnames, int trainDataSize);
 	int Evaluate();
 	void PropagateSignal();
 
@@ -31,7 +33,6 @@ private:
 
 	void ComputeOutputs(double* xValues, int size, double* outs);
 
-	double Accuracy(double** testData, double* weights, int sizeOfData);
 
 	void ZeroOutArray(double* ary, int size);
 

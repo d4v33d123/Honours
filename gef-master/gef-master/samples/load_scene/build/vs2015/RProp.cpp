@@ -132,11 +132,11 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
 	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
 
-	double etaPlus = 0.01; // values are from the paper
-	double etaMinus = 0.01;
+	double etaPlus = 0.05; // values are from the paper
+	double etaMinus = 0.05;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 50000;
+	int maxEpochs = 5000;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -144,9 +144,9 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	{
 		for (int j = 0; j < 8; j++)
 		{
-			//gef::DebugOut("val: %f  ", trainData[i][j]);
+			gef::DebugOut("val: %f  ", trainData[i][j]);
 		}
-		//gef::DebugOut("\n");
+		gef::DebugOut("\n");
 	}
 
 
@@ -385,7 +385,7 @@ int RProp::Test(const char* fname)
 	return 0;
 }
 
-double RProp::Accuracy(double** testData, double* weights, int sizeOfData)
+void RProp::Accuracy(const char* fnames, int trainDataSize)
 {
 	// no need to set the weights as they are aleady set in the layers variable
 	//this.SetWeights(weights);
@@ -397,10 +397,12 @@ double RProp::Accuracy(double** testData, double* weights, int sizeOfData)
 	double* yValues = new double[layers[2].num_Neurons]; // computed Y
 	//double* outputs ;
 
-	for (int i = 0; i < sizeOfData; ++i)
+	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
+
+	for (int i = 0; i < trainDataSize; ++i)
 	{
-		copy_array_noindex(testData[i], xValues, layers[0].num_Neurons); // parse data into x-values and t-values
-		copy_array_index(testData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons);
+		copy_array_noindex(trainData[i], xValues, layers[0].num_Neurons); // parse data into x-values and t-values
+		copy_array_index(trainData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons);
 		ComputeOutputs(xValues, layers[0].num_Neurons, yValues);
 		int maxIndex = MaxIndex(yValues, layers[2].num_Neurons/*test data length?*/); // which cell in yValues has largest value?
 
@@ -409,7 +411,7 @@ double RProp::Accuracy(double** testData, double* weights, int sizeOfData)
 		else
 			++numWrong;
 	}
-	return (numCorrect * 1.0) / (numCorrect + numWrong); // ugly 2 - check for divide by zero
+	gef::DebugOut("Accuracy : %f\n", (numCorrect * 1.0) / (numCorrect + numWrong)); // ugly 2 - check for divide by zero
 }
 
 int RProp::Evaluate()

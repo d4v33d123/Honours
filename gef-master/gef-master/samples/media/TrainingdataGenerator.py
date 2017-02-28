@@ -8,7 +8,7 @@ def frange(start, stop, step):
         i += step
 
 def main():
-    file = open("traindat13.txt", "w")
+    file = open("traindat14.txt", "w")
 
     # now we have to write each line of the code
     # f = angle to waypoint
@@ -16,7 +16,7 @@ def main():
     # j = speed
     # k = tire angle
     # !!!!!!!!!!!!!!!!!!! putting zero as a desired output value is an issue because how do you multiply to get to 0??!!!!
-    for f in frange(0, 1, 0.1):  #0.025 for traindat.txt |||| 0.1 for traindat2.txt |||| 0.2 for traindat3.txt
+    for f in frange(0, 1, 0.05):  #0.025 for traindat.txt |||| 0.1 for traindat2.txt |||| 0.2 for traindat3.txt
         for s in frange(0, 1, 0.2): #0.2 for traindat3 |||| 0.1 for traindat&2
             for j in frange(0, 1, 0.2):
                 for k in frange(0, 1, 0.1):
@@ -45,14 +45,12 @@ def main():
                                 else:
                                     file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 1, 0, 1, 0))
                     elif(f <= 0.4):
-                        
                         if(k > 0.3 and k < 0.7):
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 0, 1, 0, 1))
                         elif(k <= 0.3):
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 0, 0, 0, 1))
                         else:
-                            file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 0, 0, 0, 1))
-                                        
+                            file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 0, 0, 0, 1))                              
                     elif(f >= 0.6):
                         if(k > 0.3 and k < 0.7):
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f), noise(s), noise(j), noise(k), 1, 0, 0, 1))
