@@ -130,7 +130,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 10;
+	currentWaypoint = 1;
 	control_state = 0;
 }
 
@@ -254,7 +254,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
-	inputsignal[0] = angle_to_waypoint;
+	inputsignal[0] = angle_to_waypoint + 0.5;
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
 	inputsignal[3] = tire_angle;

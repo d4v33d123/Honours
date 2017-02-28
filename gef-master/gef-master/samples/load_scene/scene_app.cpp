@@ -419,7 +419,7 @@ void SceneApp::GameInit()
 	// FOR TESTING
 	net_type = RPROP; //EBP is tilting me
 
-	dataSize = 500; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6
+	dataSize =10600; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6
  
 
 
@@ -461,7 +461,7 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	_aiCar->Train("traindat6.txt");
+	_aiCar->Train("traindat.txt");
 
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), (DEGTORAD*180));

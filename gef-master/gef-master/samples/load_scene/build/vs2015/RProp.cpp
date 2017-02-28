@@ -132,8 +132,8 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
 	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
 
-	double etaPlus = 0.1; // values are from the paper
-	double etaMinus = 0.1;
+	double etaPlus = 0.01; // values are from the paper
+	double etaMinus = 0.01;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 5000;
@@ -559,7 +559,7 @@ void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 	for (int i = 0; i < layers[1].num_Neurons; ++i)   // apply activation
 	{
 		double output = layers[1].neurons[i].output;
-		double sig = layers[1].neurons[i].output / (1 + exp(fabs(layers[1].neurons[i].output)));
+		double sig = 1 / (1 + exp(-(layers[1].neurons[i].output)));
 		layers[1].neurons[i].output = sig; // hard-coded
 	}
 		
@@ -576,7 +576,7 @@ void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 
 	for (int i = 0; i < layers[2].num_Neurons; ++i)  // sigmoid activation
 	{
-		double sig = layers[2].neurons[i].output / (1 + exp(fabs(layers[2].neurons[i].output)));
+		double sig = 1 / (1 + exp(-(layers[2].neurons[i].output))); //layers[2].neurons[i].output / (1 + exp(-(layers[2].neurons[i].output)));
 		layers[2].neurons[i].output = sig;
 	}
 		
