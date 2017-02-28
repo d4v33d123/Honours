@@ -127,16 +127,16 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* hPrevBiasGradsAcc = new double[layers[1].num_Neurons];
 
 	// must save previous weight deltas
-	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.1);
-	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.1);
-	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
-	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
+	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.01);
+	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.01);
+	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
+	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
 
 	double etaPlus = 0.01; // values are from the paper
 	double etaMinus = 0.01;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 5000;
+	int maxEpochs = 50000;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -154,12 +154,17 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	while (epoch < maxEpochs)
 	{
 		++epoch;
+		if (epoch % 100 == 0)
+		{
+			gef::DebugOut("epoch = %i \n", epoch);
+		}
+		
 		// update this with getting the current weights of all the layers
 		/*if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
 			double* currWts = GetWeights();
 			double err = MeanSquaredError(trainData, currWts, trainDataSize);
-			gef::DebugOut("epoch = %i  err = %f", epoch, err);
+			
 		}*/
 		
 		// 1. compute and accumulate all gradients
@@ -171,8 +176,9 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		double* xValues = new double[layers[0].num_Neurons]; // inputs
 		double* tValues = new double[layers[2].num_Neurons]; // target values
 		double* outputs = new double[layers[2].num_Neurons];
+		//int add = trainDataSize / 25;
 
-		for (int row = 0; row < trainDataSize; ++row)  // walk thru all training data
+		for (int row = 0; row < trainDataSize; row++)  // walk thru all training data
 		{
 			// no need to visit in random order because all rows processed before any updates ('batch')
 			copy_array_noindex(trainData[row], xValues, layers[0].num_Neurons); // get the inputs
@@ -183,14 +189,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			// this term usually is lower case Greek delta but there are too many other deltas below
 			for (int i = 0; i < layers[2].num_Neurons; ++i)
 			{
-				double derivative = (1 - outputs[i]) * outputs[i]; // derivative of softmax = (1 - y) * y (same as log-sigmoid)
+				double derivative = ((1 / (1 + exp((outputs[i]))) - 1) / (1 / (1 + exp((outputs[i])))));// (1 - outputs[i]) * (1 + outputs[i]); // derivative of softmax = (1 - y) * y (same as log-sigmoid)
 				oGradTerms[i] = derivative * (outputs[i] - tValues[i]); // careful with O-T vs. T-O, O-T is the most usual
 			}
 
 			// compute the i-h gradient term/component as in regular back-prop
 			for (int i = 0; i < layers[1].num_Neurons; ++i)
 			{
-				double derivative = (1 - layers[1].neurons[i].output) * (1 + layers[1].neurons[i].output); // derivative of tanh = (1 - y) * (1 + y)
+				double derivative = ((1 / (1 + exp((layers[1].neurons[i].output))) - 1) / (1 / (1 + exp((layers[1].neurons[i].output)))));// (1 - layers[1].neurons[i].output) * (1 + layers[1].neurons[i].output); // derivative of tanh = (1 - y) * (1 + y)
 				double sum = 0.0;
 				for (int j = 0; j < layers[2].num_Neurons; ++j) // each hidden delta is the sum of numOutput terms
 				{
@@ -233,6 +239,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				double grad = hGradTerms[i] * 1.0;
 				hBiasGradsAcc[i] += grad;
 			}
+			//gef::DebugOut("row %i \n", row);
 		} // each row
 		  // end compute all gradients
 
@@ -426,7 +433,7 @@ void RProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(1.0, -1.0);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}

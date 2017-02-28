@@ -130,7 +130,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 1;
+	currentWaypoint = 0;
 	control_state = 0;
 }
 
@@ -157,13 +157,7 @@ void AICar::Update(std::vector<Waypoint*> wps)
 {
 	UpdateNN(wps);
 
-	float newAngle = 0;
-
-	for (int i = 0; i < 4; i++)
-	{
-		
-	}
-		
+	float newAngle = 0;		
 
 	gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 	
@@ -203,7 +197,7 @@ void AICar::Update(std::vector<Waypoint*> wps)
 	double newtireangle = ((newAngle * RADTODEG) / 90);
 	gef::DebugOut("newAngle: %f", newAngle);
 
-	tire_angle = newtireangle;
+	tire_angle = (newtireangle+0.5);
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -242,7 +236,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		}
 	}
 
-	distance_to_side = 0;
+	distance_to_side = 0.5;
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -254,7 +248,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
-	inputsignal[0] = angle_to_waypoint + 0.5;
+	inputsignal[0] = fmod(abs(angle_to_waypoint),1) ;// +0.5;
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
 	inputsignal[3] = tire_angle;
