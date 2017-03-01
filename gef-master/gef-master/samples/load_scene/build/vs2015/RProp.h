@@ -42,7 +42,7 @@ private:
 
 	double * GetWeights();
 
-	double MeanSquaredError(double** trainData, double* weights, int size);
+	double MeanSquaredError(double** trainData, int size);
 
 };
 

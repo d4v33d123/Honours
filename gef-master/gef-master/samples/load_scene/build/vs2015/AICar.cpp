@@ -98,7 +98,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 20, 10,  4 };
+	int ennl[] = { 4, 4, 10,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
 	int rpnnl[] = { 4, 50, 4 };
 	int rmnnl[] = { 4, 4, 10, 4 };
 
@@ -139,7 +139,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 30000);
+		ebpNN->Run(fname, dataSize, 1000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -252,7 +252,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	inputsignal[0] = fmod(abs(angle_to_waypoint +0.5), 1);
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
-	inputsignal[3] = tire_angle;
+	inputsignal[3] = fmod(abs(tire_angle),1);
 
 	
 	gef::DebugOut("Input signals 1:%f 2:%f 3:%f 4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);

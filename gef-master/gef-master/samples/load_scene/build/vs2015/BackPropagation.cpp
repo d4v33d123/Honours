@@ -14,7 +14,7 @@ BProp::BProp(int nl, int npl[])
 	layers = 0;
 	dMSE = 0;
 	dMAE = 0;
-	dEta = 0.25; //0.25
+	dEta = 0.5; //0.25
 	dAlpha = 0.9; // 0.9
 	dGain = 1.0; // 1.0
 	dAvgTestError = 0.0; 
@@ -33,7 +33,7 @@ BProp::BProp(int nl, int npl[])
 		{
 			layers[i].neurons[j].output = 1.0;
 			layers[i].neurons[j].error = 0.0;
-			layers[i].neurons[j].bias = 0.05;
+			layers[i].neurons[j].bias = 0.0;
 			if (i > 0)
 			{
 				layers[i].neurons[j].weight = new double[npl[i - 1]];

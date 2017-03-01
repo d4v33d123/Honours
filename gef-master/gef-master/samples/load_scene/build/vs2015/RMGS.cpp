@@ -133,9 +133,9 @@ int RMGS::Train(const char* fnames, int ds)
 		for (int j = 0; j < datasize; j++)
 		{
 			TMBDout[i][j] = MBDOutput[j][i];
-			gef::DebugOut("TMBDOut %i: %f     ", i, TMBDout[i][j]);
+			//gef::DebugOut("TMBDOut %i: %f     ", i, TMBDout[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	// we have to transpose the FirstHiddenoutputs for the gram schmidt calculation
@@ -145,9 +145,9 @@ int RMGS::Train(const char* fnames, int ds)
 		for (int j = 0; j < datasize; j++)
 		{
 			TFHO[i][j] = FirstHiddenOutput[j][i];
-			gef::DebugOut("TFHO %i: %f     ", i, TFHO[i][j]);
+			//gef::DebugOut("TFHO %i: %f     ", i, TFHO[i][j]);
 		}
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
@@ -247,6 +247,7 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 		for (int j = 0; j < layers[1].num_Neurons; j++)
 		{
 				layers[2].neurons[i].weight[j] = trainingData[i*radial][j];
+				gef::DebugOut("i*radial : %i\n", (i*radial));
 		}
 	}
 	
@@ -280,11 +281,11 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 			layers[2].neurons[i].output = nout;
 
 			Out[d][i] = layers[2].neurons[i].output;
-			gef::DebugOut("MBDout %i: %f    ", i, Out[d][i]);
+			//gef::DebugOut("MBDout %i: %f    ", i, Out[d][i]);
 		}
 		//for (int i = 0; i < layers[2].num_Neurons; i++)
 			//gef::DebugOut("MBDout %i,%i: %f    ", d,i, Out[d][i]);
-		gef::DebugOut("\n");
+		//gef::DebugOut("\n");
 	}
 	// for all of the neurons in the hidden layer 
 	
@@ -338,7 +339,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			rkk += power;
 		}
 		R[k][k] = (sqrt(rkk));
-		gef::DebugOut("R:%f   \n", R[k][k]);
+		//gef::DebugOut("R:%f   \n", R[k][k]);
 
 		for (int j = 0; j < size; j++)
 		{
@@ -416,9 +417,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 					RYAug[i][j] = R[i][j];
 				}
 
-				gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
+				//gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
 			}
-			gef::DebugOut("\n");
+			//gef::DebugOut("\n");
 		}
 
 		// LAST SECTION TO FIX
@@ -430,14 +431,15 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			//if (RYAug[i][i] != 0)
 				weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
 			W[i] = weight;
-			gef::DebugOut("current weight %i: %f", i, weight);
+			//gef::DebugOut("current weight %i: %f", i, weight);
 			for (int k = i - 1; k > 0; k--)
 			{
 				double multi = (RYAug[k][i]) * W[i];
 				RYAug[k][layers[currentLayer].num_Neurons + 1] -= multi;
-				gef::DebugOut("MULTI %i: %f        ", k, multi);
-				gef::DebugOut("Wi %i: %f          ",i, W[i]);
+				//gef::DebugOut("MULTI %i: %f        ", k, multi);
+				
 			}
+			gef::DebugOut("layer %i Wi %i: %f          ", currentLayer, i, W[i]);
 			gef::DebugOut("\n");
 		}
 

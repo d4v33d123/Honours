@@ -113,27 +113,27 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 {
 	InititaliseRandoms();
 
-	double* hGradTerms = new double[layers[1].num_Neurons];
-	double* oGradTerms = new double[layers[2].num_Neurons];
+	double* hGradTerms = MakeVector(layers[1].num_Neurons, 0.0);
+	double* oGradTerms = MakeVector(layers[2].num_Neurons, 0.0);
 
 	double** hoWeightGradsAcc = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.0); // accumulated over all training data
 	double** ihWeightGradsAcc = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.0);
-	double* oBiasGradsAcc = new double[layers[2].num_Neurons];
-	double* hBiasGradsAcc = new double[layers[1].num_Neurons];
+	double* oBiasGradsAcc = MakeVector(layers[2].num_Neurons, 0.0);
+	double* hBiasGradsAcc = MakeVector(layers[1].num_Neurons, 0.0);
 
 	double** hoPrevWeightGradsAcc = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.0); // accumulated, previous iteration
 	double** ihPrevWeightGradsAcc = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.0);
-	double* oPrevBiasGradsAcc = new double[layers[2].num_Neurons];
-	double* hPrevBiasGradsAcc = new double[layers[1].num_Neurons];
+	double* oPrevBiasGradsAcc = MakeVector(layers[2].num_Neurons, 0.0);
+	double* hPrevBiasGradsAcc = MakeVector(layers[1].num_Neurons, 0.0);
 
 	// must save previous weight deltas
-	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.01);
-	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.01);
-	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
-	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
+	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.1);
+	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.1);
+	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
+	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
 
-	double etaPlus = 0.05; // values are from the paper
-	double etaMinus = 0.05;
+	double etaPlus = 2.0; // values are from the paper
+	double etaMinus = 2.0;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 5000;
@@ -154,18 +154,15 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	while (epoch < maxEpochs)
 	{
 		++epoch;
-		if (epoch % 100 == 0)
-		{
-			gef::DebugOut("epoch = %i \n", epoch);
-		}
 		
 		// update this with getting the current weights of all the layers
-		/*if (epoch % 100 == 0 && epoch != maxEpochs)
+		if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
-			double* currWts = GetWeights();
-			double err = MeanSquaredError(trainData, currWts, trainDataSize);
+			//double* currWts = GetWeights();
+			double err = MeanSquaredError(trainData,  trainDataSize);
+			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);
 			
-		}*/
+		}
 		
 		// 1. compute and accumulate all gradients
 		ZeroOutMat(hoWeightGradsAcc); // zero-out values from prev iteration
@@ -256,7 +253,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				{
 					delta = ihPrevWeightDeltas[i][j] * etaPlus; // compute delta
 					if (delta > deltaMax) delta = deltaMax; // keep it in range
-					double tmp = -sgn(ihWeightGradsAcc[i][j]) * delta; // determine direction and magnitude
+					double tmp = (-sgn(ihWeightGradsAcc[i][j])) * delta; // determine direction and magnitude
 					layers[1].neurons[j].weight[i] += tmp; // update weights
 				}
 				else if ((ihPrevWeightGradsAcc[i][j] * ihWeightGradsAcc[i][j]) < 0) // grad changed sign, decrease delta
@@ -287,7 +284,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			{
 				delta = hPrevBiasDeltas[i] * etaPlus; // compute delta
 				if (delta > deltaMax) delta = deltaMax;
-				double tmp = -sgn(hBiasGradsAcc[i]) * delta; // determine direction
+				double tmp = (-sgn(hBiasGradsAcc[i])) * delta; // determine direction
 				layers[1].neurons[i].bias += tmp; // update
 			}
 			else if ((hPrevBiasGradsAcc[i] * hBiasGradsAcc[i]) < 0) // grad changed sign, decrease delta
@@ -304,7 +301,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				if (delta > deltaMax) delta = deltaMax;
 				else if (delta < deltaMin) delta = deltaMin;
 				// no way should delta be 0 . . . 
-				double tmp = -sgn(hBiasGradsAcc[i]) * delta; // determine direction
+				double tmp = (-sgn(hBiasGradsAcc[i])) * delta; // determine direction
 				layers[1].neurons[i].bias += tmp; // update
 			}
 			hPrevBiasDeltas[i] = delta;
@@ -319,9 +316,11 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				if ((hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j]) > 0) // no sign change, increase delta
 				{
 					delta = hoPrevWeightDeltas[i][j] * etaPlus; // compute delta
+					gef::DebugOut("Delta: %f    ", delta);
 					if (delta > deltaMax) delta = deltaMax;
-					double tmp = -sgn(hoWeightGradsAcc[i][j]) * delta; // determine direction
+					double tmp = (-sgn(hoWeightGradsAcc[i][j])) * delta; // determine direction
 					layers[2].neurons[j].weight[i] += tmp; // update
+					gef::DebugOut("tmp: %f \n", tmp);
 				}
 				else if ((hoPrevWeightGradsAcc[i][j] * hoWeightGradsAcc[i][j]) < 0) // grad changed sign, decrease delta
 				{
@@ -334,12 +333,14 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				{
 					delta = hoPrevWeightDeltas[i][j]; // no change to delta
 													  // no way should delta be 0 . . . 
-					double tmp = -sgn(hoWeightGradsAcc[i][j]) * delta; // determine direction
+					double tmp = (-sgn(hoWeightGradsAcc[i][j])) * delta; // determine direction
 					layers[2].neurons[j].weight[i] += tmp; // update
 				}
+				gef::DebugOut("neuron %i weight %i: %f      ", j, i, layers[2].neurons[j].weight[i]);
 				hoPrevWeightDeltas[i][j] = delta; // save delta
 				hoPrevWeightGradsAcc[i][j] = hoWeightGradsAcc[i][j]; // save the (accumulated) gradients
 			} // j
+			gef::DebugOut("\n");
 		} // i
 
 		  // update (hidden-to-) output biases
@@ -349,7 +350,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			{
 				delta = oPrevBiasDeltas[i] * etaPlus; // compute delta
 				if (delta > deltaMax) delta = deltaMax;
-				double tmp = -sgn(oBiasGradsAcc[i]) * delta; // determine direction
+				double tmp = (-sgn(oBiasGradsAcc[i])) * delta; // determine direction
 				layers[2].neurons[i].bias += tmp; // update
 			}
 			else if ((oPrevBiasGradsAcc[i] * oBiasGradsAcc[i]) < 0) // grad changed sign, decrease delta
@@ -363,7 +364,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			{
 				delta = oPrevBiasDeltas[i]; // no change to delta
 											// no way should delta be 0 . . . 
-				double tmp = -sgn(hBiasGradsAcc[i]) * delta; // determine direction
+				double tmp = (-sgn(hBiasGradsAcc[i])) * delta; // determine direction
 				layers[2].neurons[i].bias += tmp; // update
 			}
 			oPrevBiasDeltas[i] = delta;
@@ -520,7 +521,7 @@ double* Softmax(double* oSums, int size)
 	return result; // now scaled so that xi sum to 1.0
 }
 
-double RProp::MeanSquaredError(double** trainData, double* weights, int size)
+double RProp::MeanSquaredError(double** trainData, int size) //double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 {
 	//SetWeights(weights); // copy the weights to evaluate in
 
@@ -539,6 +540,8 @@ double RProp::MeanSquaredError(double** trainData, double* weights, int size)
 			sumSquaredError += ((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
 	}
 	sumSquaredError /= size;
+
+	gef::DebugOut("MeanSquaredError: %f", sumSquaredError);
 
 	return sumSquaredError;
 }
