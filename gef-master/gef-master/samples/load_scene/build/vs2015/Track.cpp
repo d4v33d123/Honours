@@ -248,7 +248,7 @@ void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == upper && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, 0, waypointOrderPositions));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, CARCAT, waypointOrderPositions));
 	}
 }
 
@@ -260,7 +260,7 @@ void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 		barrier* bar2 = *it;
 		// make sure the barrier isn't equal to the current one
 		if (bar2->WaypointVal == higher && bar != bar2)
-			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, 0, waypointOrderPositions));
+			WayPoints.push_back(new Waypoint(bar->body->GetPosition().x, bar->body->GetPosition().y, bar2->body->GetPosition().x, bar2->body->GetPosition().y, bar2->mapy, bar2->mapx, world, WAYPOINTCAT, CARCAT, waypointOrderPositions));
 	}
 }
 

@@ -392,6 +392,7 @@ void SceneApp::GameInit()
 
 	world->SetGravity(b2Vec2(0, 0));
 	world->SetDestructionListener(&destructionListener);
+	world->SetContactListener(&wayListener);
 
 	//set up ground areas
 	{
@@ -424,7 +425,7 @@ void SceneApp::GameInit()
 
 
 
-	car = new Car(world, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT);
+	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
 	car->body->SetTransform(b2Vec2(100, 100), 0);
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
@@ -434,16 +435,16 @@ void SceneApp::GameInit()
 	switch (net_type)
 	{
 	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT );
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT );
 		
 		break;
 
 	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT , TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
 		break;
 
 	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
 		break;
 
 	}
@@ -482,7 +483,7 @@ void SceneApp::GameUpdate(float frame_time)
 
 	GameInput();
 
-	car->Update(controlState);
+	car->Update(controlState, level_->getWaypoints());
 	_aiCar->Update(level_->getWaypoints());
 	level_->UpdateSprites();
 }

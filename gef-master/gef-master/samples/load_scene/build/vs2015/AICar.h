@@ -39,7 +39,7 @@ public:
 	float distance_to_side;
 	float speed;
 	float tire_angle;
-	int currentWaypoint;
+
 
 	Net net_type;
 };

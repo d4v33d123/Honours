@@ -47,6 +47,42 @@ class MyDestructionListener : public b2DestructionListener
 	void SayGoodbye(b2Joint* joint) {}
 };
 
+// Contact listener for dealing with our waypoints and cars
+class WaypointContactListener : public b2ContactListener
+{
+	void BeginContact(b2Contact* contact)
+	{
+
+		//check if fixture A was a ball
+		void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
+		void* bodyUserData2 = contact->GetFixtureB()->GetBody()->GetUserData();
+		if (bodyUserData && bodyUserData2)
+		{
+			UpdateWay(static_cast<Car*>(bodyUserData), static_cast<Waypoint*>(bodyUserData2));
+			UpdateWay(static_cast<Car*>(bodyUserData2), static_cast<Waypoint*>(bodyUserData));
+
+			UpdateAIWay(static_cast<AICar*>(bodyUserData), static_cast<Waypoint*>(bodyUserData2));
+			UpdateAIWay(static_cast<AICar*>(bodyUserData2), static_cast<Waypoint*>(bodyUserData));
+		}
+	}
+
+	void UpdateWay(Car* car1, Waypoint* way1)
+	{
+		if (car1->currentWaypoint == way1->WaypointOrderVal)
+			car1->UpdateWaypoint(way1->WaypointOrderVal + 1);
+
+	}
+
+	void UpdateAIWay(AICar* car1, Waypoint* way1)
+	{
+		if (car1->currentWaypoint == way1->WaypointOrderVal)
+			car1->UpdateWaypoint(way1->WaypointOrderVal + 1);
+
+	}
+};
+
+
+
 
 class SceneApp : public gef::Application
 {
@@ -134,6 +170,7 @@ private:
 	b2Body* groundBody;
 	Car* car;
 	AICar* _aiCar;
+	WaypointContactListener wayListener;
 
 	// time trial related variables
 	double AiTime;

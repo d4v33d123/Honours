@@ -43,6 +43,7 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &polygonShape;
 	fixturedef.density = 5;
+	fixturedef.isSensor = true;
 	fixturedef.filter.categoryBits = categoryBits;
 	fixturedef.filter.maskBits = maskBits;
 	body->CreateFixture(&fixturedef);

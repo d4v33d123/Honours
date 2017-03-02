@@ -1,4 +1,5 @@
 #include "Car.h"
+#include "system\debug_log.h"
 
 Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
 {
@@ -49,7 +50,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	Tire* tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(-3, 0.75); // -3, 0.75
+	jointDef.localAnchorA.Set(-3, -5); // -3, 0.75
 	world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -57,7 +58,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(3, 0.75); // 3, 0.75
+	jointDef.localAnchorA.Set(3, -5); // 3, 0.75
 	world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -65,7 +66,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(-3, 8.75); // -3, 8.75
+	jointDef.localAnchorA.Set(-3, 5); // -3, 8.75
 	flJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -73,7 +74,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(3, 8.75); // 3, 8.75
+	jointDef.localAnchorA.Set(3, 5); // 3, 8.75
 	frJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -86,6 +87,11 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
+
+
+	body->SetUserData(this);
+	currentWaypoint = 0;
+
 }
 
 
@@ -96,7 +102,7 @@ Car::~Car()
 		delete tires[i];
 }
 
-void Car::Update(int controlState) {
+void Car::Update(int controlState, std::vector<Waypoint*> wps) {
 	for (int i = 0; i < tires.size(); i++)
 		tires[i]->updateFriction();
 	for (int i = 0; i < tires.size(); i++)
@@ -134,6 +140,8 @@ void Car::Update(int controlState) {
 	
 
 	UpdateSprites();
+
+	gef::DebugOut("WAYPOINT FOR CAR : %i", currentWaypoint);
 }
 
 void Car::UpdateSprites()
@@ -168,4 +176,9 @@ float Car::getXPosition()
 float Car::getYPosition()
 {
 	return body->GetPosition().y;
+}
+
+void Car::UpdateWaypoint(int newpoint)
+{
+	currentWaypoint = newpoint;
 }

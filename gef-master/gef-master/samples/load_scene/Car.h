@@ -4,6 +4,7 @@
 #include <Box2D/Box2D.h>
 #include <graphics/sprite.h>
 #include "Tire.h"
+#include "build\vs2015\Waypoint.h"
 #include <graphics/sprite_renderer.h>
 
 
@@ -21,16 +22,19 @@ public:
 	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
 	Car() {};
 	~Car();
-	void Update(int controlState);
+	void Update(int controlState, std::vector<Waypoint*> wps);
 	void draw(gef::SpriteRenderer* sprite_renderer);
 	float getXPosition();
 	float getYPosition();
 	gef::Sprite carBodySprite;
 	void UpdateSprites();
 
+	void UpdateWaypoint(int newpoint);
+
 	b2Body* body;
 	std::vector<Tire*> tires;
 	b2RevoluteJoint *flJoint, *frJoint;
+	int currentWaypoint;
 };
 
 

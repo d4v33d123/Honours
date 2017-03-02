@@ -417,9 +417,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 					RYAug[i][j] = R[i][j];
 				}
 
-				//gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
+				gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
 			}
-			//gef::DebugOut("\n");
+			gef::DebugOut("\n");
 		}
 
 		// LAST SECTION TO FIX
@@ -429,13 +429,13 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		{
 			double weight = 0;
 			//if (RYAug[i][i] != 0)
-				weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
+			weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
 			W[i] = weight;
 			//gef::DebugOut("current weight %i: %f", i, weight);
 			for (int k = i - 1; k > 0; k--)
 			{
-				double multi = (RYAug[k][i]) * W[i];
-				RYAug[k][layers[currentLayer].num_Neurons + 1] -= multi;
+				double multi = (RYAug[k][i] * W[i]);
+				RYAug[k][layers[currentLayer].num_Neurons] -= multi;
 				//gef::DebugOut("MULTI %i: %f        ", k, multi);
 				
 			}
@@ -467,7 +467,7 @@ void RMGS::PropagateSignal()
 				sum += weight*output;
 			}
 			// activation funciton
-			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
+			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));//double(1) / tanh(sum); //
 		}
 	}
 }

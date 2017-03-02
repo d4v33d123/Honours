@@ -21,7 +21,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	vertices[6].Set(-3, 2.5);
 	vertices[7].Set(-1.5, 0);
 	b2PolygonShape polygonShape;
-	polygonShape.Set(vertices, 8);
+	//polygonShape.Set(vertices, 8);
+	polygonShape.SetAsBox(3, 5);
 
 	b2FixtureDef fixturedef;
 	fixturedef.shape = &polygonShape;
@@ -51,7 +52,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	Tire* tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(-3, 0.75); // -3, 0.75
+	jointDef.localAnchorA.Set(-3, -5); // -3, 0.75
 	world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -59,7 +60,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(3, 0.75); // 3, 0.75
+	jointDef.localAnchorA.Set(3, -5); // 3, 0.75
 	world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -67,7 +68,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(-3, 8.75); // -3, 8.75
+	jointDef.localAnchorA.Set(-3, 5); // -3, 8.75
 	flJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -75,7 +76,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	tire = new Tire(world, tirecategoryBits, tiremaskBits);
 	tire->setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
 	jointDef.bodyB = tire->body;
-	jointDef.localAnchorA.Set(3, 8.75); // 3, 8.75
+	jointDef.localAnchorA.Set(3, 5); // 3, 8.75
 	frJoint = (b2RevoluteJoint*)world->CreateJoint(&jointDef);
 	tires.push_back(tire);
 
@@ -85,8 +86,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	
 	//set up sprite
 
-	carBodySprite.set_width(5.5);
-	carBodySprite.set_height(9);
+	carBodySprite.set_width(6);
+	carBodySprite.set_height(10);
 	carBodySprite.set_colour(0xffffffff);
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
@@ -100,7 +101,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	int ennl[] = { 4, 4, 10,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
 	int rpnnl[] = { 4, 50, 4 };
-	int rmnnl[] = { 4, 4, 10, 4 };
+	int rmnnl[] = { 4, 4, 20, 4 };
 
 
 	switch (net_type)
