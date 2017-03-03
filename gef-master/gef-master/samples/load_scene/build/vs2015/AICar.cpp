@@ -101,7 +101,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	int ennl[] = { 4, 4, 10,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
 	int rpnnl[] = { 4, 50, 4 };
-	int rmnnl[] = { 4, 4, 20, 4 };
+	int rmnnl[] = { 4, 4, 10, 4 };
 
 
 	switch (net_type)
@@ -157,6 +157,9 @@ void AICar::Train(const char* fname)
 
 void AICar::Update(std::vector<Waypoint*> wps)
 {
+
+	
+
 	UpdateNN(wps);
 
 	float newAngle = 0;		
@@ -287,6 +290,12 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		break;
 
 	}
+}
+
+void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World world)
+{
+
+
 }
 
 void AICar::draw(gef::SpriteRenderer* sprite_renderer)

@@ -7,6 +7,7 @@
 #include "RProp.h"
 #include "RMGS.h"
 #include "Waypoint.h"
+#include "Barrier.h"
 
 enum Net
 {
@@ -24,6 +25,7 @@ public:
 	void Train(const char* fname);
 	void Update(std::vector<Waypoint*> wps);
 	void UpdateNN(std::vector<Waypoint*> wps);
+	void UpdateRaycasts(std::vector<barrier*>bars, b2World world);
 	void UpdateButtons();
 	void draw(gef::SpriteRenderer* sprite_renderer);
 
