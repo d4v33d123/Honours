@@ -462,7 +462,7 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	_aiCar->Train("traindat18.txt");
+	_aiCar->Train("traindat19.txt");
 
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), (DEGTORAD*180));

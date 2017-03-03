@@ -169,6 +169,10 @@ int RMGS::Train(const char* fnames, int ds)
 		for (int j = 0; j < datasize; j++)
 		{
 			ExpectedOutputs[i][j] = trainData[j][i+layers[0].num_Neurons];
+			//ExpectedOutputs[i][j] = log((trainData[j][i + layers[0].num_Neurons] / (1 - trainData[j][i + layers[0].num_Neurons])));
+			//ExpectedOutputs[i][j] = 1 / (1 + exp(-trainData[j][i + layers[0].num_Neurons]));
+			gef::DebugOut("trainData[%i][%i]: %f       ", j, i, trainData[j][i + layers[0].num_Neurons]);
+			gef::DebugOut("ExpectedOutputs[%i][%i] : %f\n", i, j, ExpectedOutputs[i][j]);
 		}
 	}
 
@@ -386,6 +390,12 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
 	{
 		B = outputs[n];
+		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+		{
+			B[i] = log((outputs[n][i] / (1 - outputs[n][i])));
+		//	B[i] = 1 / (1 + exp(-outputs[n][i]));
+		}
+		
 		
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
 
@@ -467,7 +477,7 @@ void RMGS::PropagateSignal()
 				sum += weight*output;
 			}
 			// activation funciton
-			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));//double(1) / tanh(sum); //
+			layers[i].neurons[j].output = double(1) / tanh(sum); // log((sum / (1 - sum)));//1.0 / (1.0 + exp(-dGain * sum));// //
 		}
 	}
 }
