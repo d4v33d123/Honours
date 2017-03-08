@@ -27,6 +27,7 @@ RMGS::RMGS(int nl, int npl[])
 		{
 			layers[i].neurons[j].output = 1.0;
 			layers[i].neurons[j].error = 0.0;
+			layers[i].neurons[j].bias = 0.01;
 
 			if (i > 0)
 			{
@@ -476,6 +477,7 @@ void RMGS::PropagateSignal()
 				double weight = layers[i].neurons[j].weight[k];
 				sum += weight*output;
 			}
+			sum += layers[i].neurons[j].bias;
 			// activation funciton
 			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum)); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
 		}

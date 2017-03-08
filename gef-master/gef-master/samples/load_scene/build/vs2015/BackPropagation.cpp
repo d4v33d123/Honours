@@ -14,7 +14,7 @@ BProp::BProp(int nl, int npl[])
 	layers = 0;
 	dMSE = 0;
 	dMAE = 0;
-	dEta = 0.5; //0.25
+	dEta = 0.25; //0.25
 	dAlpha = 0.9; // 0.9
 	dGain = 1.0; // 1.0
 	dAvgTestError = 0.0; 
