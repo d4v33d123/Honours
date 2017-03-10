@@ -259,7 +259,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	inputsignal[3] = fmod(abs(tire_angle),1);
 
 	
-	gef::DebugOut("Input signals 1:%f 2:%f 3:%f 4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
+	gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
 	
 
 	switch (net_type)

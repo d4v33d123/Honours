@@ -401,7 +401,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
-		if (countTrain % 10 == 0)
+		if (countTrain % 100 == 0)
 		{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
 		}

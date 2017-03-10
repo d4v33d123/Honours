@@ -193,11 +193,11 @@ int RMGS::Train(const char* fnames, int ds)
 
 
 	// Repeat step 6 and 7 for each neuron in the second hidden layer
-	//GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
+	GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
 
 
 	// ************** ADD A FINAL GRAM SCHMIDT FOR HIDDEN TO INPUT NEURONS!!!!!! ***************************
-	//GramSchmidt(Inputdata, TFHO, datasize, 0);
+	GramSchmidt(Inputdata, TFHO, datasize, 0);
 
 
 	return 0;
@@ -427,6 +427,21 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		// LAST SECTION TO FIX
 
 		double* W = MakeVector(layers[currentLayer].num_Neurons, 0);
+
+		for (int i = layers[currentLayer].num_Neurons - 1; i > 0; i--)
+		{
+			double minus = 0;
+			for (int j = i + 1; j < layers[currentLayer].num_Neurons - 1; j++)
+			{
+				minus += RYAug[i][j] * W[j];
+			}
+			RYAug[i][layers[currentLayer].num_Neurons] -= minus;
+			W[i] = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
+			gef::DebugOut("W[%i]: %f\n", i, W[i]);
+		}
+
+
+		/*
 		for (int i = layers[currentLayer].num_Neurons - 1; i > 0; i--)
 		{
 			double weight = 0;
@@ -443,7 +458,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			}
 			gef::DebugOut("layer %i Wi %i: %f          ", currentLayer, i, W[i]);
 			gef::DebugOut("\n");
-		}
+		}*/
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 		{
@@ -462,7 +477,7 @@ void RMGS::PropagateSignal()
 		for (j = 0; j < layers[i].num_Neurons; j++)
 		{
 
-			if (i == 2)
+			/*if (i == 2)
 			{
 				double output = 0;
 				for (int j2 = 0; j2 < layers[i-1].num_Neurons; j2++)
@@ -479,7 +494,7 @@ void RMGS::PropagateSignal()
 				layers[i].neurons[j].output = nout;
 			}
 			else
-			{
+			{*/
 				double sum = 0;
 				for (k = 0; k < layers[i - 1].num_Neurons; k++)
 				{
@@ -490,7 +505,7 @@ void RMGS::PropagateSignal()
 				sum += layers[i].neurons[j].bias;
 				// activation funciton			
 				layers[i].neurons[j].output = (1.0 / (1.0 + exp(-dGain * sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
-			}
+			//}
 			
 		}
 	}
