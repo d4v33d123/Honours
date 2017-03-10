@@ -169,8 +169,8 @@ int RMGS::Train(const char* fnames, int ds)
 	{
 		for (int j = 0; j < datasize; j++)
 		{
-			ExpectedOutputs[i][j] = trainData[j][i+layers[0].num_Neurons];
-			//ExpectedOutputs[i][j] = log((trainData[j][i + layers[0].num_Neurons] / (1 - trainData[j][i + layers[0].num_Neurons])));
+			//ExpectedOutputs[i][j] = trainData[j][i+layers[0].num_Neurons];
+			ExpectedOutputs[i][j] = log((trainData[j][i + layers[0].num_Neurons] / (1 - trainData[j][i + layers[0].num_Neurons])));
 			//ExpectedOutputs[i][j] = 1 / (1 + exp(-trainData[j][i + layers[0].num_Neurons]));
 			//gef::DebugOut("trainData[%i][%i]: %f       ", j, i, trainData[j][i + layers[0].num_Neurons]);
 			//gef::DebugOut("ExpectedOutputs[%i][%i] : %f\n", i, j, ExpectedOutputs[i][j]);
@@ -193,11 +193,11 @@ int RMGS::Train(const char* fnames, int ds)
 
 
 	// Repeat step 6 and 7 for each neuron in the second hidden layer
-	GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
+	//GramSchmidt(FirstHiddenOutput, TMBDout, datasize, 1);
 
 
 	// ************** ADD A FINAL GRAM SCHMIDT FOR HIDDEN TO INPUT NEURONS!!!!!! ***************************
-	GramSchmidt(Inputdata, TFHO, datasize, 0);
+	//GramSchmidt(Inputdata, TFHO, datasize, 0);
 
 
 	return 0;
@@ -252,8 +252,10 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 		for (int j = 0; j < layers[1].num_Neurons; j++)
 		{
 				layers[2].neurons[i].weight[j] = trainingData[i*radial][j];
-				gef::DebugOut("i*radial : %i\n", (i*radial));
+				
 		}
+		gef::DebugOut("f : %f      s : %f       v : %f         t: %f\n", layers[2].neurons[i].weight[0], layers[2].neurons[i].weight[1], layers[2].neurons[i].weight[2], layers[2].neurons[i].weight[3]);
+		gef::DebugOut("l : %f      r : %f       u : %f         d: %f\n", trainingData[i*radial][4], trainingData[i*radial][5], trainingData[i*radial][6], trainingData[i*radial][7]);
 	}
 	
 	
@@ -271,37 +273,26 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 				//layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
 				// Total of all the  x - w s
 				//output += layers[1].neurons[j].output - layers[2].neurons[i].weight[j];
-				output += (FirstHiddenOutput[d][j] - layers[2].neurons[i].weight[j]);
+				output += (pow(FirstHiddenOutput[d][j] - layers[2].neurons[i].weight[j], 2) * (double(j + 1) / double(layers[1].num_Neurons)));
 			}
 			
 			// squared
-			double outputsquared = (output * output);
+			//double outputsquared = (output * output);
 			// mulitplied by current neuron / total neurons
-			outputsquared *= (double(i+1) / double(layers[2].num_Neurons));
+			//outputsquared *= (double(i+1) / double(layers[2].num_Neurons));
 			// square root of said value
-			layers[2].neurons[i].output = sqrt(outputsquared);//sqrt(fabs(outputsquared));
+			layers[2].neurons[i].output = sqrt(output);//sqrt(fabs(outputsquared));
 
 			// put the value through the fitness function
-			double nout = (1.0 - tanh(layers[2].neurons[i].output)); //exp(-layers[2].neurons[i].output);
+			double nout = (1.0 - tanh(layers[2].neurons[i].output));// exp(-layers[2].neurons[i].output);//
 			layers[2].neurons[i].output = nout;
 
 			Out[d][i] = layers[2].neurons[i].output;
 			//gef::DebugOut("MBDout %i: %f    ", i, Out[d][i]);
 		}
-		//for (int i = 0; i < layers[2].num_Neurons; i++)
-			//gef::DebugOut("MBDout %i,%i: %f    ", d,i, Out[d][i]);
-		//gef::DebugOut("\n");
+
 	}
-	// for all of the neurons in the hidden layer 
-	
-	/*for (int d = 0; d < size; d++)
-	{
-		for (int i = 0; i < layers[2].num_Neurons; i++)
-		{
-			//gef::DebugOut("MBD OUTPUT %i:%f     ", i, Out[d][i]);
-		}
-		//gef::DebugOut("\n");
-	}*/
+
 }
 
 // outputs must be arranged in the following [(neurons in current layer + 1) X size]
@@ -349,7 +340,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int j = 0; j < size; j++)
 		{
 			double divide = 0;
-			if (R[k][k] != 0)
+			//if (R[k][k] != 0)
 				divide = (V[j][k] / R[k][k]);
 
 			Q[j][k] = divide;
@@ -390,10 +381,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
 	{
-		//B = outputs[n];
+		B = outputs[n];
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 		{
-			B[i] = log((outputs[n][i] / (1 - outputs[n][i])));
+			//B[i] = log((outputs[n][i] / (1 - outputs[n][i])));
 		//	B[i] = 1 / (1 + exp(-outputs[n][i]));
 		}
 		
@@ -470,16 +461,37 @@ void RMGS::PropagateSignal()
 	{
 		for (j = 0; j < layers[i].num_Neurons; j++)
 		{
-			double sum = 0;
-			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+
+			if (i == 2)
 			{
-				double output = layers[i - 1].neurons[k].output;
-				double weight = layers[i].neurons[j].weight[k];
-				sum += weight*output;
+				double output = 0;
+				for (int j2 = 0; j2 < layers[i-1].num_Neurons; j2++)
+				{
+					//layers[2].neurons[i].weight[j] = trainingData[i + 1][j];
+					// Total of all the  x - w s
+					//output += layers[1].neurons[j].output - layers[2].neurons[i].weight[j];
+					output += (pow(layers[i-1].neurons[j2].output - layers[i].neurons[j].weight[j2], 2) * (double(j2 + 1) / double(layers[i-1].num_Neurons)));
+				}
+				layers[i].neurons[j].output = sqrt(output);//sqrt(fabs(outputsquared));
+
+				// put the value through the fitness function
+				double nout = (1.0 - tanh(layers[i].neurons[j].output));// exp(-layers[2].neurons[i].output);//
+				layers[i].neurons[j].output = nout;
 			}
-			sum += layers[i].neurons[j].bias;
-			// activation funciton
-			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum)); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
+			else
+			{
+				double sum = 0;
+				for (k = 0; k < layers[i - 1].num_Neurons; k++)
+				{
+					double output = layers[i - 1].neurons[k].output;
+					double weight = layers[i].neurons[j].weight[k];
+					sum += weight*output;
+				}
+				sum += layers[i].neurons[j].bias;
+				// activation funciton			
+				layers[i].neurons[j].output = (1.0 / (1.0 + exp(-dGain * sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
+			}
+			
 		}
 	}
 }

@@ -99,9 +99,9 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 4, 10,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
+	int ennl[] = { 4, 4, 4,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
 	int rpnnl[] = { 4, 50, 4 };
-	int rmnnl[] = { 4, 4, 10, 4 };
+	int rmnnl[] = { 4, 4, 40, 4 };
 
 
 	switch (net_type)
@@ -131,7 +131,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 5;
+	currentWaypoint = 10;
 	control_state = 0;
 }
 

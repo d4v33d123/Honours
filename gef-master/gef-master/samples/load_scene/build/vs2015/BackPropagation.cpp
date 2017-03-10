@@ -31,7 +31,7 @@ BProp::BProp(int nl, int npl[])
 
 		for (j = 0; j < npl[i]; j++)
 		{
-			layers[i].neurons[j].output = 1.0;
+			layers[i].neurons[j].output = 0.5;
 			layers[i].neurons[j].error = 0.0;
 			layers[i].neurons[j].bias = 0.0;
 			if (i > 0)
@@ -111,7 +111,7 @@ void BProp::PropagateSignal()
 			}
 			sum += layers[i].neurons[j].bias;
 			// activation funciton
-			layers[i].neurons[j].output = 1.0 / (1.0 + exp(-dGain * sum));
+			layers[i].neurons[j].output = (1.0 / (1.0 + exp(-dGain * sum)));
 		}
 	}
 }
@@ -126,6 +126,8 @@ void BProp::ComputeOutputError(double* target)
 		double output = layers[num_layers - 1].neurons[i].output;
 		double delta = (target[i] - output);
 		layers[num_layers - 1].neurons[i].error = ((dGain * output * (1.0 - output)) * delta);
+
+		//gef::DebugOut("layer: %i  neuron: %i     output: %f    target: %f\n", num_layers - 1, i, output, target[i]);
 
 		dMSE += (delta*delta);
 		dMAE += fabs(delta);
@@ -150,9 +152,10 @@ void BProp::BackPropagateError()
 			double error = 0;
 			for (k = 0; k < layers[i + 1].num_Neurons; k++)
 			{
+				
 				error += layers[i + 1].neurons[k].weight[j] * layers[i + 1].neurons[k].error;
 			}
-			layers[i].neurons[j].error = dGain * (output *(1.0 - output))* error;
+			layers[i].neurons[j].error = (dGain * (output *(1.0 - output))* error);
 		}
 	}
 }
@@ -169,7 +172,7 @@ void BProp::AdjustWeights()
 				double output = layers[i - 1].neurons[k].output;
 				double error = layers[i].neurons[j].error;
 				double preweight = layers[i].neurons[j].pre_Weight[k];
-				layers[i].neurons[j].weight[k] -= ((dEta * output * error) * (dAlpha * preweight)); // -= is training better than += ?? WIT
+				layers[i].neurons[j].weight[k] += (dEta * output * error )+( dAlpha * preweight); // -= is training better than += ?? WIT
 				layers[i].neurons[j].pre_Weight[k] = (dEta * output * error);
 			}
 		}
@@ -398,7 +401,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
-		if (countTrain % 100 == 0)
+		if (countTrain % 10 == 0)
 		{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
 		}
