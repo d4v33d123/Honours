@@ -140,7 +140,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 1000);
+		ebpNN->Run(fname, dataSize, 10000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -253,7 +253,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
-	inputsignal[0] = fmod(abs(angle_to_waypoint +0.5), 1);
+	inputsignal[0] = fmod(abs(angle_to_waypoint + 0.5), 1);
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
 	inputsignal[3] = fmod(abs(tire_angle),1);
