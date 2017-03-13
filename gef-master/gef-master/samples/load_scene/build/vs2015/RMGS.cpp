@@ -254,8 +254,8 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 				layers[2].neurons[i].weight[j] = trainingData[i*radial][j];
 				
 		}
-		gef::DebugOut("f : %f      s : %f       v : %f         t: %f\n", layers[2].neurons[i].weight[0], layers[2].neurons[i].weight[1], layers[2].neurons[i].weight[2], layers[2].neurons[i].weight[3]);
-		gef::DebugOut("l : %f      r : %f       u : %f         d: %f\n", trainingData[i*radial][4], trainingData[i*radial][5], trainingData[i*radial][6], trainingData[i*radial][7]);
+		//gef::DebugOut("f : %f      s : %f       v : %f         t: %f\n", layers[2].neurons[i].weight[0], layers[2].neurons[i].weight[1], layers[2].neurons[i].weight[2], layers[2].neurons[i].weight[3]);
+		//gef::DebugOut("l : %f      r : %f       u : %f         d: %f\n", trainingData[i*radial][4], trainingData[i*radial][5], trainingData[i*radial][6], trainingData[i*radial][7]);
 	}
 	
 	
@@ -284,7 +284,7 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 			layers[2].neurons[i].output = sqrt(output);//sqrt(fabs(outputsquared));
 
 			// put the value through the fitness function
-			double nout = (1.0 - tanh(layers[2].neurons[i].output));// exp(-layers[2].neurons[i].output);//
+			double nout = exp(-layers[2].neurons[i].output);//(1.0 - tanh(layers[2].neurons[i].output));// 
 			layers[2].neurons[i].output = nout;
 
 			Out[d][i] = layers[2].neurons[i].output;

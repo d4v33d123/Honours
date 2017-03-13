@@ -36,7 +36,7 @@ private:
 
 	void ZeroOutArray(double* ary, int size);
 
-	void ZeroOutMat(double** matrix);
+	void ZeroOutMat(double** matrix, int rows, int cols);
 
 	double** fillTrainingData(const char* fname, int rows, int cols);
 
