@@ -418,7 +418,7 @@ void SceneApp::GameInit()
 	
 	
 	// FOR TESTING
-	net_type = RMGSN; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+	net_type = EBP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
 
 	dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
  
@@ -484,7 +484,7 @@ void SceneApp::GameUpdate(float frame_time)
 	GameInput();
 
 	car->Update(controlState, level_->getWaypoints());
-	_aiCar->Update(level_->getWaypoints());
+	_aiCar->Update(level_->getWaypoints(), level_->Barriers);
 	level_->UpdateSprites();
 }
 

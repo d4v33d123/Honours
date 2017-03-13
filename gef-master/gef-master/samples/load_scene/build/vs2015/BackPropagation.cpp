@@ -413,7 +413,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
-		else if (dAvgTestError > 1.2 * dMinTestError)
+		else if (dAvgTestError > 1.3 * dMinTestError)
 		{
 			gef::DebugOut(" -> stopping training and restoring weights\n");
 			Stop = true;
