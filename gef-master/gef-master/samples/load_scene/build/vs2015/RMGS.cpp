@@ -71,7 +71,7 @@ RMGS::~RMGS()
 
 int RMGS::Train(const char* fnames, int ds)
 {
-	InititaliseRandoms();
+	InititaliseRandoms(1234);
 
 	double** trainData = fillTrainingData(fnames, ds, layers[0].num_Neurons + layers[3].num_Neurons);
 	for (int i = 0; i < ds; i++)
@@ -325,8 +325,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		}*/
 	// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap3.3.PDF
 
-	
-
+	// IMPLEMENT NEW GRAM SCHMIDT METHOD MAYBE
+	/*
 	for (int k = 0; k < layers[currentLayer].num_Neurons; k++)
 	{
 		// get r[k][k]
@@ -363,12 +363,12 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			}
 		}
 	}
+	*/
+
 
 	// now that we have  R and Q we can do some calcualtions, these are all the same for each of the output neurons.
 	// we must firstly do Transpose(Q) * net = y
 	// then we can do a back substitution of  R * w = y; to find w 
-
-
 
 	double** TQ = MakeMatrix(layers[currentLayer].num_Neurons, size, 0);
 
@@ -378,7 +378,9 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 		{
 			TQ[j][i] = Q[i][j];
-		}	
+			gef::DebugOut("TQ[%i][%i] = %f     ", j, i, TQ[j][i]);
+		}
+		gef::DebugOut("\n");
 	}
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
@@ -389,8 +391,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			B[i] = log((outputs[n][i] / (1 - outputs[n][i])));
 			//B[i] = 1 / (1 + exp(-outputs[n][i]));
 		}
-		
-		
+
+
 		double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
@@ -432,13 +434,18 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 
 		for (int i = layers[currentLayer].num_Neurons - 1; i >= 0; i--)
 		{
-			double minus = 0;
-			for (int j = i + 1; j < layers[currentLayer].num_Neurons - 1; j++)
-			{
-				minus += RYAug[i][j] * W[j];
-			}
-			RYAug[i][layers[currentLayer].num_Neurons] -= minus;
 			W[i] = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
+			
+			for (int j = i - 1; j > -1; j--)
+			{
+				double minus = 0;
+				minus += RYAug[j][i] * W[i];
+				RYAug[j][layers[currentLayer].num_Neurons] -= minus;
+				gef::DebugOut("Minus[%i]: %f\n", j, minus);
+				gef::DebugOut("J[%i]: %f\n", j, RYAug[j][layers[currentLayer].num_Neurons]);
+			}
+		
+			
 			gef::DebugOut("W[%i]: %f\n", i, W[i]);
 		}
 
@@ -446,20 +453,20 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		/*
 		for (int i = layers[currentLayer].num_Neurons - 1; i > 0; i--)
 		{
-			double weight = 0;
-			//if (RYAug[i][i] != 0)
-			weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
-			W[i] = weight;
-			//gef::DebugOut("current weight %i: %f", i, weight);
-			for (int k = i - 1; k > 0; k--)
-			{
-				double multi = (RYAug[k][i] * W[i]);
-				RYAug[k][layers[currentLayer].num_Neurons] -= multi;
-				//gef::DebugOut("MULTI %i: %f        ", k, multi);
-				
-			}
-			gef::DebugOut("layer %i Wi %i: %f          ", currentLayer, i, W[i]);
-			gef::DebugOut("\n");
+		double weight = 0;
+		//if (RYAug[i][i] != 0)
+		weight = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
+		W[i] = weight;
+		//gef::DebugOut("current weight %i: %f", i, weight);
+		for (int k = i - 1; k > 0; k--)
+		{
+		double multi = (RYAug[k][i] * W[i]);
+		RYAug[k][layers[currentLayer].num_Neurons] -= multi;
+		//gef::DebugOut("MULTI %i: %f        ", k, multi);
+
+		}
+		gef::DebugOut("layer %i Wi %i: %f          ", currentLayer, i, W[i]);
+		gef::DebugOut("\n");
 		}*/
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
@@ -467,6 +474,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			layers[currentLayer + 1].neurons[n].weight[i] = W[i];
 		}
 	}
+
+	
 
 }
 
@@ -587,3 +596,88 @@ double** RMGS::fillTrainingData(const char* fname, int rows, int cols)
 
 	return result;
 }
+
+/* 
+
+
+/*
+double** TR = MakeMatrix(layers[currentLayer].num_Neurons, layers[currentLayer].num_Neurons, 0);
+
+// get the transpose of Q
+for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+{
+	for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
+	{
+		TR[j][i] = R[i][j];
+	}
+}
+
+for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
+{
+	//B = outputs[n];
+	for (int i = 0; i < size; i++)
+	{
+		B[i] = log((outputs[n][i] / (1 - outputs[n][i])));
+		//B[i] = 1 / (1 + exp(-outputs[n][i]));
+	}
+
+
+	double* Y = MakeVector(layers[currentLayer].num_Neurons, 0);
+
+
+
+	// now that we have y we can do the gaussian elimination using R and Y to get W
+	// since R is already in  an upper triangular matrice there is no need to change it before the calculation
+
+	// we must now set up the augmented matrix involving R and y
+	double** RYAug = MakeMatrix(layers[currentLayer].num_Neurons, layers[currentLayer].num_Neurons + 1, 0);
+
+	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+	{
+		for (int j = 0; j < (layers[currentLayer].num_Neurons + 1); j++)
+		{
+			if (j == layers[currentLayer].num_Neurons)
+			{
+				RYAug[i][j] = B[i];
+			}
+			else
+			{
+				RYAug[i][j] = R[i][j];
+			}
+
+			//gef::DebugOut("RYAUG %i: %f     ", j, RYAug[i][j]);
+		}
+		//gef::DebugOut("\n");
+	}
+
+	// LAST SECTION TO FIX
+
+	double* W = MakeVector(layers[currentLayer].num_Neurons, 0);
+
+	for (int i = layers[currentLayer].num_Neurons - 1; i >= 0; i--)
+	{
+		double minus = 0;
+		for (int j = i - 1; j > 0; j--)
+		{
+			minus += RYAug[i][j] * W[j];
+		}
+		RYAug[i][layers[currentLayer].num_Neurons] -= minus;
+		Y[i] = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
+		gef::DebugOut("W[%i]: %f\n", i, W[i]);
+	}
+
+
+	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+	{
+		for (int j = 0; j < size; j++)
+		{
+			double multi = (Q[i][j] * Y[j]);
+			W[i] += multi;
+		}
+	}
+
+	for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
+	{
+		layers[currentLayer + 1].neurons[n].weight[i] = W[i];
+	}
+}*/

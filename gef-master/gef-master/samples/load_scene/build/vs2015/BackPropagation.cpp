@@ -384,7 +384,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 	bool firstIter = true;
 	double dMinTestError = 0;
 
-	InititaliseRandoms();
+	InititaliseRandoms(200);
 	RandomWeights();
 
 	double** TrainDat = fillTrainingData(fname, datasize, (layers[0].num_Neurons + layers[num_layers - 1].num_Neurons));

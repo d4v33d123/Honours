@@ -82,6 +82,7 @@ RProp::RProp(int nl, int npl[])
 			}
 		}
 	}
+	InititaliseRandoms(200);
 	RandomWeights();
 
 }
@@ -111,7 +112,7 @@ RProp::~RProp()
 
 int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 {
-	InititaliseRandoms();
+	InititaliseRandoms(200);
 
 	double* hGradTerms = MakeVector(layers[1].num_Neurons, 0.0);
 	double* oGradTerms = MakeVector(layers[2].num_Neurons, 0.0);

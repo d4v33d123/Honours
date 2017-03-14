@@ -63,7 +63,7 @@ public:
 
 	bool read_number(FILE* fp, double* number);
 
-	void InititaliseRandoms();
+	void InititaliseRandoms(int rnd);
 	int RandomEqualINT(int Low, int High);
 	double RandomEqualREAL(double Low, double High);
 	double** MakeMatrix(int rows, int cols, double v);

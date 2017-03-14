@@ -86,10 +86,10 @@ bool Network::read_number(FILE* fp, double* number)
 	return true;
 }
 
-void Network::InititaliseRandoms()
+void Network::InititaliseRandoms(int rnd)
 {
 	// srand((usinged)time(NULL));
-	srand(4711);
+	srand(rnd);
 }
 
 int Network::RandomEqualINT(int Low, int High)
