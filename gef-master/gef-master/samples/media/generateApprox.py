@@ -11,7 +11,7 @@ def frange(start, stop, step):
 def main():
     file = open("ApproxData.txt", "w")
 
-    for f in frange(0, 1, 0.05):
+    for f in frange(0, 1.05, 0.05):
         file.write('%f    %f\n'%( f, g(f)))
 
 

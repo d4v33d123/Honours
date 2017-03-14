@@ -1,4 +1,5 @@
 #include "NeuralNetwork.h"
+#include <time.h>
 
 void Network::SetInputSignal(double* input)
 {
@@ -88,8 +89,8 @@ bool Network::read_number(FILE* fp, double* number)
 
 void Network::InititaliseRandoms(int rnd)
 {
-	// srand((usinged)time(NULL));
-	srand(rnd);
+	srand((unsigned)time(NULL));
+	//srand(rnd);
 }
 
 int Network::RandomEqualINT(int Low, int High)
@@ -99,7 +100,9 @@ int Network::RandomEqualINT(int Low, int High)
 
 double Network::RandomEqualREAL(double Low, double High)
 {
-	return((double)rand() / RAND_MAX) * (High - Low) + Low;
+	double randomnum = ((double)rand() / RAND_MAX) * (High - Low) + Low;
+	gef::DebugOut("rand = %f\n", randomnum);
+	return randomnum;
 }
 
 double** Network::MakeMatrix(int rows, int cols, double v) // helper for ctor, Train
