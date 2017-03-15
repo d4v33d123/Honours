@@ -101,7 +101,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	int ennl[] = { 4, 4, 4,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
 	int rpnnl[] = { 4, 50, 4 };
-	int rmnnl[] = { 1, 1, 5, 1 };
+	int rmnnl[] = { 1, 1, 21, 1 };
 
 
 	switch (net_type)
