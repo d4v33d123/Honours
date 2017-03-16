@@ -30,7 +30,7 @@ double* MakeVector(int len, double v) // helper for Train
 
 int main()
 {
-	int layers[4] = { 2, 2, 10, 1 };
+	int layers[4] = { 2, 2, 3, 1 };
 
 	RMGS* rnn = new RMGS(4, layers);
 
@@ -40,8 +40,8 @@ int main()
 	double* outputs = MakeVector(1, 0);
 
 
-	input[0] = 6;
-	input[1] = 2;
+	input[0] = 0.2;
+	input[1] = 0.1;
 
 	rnn->SetInputSignal(input);
 
