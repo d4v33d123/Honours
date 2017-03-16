@@ -121,7 +121,7 @@ int RMGS::Train(const char* fnames, int ds)
 				//printf("Wwgiht %i: %f     ", j, layers[1].neurons[j].weight[k]);
 			}
 			// activation funciton
-			layers[1].neurons[j].output = 1.0 - tanh(sum); //1.0 / (1.0 + exp(-sum)); //exp(-sum);//(1 - tanh(sum));// 
+			layers[1].neurons[j].output = 1.0 / (1.0 + exp(-sum)); //1.0 - tanh(sum); //exp(-sum);//(1 - tanh(sum));// 
 			FirstHiddenOutput[i][j] = layers[1].neurons[j].output;
 			//printf("FHO %i: %f", j, FirstHiddenOutput[i][j]);
 		}
@@ -181,7 +181,7 @@ int RMGS::Train(const char* fnames, int ds)
 			//	ExpectedOutputs[i][j] = 1;
 			//ExpectedOutputs[i][j] = 1 / (1 + exp(-trainData[j][i + layers[0].num_Neurons]));
 			//printf("trainData[%i][%i]: %f       ", j, i, trainData[j][i + layers[0].num_Neurons]);
-			//printf("ExpectedOutputs[%i][%i] : %f\n", i, j, ExpectedOutputs[i][j]);
+			printf("ExpectedOutputs[%i][%i] : %f\n", i, j, ExpectedOutputs[i][j]);
 		}
 	}
 
@@ -295,7 +295,7 @@ void RMGS::MBD(double** trainingData, int size, double** FirstHiddenOutput, doub
 			printf("nout[%i][%i]: %f      ", d, i, layers[2].neurons[i].output);
 
 			// put the value through the fitness function
-			double nout = (1.0 - tanh(layers[2].neurons[i].output));//exp(-layers[2].neurons[i].output);//  
+			double nout = exp(-layers[2].neurons[i].output);// (1.0 - tanh(layers[2].neurons[i].output));// 
 			layers[2].neurons[i].output = nout;
 
 			Out[d][i] = layers[2].neurons[i].output;
@@ -315,6 +315,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 	// see MGStesting solution 
 	double** Q = MakeMatrix(size, layers[currentLayer].num_Neurons,  0);
 	double** R = MakeMatrix(layers[currentLayer].num_Neurons, layers[currentLayer].num_Neurons, 0);
+	//double** Q = MakeMatrix(4, 3, 0);
+	//double** R = MakeMatrix(3, 3, 0);
+	//double** V = MakeMatrix(4, 3, 0);
+
 	double** V = MakeMatrix(size, layers[currentLayer].num_Neurons, 0);
 	double* B = MakeVector(size, 0);
 	// QR Decomposition of matrix 
@@ -327,9 +331,26 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 
 	Q = V;
 
-	
+
+	/*
+	Q[0][0] = 1;
+	Q[1][0] = 1;
+	Q[2][0] = 1;
+	Q[3][0] = 1;
+	Q[0][1] = 1;
+	Q[1][1] = 1;
+	Q[2][1] = 0;
+	Q[3][1] = 0;
+	Q[0][2] = 1;
+	Q[1][2] = 0;
+	Q[2][2] = 2;
+	Q[3][2] = 0;
+
+	V = Q;
+	*/
 
 
+	//for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 	for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
 	{
 		// qj = aj
@@ -342,8 +363,8 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int k = 0; k < size; k++)
 		{
 			double power = Q[k][j] * Q[k][j];
-		//	printf("power : %f       ", power);
-		//	printf("Q[%i][%i]:%f\n", k, j, Q[k][j]);
+			//printf("power : %f       ", power);
+			//printf("Q[%i][%i]:%f\n", k, j, Q[k][j]);
 			rjj += power;
 		}
 		R[j][j] = (sqrt(rjj));
@@ -354,7 +375,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int k = 0; k < size; k++)
 		{
 			Q[k][j] /=  R[j][j];
-		//	printf("Q[%i][%i]:%f\n", k, j, Q[k][j]);
+			//printf("Q[%i][%i]:%f\n", k, j, Q[k][j]);
 		}
 		
 		
@@ -367,14 +388,14 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 				R[i][j] += (V[k][i] * Q[k][j]);
 			}
 			//R[i][j] /= size;
-			printf("R[%i][%i]:%f\n", i, j, R[i][j]);
+			//printf("R[%i][%i]:%f\n", i, j, R[i][j]);
 
 
 			for (int k = 0; k < size; k++)
 			{
 				double minus = (R[i][j] * Q[k][j]);
 				Q[k][i] -= minus; 
-				printf("Q[%i][%i]:%f\n", k, i, Q[k][i]);
+				//printf("Q[%i][%i]:%f\n", k, i, Q[k][i]);
 			}
 			//Q[j] = Q[j] - R[i][j] * Q[i];
 		}
@@ -383,17 +404,6 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 	// now that we have  R and Q we can do some calcualtions, these are all the same for each of the output neurons.
 	// we must firstly do Transpose(Q) * net = y
 	// then we can do a back substitution of  R * w = y; to find w 
-
-
-	for (int i = 0; i < size; i++)
-	{
-		for (int j = 0; j < layers[currentLayer].num_Neurons; j++)
-		{
-			printf("Q[%i][%i] = %f     ", i, j, Q[i][j]);
-		}
-		printf("\n");
-	}
-	
 	
 	double** TQ = MakeMatrix(layers[currentLayer].num_Neurons, size, 0);
 
@@ -410,7 +420,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 
 	for (int n = 0; n < layers[currentLayer + 1].num_Neurons; n++)
 	{
-		//B = outputs[n];
+		B = outputs[n];
 		for (int i = 0; i < size; i++)
 		{
 			if (outputs[n][i] < 1 )
@@ -419,10 +429,10 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			}
 			else
 			{
-				B[i] = 1;
+				//B[i] = 0;
 			}
 				
-			B[i] = 1 / (1 + exp(-outputs[n][i]));
+			//B[i] = 1 / (1 + exp(-outputs[n][i]));
 			printf("B[%i]:%f\n", i, B[i]);
 			
 		}
@@ -434,7 +444,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		{
 			for (int j = 0; j < size; j++)
 			{
-				double multi = (TQ[i][j] * B[j]);
+				double multi = (Q[j][i] * B[j]);
 				Y[i] += multi;
 			}
 			printf("Y[%i]: %f\n", i, Y[i]);
@@ -517,8 +527,8 @@ void RMGS::PropagateSignal()
 	{
 		for (j = 0; j < layers[i].num_Neurons; j++)
 		{
-
-			/*if (i == 1)
+			/*
+			if (i == 1)
 			{
 				double sum = 0;
 				for (k = 0; k < layers[i - 1].num_Neurons; k++)
@@ -529,9 +539,9 @@ void RMGS::PropagateSignal()
 				}
 				//sum += layers[i].neurons[j].bias;
 				// activation funciton
-				layers[i].neurons[j].output = (1 - tanh(sum)); //exp(-sum);//(1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
+				layers[i].neurons[j].output = exp(-sum);//(1 - tanh(sum)); //(1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
 			}
-			else if (i == 2)
+			else */if (i == 2)
 			{
 				double output = 0;
 				for (int k = 0; k < layers[i-1].num_Neurons; k++)
@@ -548,7 +558,7 @@ void RMGS::PropagateSignal()
 				layers[i].neurons[j].output = nout;
 			}
 			else
-			{*/
+			{
 				double sum = 0;
 				for (k = 0; k < layers[i - 1].num_Neurons; k++)
 				{
@@ -562,16 +572,16 @@ void RMGS::PropagateSignal()
 				// activation funciton
 
 				printf("sum: %f   ", sum);
-				if (i == 2 )
-					layers[i].neurons[j].output = (1.0 - tanh(sum)); //exp(-sum);//
-				else if (i == 1)
-				{
-					layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum)));// exp(-sum);//(1.0 - tanh(sum)); //
-				}
-				else
-				layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
+				//if (i == 2 )
+				//	layers[i].neurons[j].output = exp(-sum);//(1.0 - tanh(sum)); //
+				//else if (i == 1)
+				//{
+				//	layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum)));// exp(-sum);//(1.0 - tanh(sum)); //
+				//}
+				//else
+					layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
 				printf("OUT IN LAYER[%i][%i]: %f\n", i, j, layers[i].neurons[j].output);
-			//}
+			}
 			
 		}
 	}
