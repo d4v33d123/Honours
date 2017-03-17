@@ -462,14 +462,16 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			{
 				if (j == layers[currentLayer].num_Neurons)
 				{
-					RYAug[i][j] = Y[i];
+					//RYAug[i][j] = Y[i];
+					printf("Y %i: %f     ", j, Y[i]);
 				}
 				else
 				{
-					RYAug[i][j] = R[j][i];
+					//RYAug[i][j] = R[j][i];printf("RYAUG %i: %f     ", j, RYAug[i][j]);
+					printf("R %i: %f     ", j, R[j][i]);
 				}
 
-				printf("RYAUG %i: %f     ", j, RYAug[i][j]);
+				
 			}
 			printf("\n");
 		}
@@ -492,7 +494,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			
 			printf("W[%i]: %f\n", i, W[i]);
 		}*/
-		
+		/*
 		for (int i = layers[currentLayer].num_Neurons - 1; i >= 0; i--)
 		{
 			double minus = 0;
@@ -506,7 +508,21 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 			W[i] = (RYAug[i][layers[currentLayer].num_Neurons] / RYAug[i][i]);
 			printf("W[%i]: %f\n", i, W[i]);
 		}
-		
+		*/
+
+		for (int i = layers[currentLayer].num_Neurons - 1; i >= 0; i--)
+		{
+			double minus = 0;
+			for (int j = i + 1; j <= layers[currentLayer].num_Neurons - 1; j++)
+			{
+				minus += (R[j][i] * W[j]);
+			}
+			Y[i] -= minus;
+			printf("minus[%i]: %f       ", i, minus);
+
+			W[i] = (Y[i] / R[i][i]);
+			printf("W[%i]: %f\n", i, W[i]);
+		}
 
 
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
