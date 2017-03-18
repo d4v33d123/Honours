@@ -1,3 +1,2 @@
-﻿  RMGS.cpp
-m:\honours_project\github\honours\gef-master\rmgstest\consoleapplication1\consoleapplication1\rmgs.cpp(48): warning C4244: 'argument': conversion from 'time_t' to 'int', possible loss of data
+﻿  main.cpp
   ConsoleApplication1.vcxproj -> M:\honours_project\Github\Honours\gef-master\RMGSTEST\ConsoleApplication1\Debug\ConsoleApplication1.exe
