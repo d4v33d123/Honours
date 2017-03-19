@@ -28,6 +28,8 @@ public:
 	void UpdateRaycasts(std::vector<barrier*>bars);
 	void UpdateButtons();
 	void draw(gef::SpriteRenderer* sprite_renderer);
+	void SaveWeights();
+	void LoadWeights();
 
 	RProp* rpNN;
 	RMGS* rmgsNN;

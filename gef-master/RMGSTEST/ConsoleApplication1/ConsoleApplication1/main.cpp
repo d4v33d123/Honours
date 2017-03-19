@@ -30,18 +30,21 @@ double* MakeVector(int len, double v) // helper for Train
 
 int main()
 {
-	int layers[4] = { 1, 5, 1 };
+	int layers[4] = { 4, 15, 4 };
 
 	RMGS* rnn = new RMGS(3, layers);
 
-	rnn->Train("ApproxData.txt", 21);
+	//rnn->Train("ApproxData.txt", 21);
+	rnn->Train("traindat26.txt", 26620);
 
-	double* input = MakeVector(1,0);
-	double* outputs = MakeVector(1, 0);
-
-
-	input[0] = 0.6;
+	double* input = MakeVector(4,0);
+	double* outputs = MakeVector(4, 0);
  
+	input[0] = 0.9;
+	input[1] = 0.5;
+	input[2] = 0.5;
+	input[3] = 0.5;
+
 
 	rnn->SetInputSignal(input);
 
@@ -49,7 +52,7 @@ int main()
 
 	rnn->GetOutputSignal(outputs);
 
-	printf("\nOUT : %f ", outputs[0]);
+	printf("\nOUT 1: %f     2: %f      3: %f      4: %f", outputs[0], outputs[1], outputs[2], outputs[3]);
 
 	while (true)
 	{

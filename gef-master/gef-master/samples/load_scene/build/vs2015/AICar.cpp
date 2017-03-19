@@ -99,16 +99,16 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 4, 4,  4 }; //{ 4, 20, 10,  4 }; 0.36 dat 14, 0.35 dat 13
-	int rpnnl[] = { 4, 50, 4 };
-	int rmnnl[] = { 1, 1, 4, 1 };
+	int ennl[] = { 4, 15,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
+	int rpnnl[] = { 4, 15, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int rmnnl[] = { 4, 15, 4 };
 
 
 	switch (net_type)
 	{
 	case EBP:
 		
-		ebpNN = new BProp(4, ennl);
+		ebpNN = new BProp(3, ennl);
 		break;
 	case RPROP:
 		
@@ -116,7 +116,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 		break;
 	case RMGSN:
 		
-		rmgsNN =  new RMGS(4, rmnnl);
+		rmgsNN =  new RMGS(3, rmnnl);
 		break;
 	}
 	current_control_states[0] = 0;
@@ -260,12 +260,6 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 
 	
 	gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
-	
-	double testing[1];
-	testing[0] = 0.1;
-
-	double testingout[1];
-	testingout[0] = 0;
 
 	switch (net_type)
 	{
@@ -288,15 +282,13 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 
 	case RMGSN:
 
-		rmgsNN->SetInputSignal(testing);
+		rmgsNN->SetInputSignal(inputsignal);
 		rmgsNN->PropagateSignal();
-		rmgsNN->GetOutputSignal(testingout);
+		rmgsNN->GetOutputSignal(current_control_states);
 
 		break;
 
 	}
-
-	gef::DebugOut("testing out = %f", testingout[0]);
 
 }
 
@@ -367,6 +359,55 @@ void AICar::draw(gef::SpriteRenderer* sprite_renderer)
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
 		tires[it]->draw(sprite_renderer);
+	}
+
+}
+
+void AICar::SaveWeights()
+{
+	switch (net_type)
+	{
+	case EBP:
+
+
+		break;
+
+	case RPROP:
+
+
+
+		break;
+
+	case RMGSN:
+
+
+		break;
+
+	}
+
+
+}
+
+void AICar::LoadWeights()
+{
+
+	switch (net_type)
+	{
+	case EBP:
+
+
+		break;
+
+	case RPROP:
+
+
+		break;
+
+	case RMGSN:
+
+
+		break;
+
 	}
 
 }
