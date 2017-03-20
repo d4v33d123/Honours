@@ -1,7 +1,7 @@
 #include "Car.h"
 #include "system\debug_log.h"
 
-Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
+Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -91,13 +91,13 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 
 	body->SetUserData(this);
 	currentWaypoint = 0;
+	MaxWays = numways;
 
 }
 
 
 Car::~Car()
 {
-
 	for (int i = 0; i < tires.size(); i++)
 		delete tires[i];
 }
@@ -178,7 +178,15 @@ float Car::getYPosition()
 	return body->GetPosition().y;
 }
 
-void Car::UpdateWaypoint(int newpoint)
+void Car::UpdateWaypoint()
 {
-	currentWaypoint = newpoint;
+	if (currentWaypoint < MaxWays)
+	{
+		currentWaypoint += 1;
+	}
+	else
+	{
+		currentWaypoint = 0;
+	}
+	
 }

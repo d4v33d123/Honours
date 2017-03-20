@@ -69,14 +69,14 @@ class WaypointContactListener : public b2ContactListener
 	void UpdateWay(Car* car1, Waypoint* way1)
 	{
 		if (car1->currentWaypoint == way1->WaypointOrderVal)
-			car1->UpdateWaypoint(way1->WaypointOrderVal + 1);
+			car1->UpdateWaypoint();
 
 	}
 
 	void UpdateAIWay(AICar* car1, Waypoint* way1)
 	{
 		if (car1->currentWaypoint == way1->WaypointOrderVal)
-			car1->UpdateWaypoint(way1->WaypointOrderVal + 1);
+			car1->UpdateWaypoint();
 
 	}
 };

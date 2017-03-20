@@ -415,8 +415,6 @@ void SceneApp::GameInit()
 
 	controlState = 0;
 	
-	
-	
 	// FOR TESTING
 	net_type = RMGSN; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
 
@@ -425,7 +423,7 @@ void SceneApp::GameInit()
 
 
 
-	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
+	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
 	car->body->SetTransform(b2Vec2(100, 100), 0);
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
@@ -435,16 +433,16 @@ void SceneApp::GameInit()
 	switch (net_type)
 	{
 	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT );
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
 		
 		break;
 
 	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
 		break;
 
 	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT);
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
 		break;
 
 	}
@@ -470,6 +468,18 @@ void SceneApp::GameInit()
 	{
 		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
 	}
+	for (int i = 0; i < 78; i++)
+	{
+		for (std::vector<Waypoint*>::size_type it = 0; it < level_->WayPoints.size(); it++)
+		{
+			if (i == level_->WayPoints[it]->WaypointOrderVal)
+			{
+				gef::DebugOut("WAYPOINT[%i]: %f, %f\n", level_->WayPoints[it]->WaypointOrderVal, level_->WayPoints[it]->body->GetPosition().x, level_->WayPoints[it]->body->GetPosition().y);
+			}
+			
+		}
+	}
+	
 
 
 		

@@ -1,7 +1,7 @@
 #include "AICar.h"
 #include "system\debug_log.h"
 
-AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits)
+AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -133,6 +133,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	currentWaypoint = 9;
 	control_state = 0;
+	MaxWays = numways;
 }
 
 void AICar::Train(const char* fname)
@@ -164,13 +165,11 @@ void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars)
 
 	float newAngle = 0;		
 
-	gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
-	
-
+	//gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 	
 	UpdateButtons();
 
-	gef::DebugOut("CONTROL STATES: %i", control_state);
+	//gef::DebugOut("CONTROL STATES: %i", control_state);
 
 	for (int i = 0; i < tires.size(); i++)
 		tires[i]->updateFriction();
@@ -200,7 +199,7 @@ void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars)
 	frJoint->SetLimits(newAngle, newAngle);
 
 	double newtireangle = ((newAngle * RADTODEG) / 90);
-	gef::DebugOut("newAngle: %f", newAngle);
+	//gef::DebugOut("newAngle: %f", newAngle);
 
 	tire_angle = (newtireangle+0.5);
 
@@ -229,7 +228,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
-			gef::DebugOut("ayy");
+			//gef::DebugOut("ayy");
 			double val = ((wps[it]->body->GetAngle() - body->GetAngle()) * RADTODEG) - 180;
 			val /= 360;
 			if (val < 0)
@@ -237,7 +236,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 			else if (val > 1)
 				val -= 1;
 			angle_to_waypoint = val;
-			gef::DebugOut("Waypoint Val :%f", val);
+			//gef::DebugOut("Waypoint Val :%f", val);
 		}
 	}
 
@@ -259,7 +258,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	inputsignal[3] = fmod(abs(tire_angle),1);
 
 	
-	gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
+	//gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
 
 	switch (net_type)
 	{
@@ -369,7 +368,7 @@ void AICar::SaveWeights()
 	{
 	case EBP:
 
-
+		
 		break;
 
 	case RPROP:

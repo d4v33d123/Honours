@@ -21,7 +21,7 @@ class AICar : public Car
 {
 public:
 
-	AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
+	AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways);
 	void Train(const char* fname);
 	void Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars);
 	void UpdateNN(std::vector<Waypoint*> wps);

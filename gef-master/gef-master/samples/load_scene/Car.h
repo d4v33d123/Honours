@@ -19,7 +19,7 @@ protected:
 	
 
 public:
-	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits);
+	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways);
 	Car() {};
 	~Car();
 	void Update(int controlState, std::vector<Waypoint*> wps);
@@ -29,12 +29,13 @@ public:
 	gef::Sprite carBodySprite;
 	void UpdateSprites();
 
-	void UpdateWaypoint(int newpoint);
+	void UpdateWaypoint();
 
 	b2Body* body;
 	std::vector<Tire*> tires;
 	b2RevoluteJoint *flJoint, *frJoint;
 	int currentWaypoint;
+	int MaxWays;
 };
 
 
