@@ -100,7 +100,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	net_type = network;
 
 	int ennl[] = { 4, 15,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
-	int rpnnl[] = { 4, 15, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int rpnnl[] = { 4, 50, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
 	int rmnnl[] = { 4, 15, 4 };
 
 
@@ -210,6 +210,7 @@ void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars)
 		tires[it]->updateTurn(control_state);
 	}
 	
+	UpdateTime();
 	UpdateSprites();
 
 }
@@ -229,7 +230,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
 			//gef::DebugOut("ayy");
-			double val = ((wps[it]->body->GetAngle() - body->GetAngle()) * RADTODEG) - 180;
+			double val = ((body->GetAngle() - wps[it]->body->GetAngle())* RADTODEG) -180;
 			val /= 360;
 			if (val < 0)
 				val += 1;
@@ -258,7 +259,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	inputsignal[3] = fmod(abs(tire_angle),1);
 
 	
-	//gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
+	gef::DebugOut("Input signals 1:%f 2:%f 3:%f  4:%f \n", inputsignal[0], inputsignal[1], inputsignal[2], inputsignal[3]);
 
 	switch (net_type)
 	{
@@ -288,6 +289,8 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		break;
 
 	}
+
+	gef::DebugOut("Output signals 1:%f 2:%f 3:%f  4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
 
 }
 
@@ -364,50 +367,193 @@ void AICar::draw(gef::SpriteRenderer* sprite_renderer)
 
 void AICar::SaveWeights()
 {
+	const char* fname;
+
 	switch (net_type)
 	{
 	case EBP:
 
-		
+		fname = "ebpweights.txt";
+
+		break;
+	case RPROP:
+
+		fname = "rpropweights.txt";
+
+		break;
+	case RMGSN:
+
+		fname = "rmgsweights.txt";
+
+		break;
+
+	default:
+		break;
+	}
+
+
+
+	std::ofstream file(fname);
+	int i, j, k;
+	switch (net_type)
+	{
+	case EBP:
+
+		for (i = 1; i < ebpNN->num_layers; i++)
+		{
+			for (j = 0; j < ebpNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < ebpNN->layers[i - 1].num_Neurons; k++)
+				{
+					file << (ebpNN->layers[i].neurons[j].weight[k]);
+					file << "\n";
+				}
+					
+					 
+			}
+		}
+
 		break;
 
 	case RPROP:
 
-
+		for (i = 1; i < rpNN->num_layers; i++)
+		{
+			for (j = 0; j < rpNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < rpNN->layers[i - 1].num_Neurons; k++)
+				{
+					file << (rpNN->layers[i].neurons[j].weight[k]);
+					file << "\n";
+				}
+			}
+		}
 
 		break;
 
 	case RMGSN:
 
+		for (i = 1; i < rmgsNN->num_layers; i++)
+		{
+			for (j = 0; j < rmgsNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < rmgsNN->layers[i - 1].num_Neurons; k++)
+				{
+					file << (rmgsNN->layers[i].neurons[j].weight[k]);
+					file << "\n";
+				}
+			}
+		}
 
 		break;
 
 	}
+
+	file.close();
 
 
 }
 
 void AICar::LoadWeights()
 {
+	FILE* fp;
+	errno_t err;
+	const char* fname;
 
 	switch (net_type)
 	{
 	case EBP:
 
+		fname = "ebpweights.txt";
+
+		break;
+	case RPROP:
+
+		fname = "rpropweights.txt";
+
+		break;
+	case RMGSN:
+
+		fname = "rmgsweights.txt";
+
+		break;
+
+	default:
+		break;
+	}
+
+	if ((err = fopen_s(&fp, fname, "r")) != 0)
+	{
+		printf("couldn't open file");
+	}
+
+
+	int i, j, k;
+	switch (net_type)
+	{
+	case EBP:
+		
+		for (i = 1; i < ebpNN->num_layers; i++)
+		{
+			for (j = 0; j < ebpNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < ebpNN->layers[i - 1].num_Neurons; k++)
+				{
+					double dNumber;
+					if (read_number(fp, &dNumber))
+					{
+						ebpNN->layers[i].neurons[j].weight[k] = dNumber;
+					}
+				}
+			}
+		}
 
 		break;
 
 	case RPROP:
-
+		
+		for (i = 1; i < rpNN->num_layers; i++)
+		{
+			for (j = 0; j < rpNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < rpNN->layers[i - 1].num_Neurons; k++)
+				{
+					double dNumber;
+					if (read_number(fp, &dNumber))
+					{
+						rpNN->layers[i].neurons[j].weight[k] = dNumber;
+					}
+				}
+			}
+		}
 
 		break;
 
 	case RMGSN:
+		
 
+		
+		for (i = 1; i < rmgsNN->num_layers; i++)
+		{
+			for (j = 0; j < rmgsNN->layers[i].num_Neurons; j++)
+			{
+				for (k = 0; k < rmgsNN->layers[i - 1].num_Neurons; k++)
+				{
+					double dNumber;
+					if (read_number(fp, &dNumber))
+					{
+						rmgsNN->layers[i].neurons[j].weight[k] = dNumber;
+						gef::DebugOut("NUMBER[%i][%i][%i]: %f\n", i, j, k, dNumber);
+					}
+				}
+			}
+		}
 
 		break;
 
 	}
+
+	if (fp) fclose(fp);
 
 }
 
@@ -440,4 +586,42 @@ void AICar::UpdateButtons()
 		prev_control_states[i] = current_control_states[i];
 		current_control_states[i] = 0;
 	}
+}
+
+bool AICar::read_number(FILE* fp, double* number)
+{
+	char szWord[256];
+	int i = 0;
+	int b;
+
+	*number = 0;
+
+	szWord[0] = '\0';
+	while (((b = fgetc(fp)) != EOF) && (i < 255))
+	{
+		if ((b == '.') ||
+			(b == '0') ||
+			(b == '1') ||
+			(b == '2') ||
+			(b == '3') ||
+			(b == '4') ||
+			(b == '5') ||
+			(b == '6') ||
+			(b == '7') ||
+			(b == '8') ||
+			(b == '9') ||
+			(b == '-'))
+		{
+			szWord[i++] = (char)b;
+		}
+		else
+			if (i > 0) break;
+	}
+	szWord[i] = '\0';
+
+	if (i == 0) return false;
+
+	*number = atof(szWord);
+
+	return true;
 }

@@ -31,7 +31,12 @@ void Network::SaveWeights()
 		for (j = 0; j < layers[i].num_Neurons; j++)
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
 				layers[i].neurons[j].saved_weight[k] = layers[i].neurons[j].weight[k];
+				
+			}
+				
+			layers[i].neurons[j].savedBias = layers[i].neurons[j].bias;
 		}
 	}
 }
@@ -44,7 +49,11 @@ void Network::RestoreWeights()
 		for (j = 0; j < layers[i].num_Neurons; j++)
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
+			{
 				layers[i].neurons[j].weight[k] = layers[i].neurons[j].saved_weight[k];
+			}
+			layers[i].neurons[j].bias = layers[i].neurons[j].savedBias;
+				
 		}
 	}
 }
@@ -101,7 +110,6 @@ int Network::RandomEqualINT(int Low, int High)
 double Network::RandomEqualREAL(double Low, double High)
 {
 	double randomnum = ((double)rand() / RAND_MAX) * (High - Low) + Low;
-	gef::DebugOut("rand = %f\n", randomnum);
 	return randomnum;
 }
 

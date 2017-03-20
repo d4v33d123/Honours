@@ -138,6 +138,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
 	int maxEpochs = 5000;
+	int preverr = 1.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -162,6 +163,13 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			//double* currWts = GetWeights();
 			double err = MeanSquaredError(trainData,  trainDataSize);
 			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);
+			if (err < preverr)
+			{
+				SaveWeights();
+			}
+				
+
+			preverr = err;
 			
 		}
 		
@@ -378,6 +386,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 	//double* wts = GetWeights();
 	//return wts;
+	RestoreWeights();
 
 	return 0;
 }

@@ -8,6 +8,8 @@
 #include "RMGS.h"
 #include "Waypoint.h"
 #include "Barrier.h"
+#include <iostream>
+#include <fstream>
 
 enum Net
 {
@@ -30,6 +32,7 @@ public:
 	void draw(gef::SpriteRenderer* sprite_renderer);
 	void SaveWeights();
 	void LoadWeights();
+	bool read_number(FILE* fp, double* number);
 
 	RProp* rpNN;
 	RMGS* rmgsNN;

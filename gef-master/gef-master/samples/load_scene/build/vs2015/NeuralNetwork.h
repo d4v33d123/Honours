@@ -15,6 +15,7 @@ struct Neuron
 	double* pre_Weight; // previous weight for momentum
 	double* saved_weight;
 	double bias; // a bias for the current neuron
+	double savedBias;
 };
 
 struct Layer

@@ -6,6 +6,7 @@
 #include "Tire.h"
 #include "build\vs2015\Waypoint.h"
 #include <graphics/sprite_renderer.h>
+#include <time.h>
 
 
 #ifndef DEGTORAD
@@ -28,6 +29,8 @@ public:
 	float getYPosition();
 	gef::Sprite carBodySprite;
 	void UpdateSprites();
+	void Lap();
+	void UpdateTime();
 
 	void UpdateWaypoint();
 
@@ -36,6 +39,15 @@ public:
 	b2RevoluteJoint *flJoint, *frJoint;
 	int currentWaypoint;
 	int MaxWays;
+
+	// lap realted variables
+	int currentlap;
+	double laptime;
+	double currenttime;
+
+	time_t startlap;
+	time_t finishlap;
+
 };
 
 

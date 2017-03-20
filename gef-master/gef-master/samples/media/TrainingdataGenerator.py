@@ -102,7 +102,7 @@ def main():
                                             elif(j <= 0.3):
                                                 file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(ff, 0.1), noise(s, 0.1), noise(j, 0.1), noise(k, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1)))
                                                 
-                    elif(f > 0.75): 
+                    elif(f > 0.25): 
                         if(k > 0.3 and k < 0.7):
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f, 0.1), noise(s, 0.1), noise(j, 0.1), noise(k, 0.1), noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
                         elif(k <= 0.3):
@@ -110,7 +110,7 @@ def main():
                         else:
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f, 0.1), noise(s, 0.1), noise(j, 0.1), noise(k, 0.1), noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
 
-                    elif(f < 0.25):
+                    elif(f < 0.75):
                         if(k > 0.3 and k < 0.7):
                             file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(noise(f, 0.1), noise(s, 0.1), noise(j, 0.1), noise(k, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
                         elif(k <= 0.3):

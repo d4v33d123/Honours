@@ -177,10 +177,16 @@ void SceneApp::CleanUpFont()
 
 void SceneApp::DrawHUD()
 {
+	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
+
+	float screen_width = 300.0f;
+	float screen_height = screen_width / aspect_ratio;
+
 	if(font_)
 	{
 		// display frame rate
-		font_->RenderText(sprite_renderer_, gef::Vector4(50.0f, 50.0f, -0.9f), 1.0f, 0xffffffff, gef::TJ_LEFT, "FPS: %.1f", fps_);
+		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition()-(screen_width/2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
+		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
 	}
 }
 
@@ -416,10 +422,10 @@ void SceneApp::GameInit()
 	controlState = 0;
 	
 	// FOR TESTING
-	net_type = RMGSN; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+	net_type = RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
 
-	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
-	dataSize = 26620;
+	dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
+	//dataSize = 26620;
 
 
 
@@ -460,25 +466,17 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	//_aiCar->Train("traindat25.txt");
-	_aiCar->Train("traindat26.txt");
+	_aiCar->Train("traindat25.txt");
+	//_aiCar->Train("traindat26.txt");
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), 0);// (DEGTORAD * 180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
 		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
 	}
-	for (int i = 0; i < 78; i++)
-	{
-		for (std::vector<Waypoint*>::size_type it = 0; it < level_->WayPoints.size(); it++)
-		{
-			if (i == level_->WayPoints[it]->WaypointOrderVal)
-			{
-				gef::DebugOut("WAYPOINT[%i]: %f, %f\n", level_->WayPoints[it]->WaypointOrderVal, level_->WayPoints[it]->body->GetPosition().x, level_->WayPoints[it]->body->GetPosition().y);
-			}
-			
-		}
-	}
+
+	_aiCar->SaveWeights();
+	_aiCar->LoadWeights();
 	
 
 

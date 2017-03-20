@@ -91,6 +91,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 
 	body->SetUserData(this);
 	currentWaypoint = 0;
+	currentlap = 0;
 	MaxWays = numways;
 
 }
@@ -138,10 +139,10 @@ void Car::Update(int controlState, std::vector<Waypoint*> wps) {
 		tires[it]->updateTurn(controlState);
 	}
 	
-
+	UpdateTime();
 	UpdateSprites();
 
-	gef::DebugOut("WAYPOINT FOR CAR : %i", currentWaypoint);
+	//gef::DebugOut("WAYPOINT FOR CAR : %i", currentWaypoint);
 }
 
 void Car::UpdateSprites()
@@ -188,5 +189,23 @@ void Car::UpdateWaypoint()
 	{
 		currentWaypoint = 0;
 	}
-	
+
+	if (currentWaypoint == 1)
+	{
+		Lap();
+	}
+}
+
+void Car::Lap()
+{
+	finishlap = time(NULL);
+	laptime = difftime(finishlap, startlap);
+	startlap = time(NULL);
+	currentlap++;
+}
+
+void Car::UpdateTime()
+{
+	finishlap = time(NULL);
+	currenttime = difftime(finishlap, startlap);
 }
