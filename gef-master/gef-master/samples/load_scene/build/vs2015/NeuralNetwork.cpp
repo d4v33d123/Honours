@@ -99,7 +99,6 @@ bool Network::read_number(FILE* fp, double* number)
 void Network::InititaliseRandoms(int rnd)
 {
 	srand((unsigned)time(NULL));
-	//srand(rnd);
 }
 
 int Network::RandomEqualINT(int Low, int High)

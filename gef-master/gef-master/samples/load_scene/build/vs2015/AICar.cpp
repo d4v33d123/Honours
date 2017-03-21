@@ -152,7 +152,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	body->SetUserData(this);
 
-	currentWaypoint = 5;
+	currentWaypoint = 4;
 	control_state = 0;
 	MaxWays = numways;
 }
@@ -248,16 +248,26 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
-			//gef::DebugOut("ayy");
-			double val = ((body->GetAngle() - wps[it]->body->GetAngle())* RADTODEG) - 180;
-			val /= 360;
+			double val = fmod(((body->GetAngle() - wps[it]->body->GetAngle()) * RADTODEG) - 270, 360);
+			/*val /= 360;
 			if (val < 0)
 				val += 1;
 			else if (val > 1)
-				val -= 1;
+				val -= 1;*/
 			angle_to_waypoint = val;
-			waypoint_angle = wps[it]->body->GetAngle();
-			//gef::DebugOut("Waypoint Val :%f", val);
+			waypoint_angle = wps[it]->body->GetAngle();// +(DEGTORAD * 90);//wps[it]->body->GetAngle();//
+			gef::DebugOut("Waypoint angle :%f\n", RADTODEG * waypoint_angle);
+			if (waypoint_angle < 0)
+			{
+				waypoint_angle += 2*b2_pi;
+			}
+			else if (waypoint_angle > 2 * b2_pi)
+			{
+				waypoint_angle -= 2 * b2_pi;
+			}
+		
+
+			gef::DebugOut("Waypoint angle :%f\n", RADTODEG * waypoint_angle);
 		}
 	}
 
@@ -324,20 +334,20 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 
 	float rayLength = 100; //long enough to hit the walls
 	b2Vec2 p1(body->GetPosition().x, body->GetPosition().y); //center of scene
-	b2Vec2 p2 = p1 + rayLength * b2Vec2(sinf(waypoint_angle), cosf(waypoint_angle));
-	b2Vec2 p3 = p1 + rayLength * b2Vec2(sinf(waypoint_angle - (DEGTORAD * 180)), cosf(waypoint_angle - (DEGTORAD * 180)));
+	b2Vec2 p2 = p1 + rayLength * b2Vec2(cosf(waypoint_angle), sinf(waypoint_angle));//b2Vec2(sinf(waypoint_angle), cosf(waypoint_angle));
+	b2Vec2 p3 = p1 - rayLength * b2Vec2(cosf(waypoint_angle), sinf(waypoint_angle));//b2Vec2(sinf(waypoint_angle), cosf(waypoint_angle));
 
 	//set up input
 	b2RayCastInput RightCast;
 	RightCast.p1 = p1;
 	RightCast.p2 = p2;
-	RightCast.maxFraction = 10;
+	RightCast.maxFraction = 1;
 
 	//set up input
 	b2RayCastInput LeftCast;
 	LeftCast.p1 = p1;
 	LeftCast.p2 = p3;
-	LeftCast.maxFraction = 10;
+	LeftCast.maxFraction = 1;
 
 	//check every fixture of every body to find closest
 	float closestFractionRight = 1; //start with end of line as p2
@@ -381,7 +391,7 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 			
 		}
 	}
-	b2Vec2 intersectionPointLeft = p1 - closestFractionLeft * (p2 - p1);
+	b2Vec2 intersectionPointLeft = p1 + closestFractionLeft * (p3 - p1);
 
 	float sideDiff = intersectionPointLeft.Length() - intersectionPointRight.Length();
 
@@ -391,7 +401,7 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 
 	gef::DebugOut("side diff : %f", sideDiff);
 
-	distance_to_side = sideDiff + 0.5; // do some maths here to make sure it is between 0 and 1
+	distance_to_side = sideDiff;// +0.5; // do some maths here to make sure it is between 0 and 1
 }
 
 void AICar::draw(gef::SpriteRenderer* sprite_renderer)

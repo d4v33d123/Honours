@@ -18,18 +18,22 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 	}
 
 	
-	wayx = CAPx - x;
+	wayx = x - CAPx;//CAPx - x;
 	wayx /= 2;
-	wayx += x;
+	wayx += CAPx;
 
-	wayy = CAPy - y;
+	wayy = y - CAPy;//CAPy - y;
 	wayy /= 2;
-	wayy += y;
+	wayy += CAPy;
 
-	width = sqrt((pow((x - CAPx), 2) + (pow((y - CAPy), 2))));
-	height = 0.1;
+	width = sqrt((pow((x - CAPx), 2) + (pow((y - CAPy), 2))));//0.1;//
+	height = 0.1;//sqrt((pow((CAPx - x), 2) + (pow((CAPy - CAPy), 2))));//
 
-	angle = atan((y - CAPy) / (x - CAPx));
+	angle = atan2((y - CAPy), (x - CAPx)); //atan2((CAPy - y), (CAPx - x));//
+	if (angle < 0)
+	{
+		angle += 2 * b2_pi;
+	}
 
 
 
