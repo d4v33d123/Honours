@@ -152,7 +152,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	body->SetUserData(this);
 
-	currentWaypoint = 4;
+	currentWaypoint = 6;
 	control_state = 0;
 	MaxWays = numways;
 }
@@ -586,8 +586,6 @@ void AICar::LoadWeights()
 
 	case RMGSN:
 		
-
-		
 		for (i = 1; i < rmgsNN->num_layers; i++)
 		{
 			for (j = 0; j < rmgsNN->layers[i].num_Neurons; j++)
@@ -598,7 +596,6 @@ void AICar::LoadWeights()
 					if (read_number(fp, &dNumber))
 					{
 						rmgsNN->layers[i].neurons[j].weight[k] = dNumber;
-						gef::DebugOut("NUMBER[%i][%i][%i]: %f\n", i, j, k, dNumber);
 					}
 				}
 			}
@@ -616,14 +613,14 @@ void AICar::UpdateButtons()
 {
 
 	if(current_control_states[0] >= 0.5 && prev_control_states[0] < 0.5)
-		control_state |= TDC_LEFT;
+		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT;
 	else if (current_control_states[0] < 0.5 && prev_control_states[0] >= 0.5)
-		control_state &= ~TDC_LEFT;
+		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT;
 
 	if (current_control_states[1] >= 0.5 && prev_control_states[1] < 0.5)
-		control_state |= TDC_RIGHT;
+		control_state |= TDC_LEFT;//control_state |= TDC_RIGHT;
 	else if (current_control_states[1] < 0.5 && prev_control_states[1] >= 0.5)
-		control_state &= ~TDC_RIGHT;
+		control_state &= ~TDC_LEFT;//control_state &= ~TDC_RIGHT;
 
 	if (current_control_states[2] >= 0.5 && prev_control_states[2] < 0.5)
 		control_state |= TDC_UP;

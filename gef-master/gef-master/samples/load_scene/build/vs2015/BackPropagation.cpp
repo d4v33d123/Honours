@@ -85,7 +85,7 @@ void BProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(-1.0, 1.0);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(-0.5, 0.5);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
