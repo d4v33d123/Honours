@@ -181,6 +181,7 @@ float Car::getYPosition()
 
 void Car::UpdateWaypoint()
 {
+	gef::DebugOut("AYYY");
 	if (currentWaypoint < MaxWays)
 	{
 		currentWaypoint += 1;

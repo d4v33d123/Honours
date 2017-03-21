@@ -166,10 +166,11 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			if (err < preverr)
 			{
 				SaveWeights();
+				preverr = err;
 			}
 				
 
-			preverr = err;
+			
 			
 		}
 		

@@ -31,7 +31,6 @@ public:
 	void UpdateSprites();
 	void Lap();
 	void UpdateTime();
-
 	void UpdateWaypoint();
 
 	b2Body* body;

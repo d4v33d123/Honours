@@ -25,9 +25,9 @@ public:
 
 	AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways);
 	void Train(const char* fname);
-	void Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars);
+	void Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars, b2World* world);
 	void UpdateNN(std::vector<Waypoint*> wps);
-	void UpdateRaycasts(std::vector<barrier*>bars);
+	void UpdateRaycasts(std::vector<barrier*>bars, b2World* world);
 	void UpdateButtons();
 	void draw(gef::SpriteRenderer* sprite_renderer);
 	void SaveWeights();
@@ -43,9 +43,15 @@ public:
 	double current_control_states[4];
 	double prev_control_states[4];
 	float angle_to_waypoint;
+	float waypoint_angle;
 	float distance_to_side;
 	float speed;
 	float tire_angle;
+
+
+	gef::Sprite LeftSprite;
+	gef::Sprite LeftHitSprite;
+	gef::Sprite RightHitSprite;
 
 
 	Net net_type;

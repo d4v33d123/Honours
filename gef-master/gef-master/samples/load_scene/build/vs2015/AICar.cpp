@@ -92,6 +92,24 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
+	LeftSprite.set_width(50);
+	LeftSprite.set_height(0.3);
+	LeftSprite.set_colour(0xff0000ff);
+	LeftSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	LeftSprite.set_rotation(-body->GetAngle());
+
+	LeftHitSprite.set_width(10);
+	LeftHitSprite.set_height(10);
+	LeftHitSprite.set_colour(0xff0000ff);
+	LeftHitSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	LeftHitSprite.set_rotation(-body->GetAngle());
+
+	RightHitSprite.set_width(10);
+	RightHitSprite.set_height(10);
+	RightHitSprite.set_colour(0xff0000ff);
+	RightHitSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	RightHitSprite.set_rotation(-body->GetAngle());
+
 
 
 	// set up our neural network depending on what input was recieved
@@ -131,7 +149,10 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	tire_angle = 0;
 
-	currentWaypoint = 9;
+
+	body->SetUserData(this);
+
+	currentWaypoint = 5;
 	control_state = 0;
 	MaxWays = numways;
 }
@@ -156,17 +177,15 @@ void AICar::Train(const char* fname)
 	}
 }
 
-void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars)
+void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars, b2World* world)
 {
 
-	UpdateRaycasts(bars);
+	UpdateRaycasts(bars, world);
 
 	UpdateNN(wps);
 
 	float newAngle = 0;		
 
-	//gef::DebugOut("1:%f 2:%f 3:%f 4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
-	
 	UpdateButtons();
 
 	//gef::DebugOut("CONTROL STATES: %i", control_state);
@@ -230,13 +249,14 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
 			//gef::DebugOut("ayy");
-			double val = ((body->GetAngle() - wps[it]->body->GetAngle())* RADTODEG) -180;
+			double val = ((body->GetAngle() - wps[it]->body->GetAngle())* RADTODEG) - 180;
 			val /= 360;
 			if (val < 0)
 				val += 1;
 			else if (val > 1)
 				val -= 1;
 			angle_to_waypoint = val;
+			waypoint_angle = wps[it]->body->GetAngle();
 			//gef::DebugOut("Waypoint Val :%f", val);
 		}
 	}
@@ -291,41 +311,50 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	}
 
 	gef::DebugOut("Output signals 1:%f 2:%f 3:%f  4:%f \n", current_control_states[0], current_control_states[1], current_control_states[2], current_control_states[3]);
+	gef::DebugOut("WAY : %i\n", currentWaypoint);
 
 }
 
-void AICar::UpdateRaycasts(std::vector<barrier*> bars)
+void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 {
+	//gef::DebugOut("BodyAngle: %f\n", body->GetAngle());
 
-	float rayLength = 25; //long enough to hit the walls
+	LeftSprite.set_rotation(waypoint_angle);
+	LeftSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0);
+
+	float rayLength = 100; //long enough to hit the walls
 	b2Vec2 p1(body->GetPosition().x, body->GetPosition().y); //center of scene
-	b2Vec2 p2 = p1 + rayLength * b2Vec2(sinf(angle_to_waypoint), cosf(angle_to_waypoint));
-	b2Vec2 p3 = p1 - rayLength * b2Vec2(sinf(angle_to_waypoint), cosf(angle_to_waypoint));
+	b2Vec2 p2 = p1 + rayLength * b2Vec2(sinf(waypoint_angle), cosf(waypoint_angle));
+	b2Vec2 p3 = p1 + rayLength * b2Vec2(sinf(waypoint_angle - (DEGTORAD * 180)), cosf(waypoint_angle - (DEGTORAD * 180)));
 
 	//set up input
 	b2RayCastInput RightCast;
 	RightCast.p1 = p1;
 	RightCast.p2 = p2;
-	RightCast.maxFraction = 1;
+	RightCast.maxFraction = 10;
 
 	//set up input
 	b2RayCastInput LeftCast;
-	RightCast.p1 = p1;
-	RightCast.p2 = p3;
-	RightCast.maxFraction = 1;
+	LeftCast.p1 = p1;
+	LeftCast.p2 = p3;
+	LeftCast.maxFraction = 10;
 
 	//check every fixture of every body to find closest
 	float closestFractionRight = 1; //start with end of line as p2
 	b2Vec2 intersectionNormalRight(0, 0);
-	for (std::vector<barrier*>::size_type b = 0; b < bars.size() ; b ++) {
-		for (b2Fixture* f = bars[b]->body->GetFixtureList(); f; f = f->GetNext()) {
-
-			b2RayCastOutput output;
-			if (!f->RayCast(&output, RightCast, 0))  // for fixtures with a single child (polygon, circel etc) index is 0, chains have more idecies. 
-				continue;
-			if (output.fraction < closestFractionRight) {
-				closestFractionRight = output.fraction;
-				intersectionNormalRight = output.normal;
+	//for (std::vector<barrier*>::size_type b = 0; b < bars.size() ; b ++) {
+	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	{
+		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext()) {
+			if (f->GetFilterData().categoryBits == 0x0008)
+			{
+				b2RayCastOutput output;
+				if (!f->RayCast(&output, RightCast, 0))  // for fixtures with a single child (polygon, circel etc) index is 0, chains have more idecies. 
+					continue;
+				if (output.fraction < closestFractionRight) {
+					closestFractionRight = output.fraction;
+					intersectionNormalRight = output.normal;
+				}
 			}
 		}
 	}
@@ -334,21 +363,33 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars)
 	//check every fixture of every body to find closest
 	float closestFractionLeft = 1; //start with end of line as p2
 	b2Vec2 intersectionNormalLeft(0, 0);
-	for (std::vector<barrier*>::size_type b = 0; b < bars.size(); b++) {
-		for (b2Fixture* f = bars[b]->body->GetFixtureList(); f; f = f->GetNext()) {
+	//for (std::vector<barrier*>::size_type b = 0; b < bars.size(); b++) {
+	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext())
+	{
+		for (b2Fixture* f = b->GetFixtureList(); f; f = f->GetNext()) {
+			if (f->GetFilterData().categoryBits == 0x0008)
+			{
+				b2RayCastOutput output;
+				if (!f->RayCast(&output, LeftCast, 0))
+					continue;
+				if (output.fraction < closestFractionLeft) {
+					closestFractionLeft = output.fraction;
+					intersectionNormalLeft = output.normal;
 
-			b2RayCastOutput output;
-			if (!f->RayCast(&output, LeftCast, 0))
-				continue;
-			if (output.fraction < closestFractionLeft) {
-				closestFractionLeft = output.fraction;
-				intersectionNormalLeft = output.normal;
+				}
 			}
+			
 		}
 	}
 	b2Vec2 intersectionPointLeft = p1 - closestFractionLeft * (p2 - p1);
 
 	float sideDiff = intersectionPointLeft.Length() - intersectionPointRight.Length();
+
+	RightHitSprite.set_position(intersectionPointRight.x, intersectionPointRight.y, 0);
+	LeftHitSprite.set_position(intersectionPointLeft.x, intersectionPointLeft.y, 0);
+
+
+	gef::DebugOut("side diff : %f", sideDiff);
 
 	distance_to_side = sideDiff + 0.5; // do some maths here to make sure it is between 0 and 1
 }
@@ -357,6 +398,10 @@ void AICar::draw(gef::SpriteRenderer* sprite_renderer)
 {
 
 	sprite_renderer->DrawSprite(carBodySprite);
+	sprite_renderer->DrawSprite(LeftSprite);
+	sprite_renderer->DrawSprite(RightHitSprite);
+	sprite_renderer->DrawSprite(LeftHitSprite);
+
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
