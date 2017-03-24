@@ -152,7 +152,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	body->SetUserData(this);
 
-	currentWaypoint = 6;
+	currentWaypoint = 5;
 	control_state = 0;
 	MaxWays = numways;
 }
@@ -271,7 +271,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		}
 	}
 
-	distance_to_side = 0.5;
+	//distance_to_side = 0.5;
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
 	{
@@ -393,15 +393,25 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 	}
 	b2Vec2 intersectionPointLeft = p1 + closestFractionLeft * (p3 - p1);
 
-	float sideDiff = intersectionPointLeft.Length() - intersectionPointRight.Length();
+	b2Vec2 rl = (intersectionPointRight - p1);
+	b2Vec2 ll = (intersectionPointLeft - p1);
+
+
+	float sideDiff = abs(rl.Length()) - abs(ll.Length()); //rl.Length() -  ll.Length(); // 
+	float maxdiff = abs(rl.Length()) + abs(ll.Length()); //rl.Length() + ll.Length();
+
 
 	RightHitSprite.set_position(intersectionPointRight.x, intersectionPointRight.y, 0);
 	LeftHitSprite.set_position(intersectionPointLeft.x, intersectionPointLeft.y, 0);
 
 
-	gef::DebugOut("side diff : %f", sideDiff);
+	gef::DebugOut("side diff : %f\n", sideDiff);
+	gef::DebugOut("rl : %f\n", rl.Length());
+	gef::DebugOut("ll : %f\n", ll.Length());
 
-	distance_to_side = sideDiff;// +0.5; // do some maths here to make sure it is between 0 and 1
+
+
+	distance_to_side = (ll.Length() / (maxdiff));//(sideDiff / (maxdiff)); // do some maths here to make sure it is between 0 and 1
 }
 
 void AICar::draw(gef::SpriteRenderer* sprite_renderer)
