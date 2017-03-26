@@ -397,8 +397,9 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 	b2Vec2 ll = (intersectionPointLeft - p1);
 
 
-	float sideDiff = abs(rl.Length()) - abs(ll.Length()); //rl.Length() -  ll.Length(); // 
+	
 	float maxdiff = abs(rl.Length()) + abs(ll.Length()); //rl.Length() + ll.Length();
+	float sideDiff = abs(maxdiff) - abs(ll.Length()); //rl.Length() -  ll.Length(); // 
 
 
 	RightHitSprite.set_position(intersectionPointRight.x, intersectionPointRight.y, 0);
@@ -411,7 +412,7 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 
 
 
-	distance_to_side = (ll.Length() / (maxdiff));//(sideDiff / (maxdiff)); // do some maths here to make sure it is between 0 and 1
+	distance_to_side = (sideDiff / (maxdiff));//(sideDiff / (maxdiff)); // do some maths here to make sure it is between 0 and 1
 }
 
 void AICar::draw(gef::SpriteRenderer* sprite_renderer)
@@ -623,14 +624,14 @@ void AICar::UpdateButtons()
 {
 
 	if(current_control_states[0] >= 0.5 && prev_control_states[0] < 0.5)
-		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT;
+		control_state |= TDC_LEFT; //control_state |= TDC_RIGHT; //
 	else if (current_control_states[0] < 0.5 && prev_control_states[0] >= 0.5)
-		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT;
+		control_state &= ~TDC_LEFT; //control_state &= ~TDC_RIGHT; //
 
 	if (current_control_states[1] >= 0.5 && prev_control_states[1] < 0.5)
-		control_state |= TDC_LEFT;//control_state |= TDC_RIGHT;
+		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT;//
 	else if (current_control_states[1] < 0.5 && prev_control_states[1] >= 0.5)
-		control_state &= ~TDC_LEFT;//control_state &= ~TDC_RIGHT;
+		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT;//
 
 	if (current_control_states[2] >= 0.5 && prev_control_states[2] < 0.5)
 		control_state |= TDC_UP;
