@@ -137,8 +137,8 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 5000;
-	int preverr = 1.0;
+	int maxEpochs = 2000;
+	float preverr = 1.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -157,21 +157,20 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	{
 		++epoch;
 		
+		double err = MeanSquaredError(trainData, trainDataSize);
+		if (err <= preverr)
+		{
+			SaveWeights();
+			preverr = err;
+			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);
+		}
+
+
 		// update this with getting the current weights of all the layers
 		if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
 			//double* currWts = GetWeights();
-			double err = MeanSquaredError(trainData,  trainDataSize);
-			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);
-			if (err < preverr)
-			{
-				SaveWeights();
-				preverr = err;
-			}
-				
-
-			
-			
+			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);			
 		}
 		
 		// 1. compute and accumulate all gradients
@@ -552,7 +551,7 @@ double RProp::MeanSquaredError(double** trainData, int size) //double RProp::Mea
 	}
 	sumSquaredError /= size;
 
-	gef::DebugOut("MeanSquaredError: %f", sumSquaredError);
+	//gef::DebugOut("MeanSquaredError: %f", sumSquaredError);
 
 	return sumSquaredError;
 }

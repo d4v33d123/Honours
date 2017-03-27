@@ -118,7 +118,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	net_type = network;
 
 	int ennl[] = { 4, 15,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
-	int rpnnl[] = { 4, 50, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int rpnnl[] = { 4, 20, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
 	int rmnnl[] = { 4, 15, 4 };
 
 
@@ -152,7 +152,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	body->SetUserData(this);
 
-	currentWaypoint = 5;
+	currentWaypoint = 6;
 	control_state = 0;
 	MaxWays = numways;
 }
@@ -248,15 +248,19 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)
 		{
-			double val = fmod(((body->GetAngle() - wps[it]->body->GetAngle()) * RADTODEG) - 270, 360);
-			/*val /= 360;
+			double val = (fmod(wps[it]->body->GetAngle(), 2*b2_pi) - fmod((body->GetAngle()), 2 * b2_pi)) /(2*b2_pi); //*RADTODEG;
+			
 			if (val < 0)
 				val += 1;
 			else if (val > 1)
-				val -= 1;*/
+				val -= 1;
 			angle_to_waypoint = val;
+			gef::DebugOut("WAY ANGLE :%f", wps[it]->body->GetAngle());
+			gef::DebugOut("CAR ANGLE :%f", body->GetAngle());
+			gef::DebugOut("ANGLE VAL :%f", val);
+
 			waypoint_angle = wps[it]->body->GetAngle();// +(DEGTORAD * 90);//wps[it]->body->GetAngle();//
-			gef::DebugOut("Waypoint angle :%f\n", RADTODEG * waypoint_angle);
+			//gef::DebugOut("Waypoint angle :%f\n", RADTODEG * waypoint_angle);
 			if (waypoint_angle < 0)
 			{
 				waypoint_angle += 2*b2_pi;
@@ -406,9 +410,9 @@ void AICar::UpdateRaycasts(std::vector<barrier*> bars, b2World* world)
 	LeftHitSprite.set_position(intersectionPointLeft.x, intersectionPointLeft.y, 0);
 
 
-	gef::DebugOut("side diff : %f\n", sideDiff);
-	gef::DebugOut("rl : %f\n", rl.Length());
-	gef::DebugOut("ll : %f\n", ll.Length());
+	//gef::DebugOut("side diff : %f\n", sideDiff);
+	//gef::DebugOut("rl : %f\n", rl.Length());
+	//gef::DebugOut("ll : %f\n", ll.Length());
 
 
 
