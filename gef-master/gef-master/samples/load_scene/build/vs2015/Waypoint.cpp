@@ -30,10 +30,10 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 	height = 0.1;//sqrt((pow((CAPx - x), 2) + (pow((CAPy - CAPy), 2))));//
 
 	angle = atan2((y - CAPy), (x - CAPx)); //atan2((CAPy - y), (CAPx - x));//
-	if (angle < 0)
-	{
-		angle += 2 * b2_pi;
-	}
+	//if (angle < 0)
+	//{
+	//	angle += 2 * b2_pi;
+	//}
 
 
 

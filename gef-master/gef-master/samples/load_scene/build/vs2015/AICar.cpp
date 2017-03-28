@@ -118,7 +118,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	net_type = network;
 
 	int ennl[] = { 4, 15,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
-	int rpnnl[] = { 4, 20, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int rpnnl[] = { 4, 15, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
 	int rmnnl[] = { 4, 15, 4 };
 
 
@@ -475,7 +475,7 @@ void AICar::SaveWeights()
 			{
 				for (k = 0; k < ebpNN->layers[i - 1].num_Neurons; k++)
 				{
-					file << (ebpNN->layers[i].neurons[j].weight[k]);
+					file << (ebpNN->layers[i].neurons[j].saved_weight[k]);
 					file << "\n";
 				}
 					
@@ -493,9 +493,11 @@ void AICar::SaveWeights()
 			{
 				for (k = 0; k < rpNN->layers[i - 1].num_Neurons; k++)
 				{
-					file << (rpNN->layers[i].neurons[j].weight[k]);
+					file << (rpNN->layers[i].neurons[j].saved_weight[k]);
 					file << "\n";
 				}
+				file << (rpNN->layers[i].neurons[j].savedBias);
+				file << "\n";
 			}
 		}
 
@@ -594,6 +596,11 @@ void AICar::LoadWeights()
 						rpNN->layers[i].neurons[j].weight[k] = dNumber;
 					}
 				}
+				double dNumber;
+				if (read_number(fp, &dNumber))
+				{
+					rpNN->layers[i].neurons[j].bias = dNumber;
+				}
 			}
 		}
 
@@ -628,14 +635,14 @@ void AICar::UpdateButtons()
 {
 
 	if(current_control_states[0] >= 0.5 && prev_control_states[0] < 0.5)
-		control_state |= TDC_LEFT; //control_state |= TDC_RIGHT; //
+		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT; //
 	else if (current_control_states[0] < 0.5 && prev_control_states[0] >= 0.5)
-		control_state &= ~TDC_LEFT; //control_state &= ~TDC_RIGHT; //
+		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT; //
 
 	if (current_control_states[1] >= 0.5 && prev_control_states[1] < 0.5)
-		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT;//
+		control_state |= TDC_LEFT;//control_state |= TDC_RIGHT; //
 	else if (current_control_states[1] < 0.5 && prev_control_states[1] >= 0.5)
-		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT;//
+		control_state &= ~TDC_LEFT;//control_state &= ~TDC_RIGHT; //
 
 	if (current_control_states[2] >= 0.5 && prev_control_states[2] < 0.5)
 		control_state |= TDC_UP;
