@@ -409,7 +409,7 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 
 		if (dAvgTestError < dMinTestError)
 		{
-			//gef::DebugOut(" -> saving weights\n");
+			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}

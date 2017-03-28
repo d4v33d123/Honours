@@ -65,7 +65,7 @@ RProp::RProp(int nl, int npl[])
 		{
 			layers[i].neurons[j].output = 1.0;
 			layers[i].neurons[j].error = 0.0;
-			layers[i].neurons[j].bias = 0.0;
+			layers[i].neurons[j].bias = 0.1;
 
 			if (i > 0)
 			{
@@ -112,7 +112,7 @@ RProp::~RProp()
 
 int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 {
-	InititaliseRandoms(200);
+	InititaliseRandoms(time_t(NULL));
 
 	double* hGradTerms = MakeVector(layers[1].num_Neurons, 0.0);
 	double* oGradTerms = MakeVector(layers[2].num_Neurons, 0.0);
@@ -137,7 +137,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 5000;
+	int maxEpochs = 10000;
 	float preverr = 1.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
@@ -276,7 +276,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 				{
 					delta = ihPrevWeightDeltas[i][j]; // no change to delta
 													  // no way should delta be 0 . . . 
-					double tmp = -sgn(ihWeightGradsAcc[i][j]) * delta; // determine direction
+					double tmp = (-sgn(ihWeightGradsAcc[i][j])) * delta; // determine direction
 					layers[1].neurons[j].weight[i] += tmp; // update
 				}
 				//Console.WriteLine(ihPrevWeightGradsAcc[i][j] + " " + ihWeightGradsAcc[i][j]); Console.ReadLine();
@@ -446,10 +446,12 @@ void RProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.001, 0.01);//RandomEqualREAL(0.5, -0.5);
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
+			layers[i].neurons[j].bias = RandomEqualREAL(0.001, 0.01);
+			layers[i].neurons[j].savedBias = 0;
 
 		}
 	}

@@ -1,7 +1,7 @@
 #include "Track.h"
 #include "system\debug_log.h"
 
-Track::Track(const char* fname, b2World* world)
+Track::Track(const char* fname, b2World* world, int number)
 {
 	FILE* fp;
 	errno_t err;
@@ -10,6 +10,7 @@ Track::Track(const char* fname, b2World* world)
 	{
 		printf("couldn't open file");
 	}
+	tracknumber = number;
 
 	LoadTrack(fp);
 	fclose(fp);
@@ -237,6 +238,47 @@ void Track::SetUpWaypoints(b2World* world)
 	// we can do this by sorting the vector with using the waypoint val variable
 	//at the moment we will just leave them unordered and search for the right one, firx this for efficency
 	//std::sort(WayPoints.begin(), WayPoints.end(), CompareWaypoints());
+
+	// for this particular level, we must flip some of the waypoints
+	
+	if (tracknumber == 1)
+	{
+		for (std::vector<Waypoint*>::size_type it = 0; it != WayPoints.size(); it++)
+		{
+			int val = WayPoints[it]->WaypointOrderVal;
+			if (val == 21 ||
+				val == 22 ||
+				val == 23 ||
+				val == 24 ||
+				val == 25 ||
+				val == 26 ||
+				val == 27 ||
+				val == 28 ||
+				val == 29 ||
+				val == 30 ||
+				val == 31 ||
+				val == 32 ||
+				val == 33 ||
+				val == 46 ||
+				val == 47 ||
+				val == 48 ||
+				val == 49 ||
+				val == 50 ||
+				val == 51 ||
+				val == 52 ||
+				val == 64 ||
+				val == 65 ||
+				val == 66 ||
+				val == 67 ||
+				val == 68 ||
+				val == 69)
+			{
+				WayPoints[it]->body->SetTransform(WayPoints[it]->body->GetPosition(), WayPoints[it]->body->GetAngle() + b2_pi);
+			}
+
+		}
+	}
+	
 
 }
 

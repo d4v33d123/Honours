@@ -24,7 +24,7 @@ enum CollisionCategories
 class Track
 {
 public:
-	Track(const char * fname, b2World* world);
+	Track(const char * fname, b2World* world, int number);
 
 	void LoadTrack(FILE* fp);
 	void SetUpTrack(b2World* world);
@@ -42,6 +42,7 @@ public:
 
 	std::vector<barrier*> Barriers;
 	std::vector<Waypoint*> WayPoints;
+	int tracknumber;
 
 	char** map;
 	double** waypointOrderPositions;
