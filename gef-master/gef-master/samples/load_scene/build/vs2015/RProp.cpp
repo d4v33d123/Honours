@@ -157,6 +157,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	{
 		++epoch;
 		
+		//double* currWts = GetWeights();
 		double err = MeanSquaredError(trainData, trainDataSize);
 		if (err <= preverr)
 		{
@@ -169,7 +170,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		// update this with getting the current weights of all the layers
 		if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
-			//double* currWts = GetWeights();
+			
 			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);			
 		}
 		
@@ -446,11 +447,11 @@ void RProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.001, 0.01);//RandomEqualREAL(0.5, -0.5);
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5); //RandomEqualREAL(0.001, 0.01);//
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
-			layers[i].neurons[j].bias = RandomEqualREAL(0.001, 0.01);
+			layers[i].neurons[j].bias = RandomEqualREAL(0.5, -0.5); //RandomEqualREAL(0.001, 0.01);
 			layers[i].neurons[j].savedBias = 0;
 
 		}
@@ -546,10 +547,15 @@ double RProp::MeanSquaredError(double** trainData, int size) //double RProp::Mea
 		// following assumes data has all x-values first, followed by y-values!
 		copy_array_noindex(trainData[i], xValues, layers[0].num_Neurons); // extract inputs
 		copy_array_index(trainData[i], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // extract targets
-		int sizeofy = layers[2].num_Neurons;
+		int sizeofy = layers[0].num_Neurons;
 		ComputeOutputs(xValues, sizeofy, yValues);
 		for (int j = 0; j < sizeofy; j++)
+		{
 			sumSquaredError += ((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
+			//gef::DebugOut("the error %i: %f\n",j, (yValues[j] - tValues[j]));
+		}
+			
+			
 	}
 	sumSquaredError /= size;
 

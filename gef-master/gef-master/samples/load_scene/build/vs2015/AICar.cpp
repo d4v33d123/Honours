@@ -117,8 +117,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	dataSize = ds;
 	net_type = network;
 
-	int ennl[] = { 4, 15,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
-	int rpnnl[] = { 4, 50, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int ennl[] = { 4, 50,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
+	int rpnnl[] = { 4, 4, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
 	int rmnnl[] = { 4, 15, 4 };
 
 
@@ -162,7 +162,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 1000);
+		ebpNN->Run(fname, dataSize, 10000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
@@ -242,7 +242,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	{
 		tire_speed += tires[it]->getSpeed();
 	}
-	speed = ((tire_speed / 4) / 200);
+	speed = ((tire_speed / 4) / 200) + 0.4;
 
 	for (std::vector<Waypoint*>::size_type it = 0; it != wps.size(); it++)
 	{
@@ -275,18 +275,10 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 		}
 	}
 
-	//distance_to_side = 0.5;
-
-	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
-	{
-		tire_speed += tires[it]->getSpeed();
-	}
-	
-
-
 	// tire angle is set in the update method;
 
 	double inputsignal[4];
+	//double inputsignal[2];
 	inputsignal[0] = fmod(abs(angle_to_waypoint ), 1);
 	inputsignal[1] = distance_to_side;
 	inputsignal[2] = speed;
@@ -633,7 +625,7 @@ void AICar::LoadWeights()
 
 void AICar::UpdateButtons()
 {
-
+	
 	if(current_control_states[0] >= 0.5 && prev_control_states[0] < 0.5)
 		control_state |= TDC_LEFT; //control_state |= TDC_RIGHT; //
 	else if (current_control_states[0] < 0.5 && prev_control_states[0] >= 0.5)
@@ -643,7 +635,7 @@ void AICar::UpdateButtons()
 		control_state |= TDC_RIGHT; //control_state |= TDC_LEFT;//
 	else if (current_control_states[1] < 0.5 && prev_control_states[1] >= 0.5)
 		control_state &= ~TDC_RIGHT; //control_state &= ~TDC_LEFT;//
-
+	
 	if (current_control_states[2] >= 0.5 && prev_control_states[2] < 0.5)
 		control_state |= TDC_UP;
 	else if (current_control_states[2] < 0.5 && prev_control_states[2] >= 0.5)
