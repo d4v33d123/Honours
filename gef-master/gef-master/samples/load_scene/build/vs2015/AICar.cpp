@@ -162,7 +162,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 10000);
+		ebpNN->Run(fname, dataSize, 20000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:
