@@ -458,7 +458,7 @@ void SceneApp::GameInit()
 	switch (trackNum_)
 	{
 	case 1:
-		level_ = new Track("racetrack.txt", world, 1);
+		level_ = new Track("racetrack2.txt", world, 1);
 		break;
 	case 2:
 		level_ = new Track("racetrack2.txt", world, 2);
