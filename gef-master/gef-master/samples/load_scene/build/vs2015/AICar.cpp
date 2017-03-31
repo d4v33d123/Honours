@@ -147,7 +147,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	prev_control_states[2] = 0;
 	prev_control_states[3] = 0;
 
-	tire_angle = 0;
+	tire_angle = 0.5;
 
 
 	body->SetUserData(this);
@@ -567,6 +567,7 @@ void AICar::LoadWeights()
 					if (read_number(fp, &dNumber))
 					{
 						ebpNN->layers[i].neurons[j].weight[k] = dNumber;
+						gef::DebugOut("WEIGHT[%i][%i][%i]: %f\n", i, j, k, ebpNN->layers[i].neurons[j].weight[k]);
 					}
 				}
 			}
