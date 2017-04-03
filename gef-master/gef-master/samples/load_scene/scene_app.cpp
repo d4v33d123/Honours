@@ -422,12 +422,12 @@ void SceneApp::GameInit()
 	controlState = 0;
 	
 	// FOR TESTING
-	net_type = EBP;// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+	net_type = RPROP;// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
 
 	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
 	//dataSize = 26620;
 	//dataSize = 5500;
-	dataSize = 2000;
+	dataSize = 5000;
 
 
 
@@ -471,7 +471,7 @@ void SceneApp::GameInit()
 	//_aiCar->Train("traindat29.txt");
 	//_aiCar->Train("traindat32.txt");
 	//_aiCar->Train("traindat34.txt");
-	_aiCar->Train("traindat35.txt");
+	_aiCar->Train("traindat37.txt");
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), 0);// (DEGTORAD * 180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)

@@ -119,7 +119,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	int ennl[] = { 4, 50,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
 	int rpnnl[] = { 4, 50, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
-	int rmnnl[] = { 4, 25, 4 };
+	int rmnnl[] = { 4, 15, 4 };
 
 
 	switch (net_type)
@@ -162,7 +162,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 10000);
+		ebpNN->Run(fname, dataSize, 20000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:

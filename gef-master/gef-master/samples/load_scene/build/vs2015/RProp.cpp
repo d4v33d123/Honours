@@ -133,11 +133,11 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
 	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
 
-	double etaPlus = 1.2; // values are from the paper
-	double etaMinus = 0.5;
+	double etaPlus = 1.1;//1.2; // values are from the paper
+	double etaMinus = 0.5;//0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 10000;
+	int maxEpochs = 20000;
 	float preverr = 1.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
@@ -387,7 +387,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 	//double* wts = GetWeights();
 	//return wts;
-	RestoreWeights();
+	//RestoreWeights();
 
 	return 0;
 }
@@ -451,7 +451,7 @@ void RProp::RandomWeights()
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
-			layers[i].neurons[j].bias = RandomEqualREAL(0.5, -0.5); //RandomEqualREAL(0.001, 0.01);
+			layers[i].neurons[j].bias = RandomEqualREAL(0.001, 0.01); //RandomEqualREAL(0.5, -0.5); //
 			layers[i].neurons[j].savedBias = 0;
 
 		}
@@ -551,7 +551,7 @@ double RProp::MeanSquaredError(double** trainData, int size) //double RProp::Mea
 		ComputeOutputs(xValues, sizeofy, yValues);
 		for (int j = 0; j < sizeofy; j++)
 		{
-			sumSquaredError += ((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
+			sumSquaredError += ((tValues[j] - yValues[j]) * (tValues[j] - yValues[j]));//((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
 			//gef::DebugOut("the error %i: %f\n",j, (yValues[j] - tValues[j]));
 		}
 			
