@@ -128,16 +128,16 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* hPrevBiasGradsAcc = MakeVector(layers[1].num_Neurons, 0.0);
 
 	// must save previous weight deltas
-	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.1);
-	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.1);
-	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.1);
-	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.1);
+	double** hoPrevWeightDeltas = MakeMatrix(layers[1].num_Neurons, layers[2].num_Neurons, 0.01);
+	double** ihPrevWeightDeltas = MakeMatrix(layers[0].num_Neurons, layers[1].num_Neurons, 0.01);
+	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
+	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
 
 	double etaPlus = 1.1;//1.2; // values are from the paper
 	double etaMinus = 0.5;//0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 20000;
+	int maxEpochs = 10000;
 	float preverr = 1.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
@@ -387,7 +387,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 	//double* wts = GetWeights();
 	//return wts;
-	//RestoreWeights();
+	RestoreWeights();
 
 	return 0;
 }

@@ -92,6 +92,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	body->SetUserData(this);
 	currentWaypoint = 0;
 	currentlap = 0;
+	laptime = new double[3];
 	MaxWays = numways;
 
 }
@@ -200,7 +201,7 @@ void Car::UpdateWaypoint()
 void Car::Lap()
 {
 	finishlap = time(NULL);
-	laptime = difftime(finishlap, startlap);
+	laptime[currentlap] = difftime(finishlap, startlap);
 	startlap = time(NULL);
 	currentlap++;
 }

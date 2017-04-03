@@ -41,7 +41,7 @@ public:
 
 	// lap realted variables
 	int currentlap;
-	double laptime;
+	double* laptime;
 	double currenttime;
 
 	time_t startlap;
