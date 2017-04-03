@@ -246,7 +246,7 @@ void Track::SetUpWaypoints(b2World* world)
 		for (std::vector<Waypoint*>::size_type it = 0; it != WayPoints.size(); it++)
 		{
 			int val = WayPoints[it]->WaypointOrderVal;
-			
+			/*
 			if (val == 21 ||
 				val == 22 ||
 				val == 23 ||
@@ -275,8 +275,8 @@ void Track::SetUpWaypoints(b2World* world)
 				val == 69)
 			{
 				WayPoints[it]->body->SetTransform(WayPoints[it]->body->GetPosition(), WayPoints[it]->body->GetAngle() + b2_pi);
-			}
-			/*
+			}*/
+			
 			if (val == 21 ||
 				val == 22 ||
 				val == 23 ||
@@ -290,7 +290,8 @@ void Track::SetUpWaypoints(b2World* world)
 				val == 31 ||
 				val == 32 ||
 				val == 33 ||
-				val == 34 ||
+				/*val == 34 ||*/
+				val == 40 ||
 				val == 41 ||
 				val == 42 ||
 				val == 43 ||
@@ -302,7 +303,7 @@ void Track::SetUpWaypoints(b2World* world)
 				val == 55)
 			{
 				WayPoints[it]->body->SetTransform(WayPoints[it]->body->GetPosition(), WayPoints[it]->body->GetAngle() + b2_pi);
-			}*/
+			}
 		}
 	}
 	
