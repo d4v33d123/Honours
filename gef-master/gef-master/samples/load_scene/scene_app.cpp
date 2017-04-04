@@ -471,14 +471,14 @@ void SceneApp::GameInit()
 	//_aiCar->Train("traindat29.txt");
 	//_aiCar->Train("traindat32.txt");
 	//_aiCar->Train("traindat34.txt");
-	//_aiCar->Train("traindat38.txt");
+	_aiCar->Train("traindat38.txt");
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), 0);// (DEGTORAD * 180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
 		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
 	}
-	//_aiCar->SaveWeights();
+	_aiCar->SaveWeights();
 	_aiCar->LoadWeights();
 	
 
