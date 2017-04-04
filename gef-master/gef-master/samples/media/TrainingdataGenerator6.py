@@ -14,8 +14,8 @@ def noise(val, rng):
 
 
 def main():
-    file = open("traindat33.txt", "w")
-    for i in range(0, 1000, 1):
+    file = open("traindat39.txt", "w")
+    for i in range(0, 100000, 1):
         f = noise(rnd.uniform(0,0.9),0.1)
         s = noise(rnd.uniform(0,0.9),0.1)
         v = noise(rnd.uniform(0,0.9),0.1)

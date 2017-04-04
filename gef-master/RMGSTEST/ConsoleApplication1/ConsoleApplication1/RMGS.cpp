@@ -113,7 +113,7 @@ int RMGS::Train(const char* fnames, int ds)
 	
 
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	//MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
+	MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
 
 	// we have to transpose the MBDOutputs for the gram schmidt calculation
 	/*double** TMBDout = MakeMatrix(layers[2].num_Neurons, datasize, 0);
@@ -160,8 +160,8 @@ int RMGS::Train(const char* fnames, int ds)
 	}
 
 	// perfrom gram schmidt on the output layer
-	//GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
-	GramSchmidt(FirstHiddenOutput, ExpectedOutputs, datasize, 1);
+	GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
+	//GramSchmidt(FirstHiddenOutput, ExpectedOutputs, datasize, 1);
 
 	return 0;
 }
