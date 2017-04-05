@@ -416,9 +416,35 @@ void RMGS::PropagateSignal()
 	int i, j, k;
 	for (i = 1; i < num_layers; i++)
 	{
-		for (j = 0; j < layers[i].num_Neurons; j++)
+		if(i == 2)
 		{
+			for (int j = 0; j < layers[i].num_Neurons; j++)
+			{
+				double output = 0;
+				for (int k = 0; k < layers[1].num_Neurons; k++)
+				{
+					// Total of all the  x - w s
+					output += (pow((layers[i - 1].neurons[k].output - layers[i].neurons[j].weight[k]), 2) * (double(k + 1) / double(layers[1].num_Neurons)));
+				}
+
+				//output *= (double(i + 1) / double(layers[2].num_Neurons));
+				// squared
+				// mulitplied by current neuron / total neurons
+				// square root of said value
+				layers[2].neurons[j].output = sqrt(output);//sqrt(fabs(outputsquared));
+
+
+														   // put the value through the fitness function
+				double nout = exp(-layers[2].neurons[j].output);//(1.0 - tanh(layers[2].neurons[i].output));//  
+				layers[2].neurons[j].output = nout;
+				printf("output[%i][%i]: %f\n", i, j, layers[2].neurons[j].output);
+			}
 			
+		}
+		else
+		{
+			for (j = 0; j < layers[i].num_Neurons; j++)
+			{
 				double sum = 0;
 				for (k = 0; k < layers[i - 1].num_Neurons; k++)
 				{
@@ -427,8 +453,12 @@ void RMGS::PropagateSignal()
 					sum += weight*output;
 				}
 				layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
-			
+
+				printf("output[%i][%i]: %f\n", i, j, layers[i].neurons[j].output);
+			}
 		}
+		
+		
 	}
 }
 

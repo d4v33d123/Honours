@@ -15,7 +15,7 @@ def noise(val, rng):
 
 def main():
     file = open("traindat38.txt", "w")
-    for i in range(0, 100000, 1):
+    for i in range(0, 10000, 1):
         f = noise(rnd.uniform(0,0.9),0.1)
         s = noise(rnd.uniform(0,0.9),0.1)
         v = noise(rnd.uniform(0,0.9),0.1)
@@ -93,18 +93,18 @@ def main():
                                 
         elif(f < 0.3): # if the car is angled to a higher degree than the waypoint
             if(f > 0.2):
-                #if(s <= 0.6):
-                file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
-                #else:
-                    #file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1)))
+                if(s <= 0.6):
+                    file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
+                else:
+                    file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1)))
             else:
                 file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.9, -0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
         elif(f > 0.7): # if the car is angled to a lower degree than the waypoint
             if(f < 0.8):
-                #if(s >= 0.4):
-                file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.9, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
-                #else:
-                    #file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.9, -0.1), noise(0.9, -0.1), noise(0.1, 0.1)))
+                if(s >= 0.4):
+                    file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.9, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
+                else:
+                    file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.9, -0.1), noise(0.9, -0.1), noise(0.1, 0.1)))
             else:
                 file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.9, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(0.9, -0.1)))
                     

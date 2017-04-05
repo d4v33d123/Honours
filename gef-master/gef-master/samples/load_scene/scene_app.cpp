@@ -427,7 +427,7 @@ void SceneApp::GameInit()
 	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
 	//dataSize = 26620;
 	//dataSize = 5500;
-	dataSize = 100000;
+	dataSize = 5000;
 
 
 
@@ -441,16 +441,16 @@ void SceneApp::GameInit()
 	switch (net_type)
 	{
 	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
 		//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
 		break;
 
 	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
 		break;
 
 	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
 		break;
 
 	}
@@ -458,7 +458,7 @@ void SceneApp::GameInit()
 	switch (trackNum_)
 	{
 	case 1:
-		level_ = new Track("racetrack3.txt", world, 1);
+		level_ = new Track("racetrack4.txt", world, 1);
 		break;
 	case 2:
 		level_ = new Track("racetrack2.txt", world, 2);
@@ -471,14 +471,14 @@ void SceneApp::GameInit()
 	//_aiCar->Train("traindat29.txt");
 	//_aiCar->Train("traindat32.txt");
 	//_aiCar->Train("traindat34.txt");
-	_aiCar->Train("traindat39.txt");
+	//_aiCar->Train("traindat40.txt");
 
 	_aiCar->body->SetTransform(b2Vec2(50, 200), 0);// (DEGTORAD * 180));
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
 		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
 	}
-	_aiCar->SaveWeights();
+	//_aiCar->SaveWeights();
 	_aiCar->LoadWeights();
 	
 
@@ -497,6 +497,26 @@ void SceneApp::GameUpdate(float frame_time)
 	car->Update(controlState, level_->getWaypoints());
 	_aiCar->Update(level_->getWaypoints(), level_->Barriers, world);
 	level_->UpdateSprites();
+
+	//check for victory!
+	if (car->currentlap == 4)
+	{
+		// game ends!
+		if (_aiCar->currentlap == 4)
+		{
+			winner = false;
+		}
+		else
+		{
+			winner = true;
+		}
+		for (int i = 1; i < 4; i++)
+		{
+			PlayerTime += car->laptime[i];
+		}
+		game_state == GAMEOVER;
+	}
+
 }
 
 void SceneApp::GameRender()
@@ -557,6 +577,8 @@ void SceneApp::GameInput()
 
 void SceneApp::GameOverUpdate()
 {
+	GameInput();
+
 
 }
 
@@ -578,9 +600,15 @@ void SceneApp::GameOverRender()
 	sprite_renderer_->Begin();
 
 	car->draw(sprite_renderer_);
+	_aiCar->draw(sprite_renderer_);
 
+	level_->DrawTrack(sprite_renderer_, true);
 
 	DrawHUD();
+
+	// draw the text showing the score and your time
+	// and press enter to exit
+
 	sprite_renderer_->End();
 }
 

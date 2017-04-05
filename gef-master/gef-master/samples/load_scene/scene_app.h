@@ -181,6 +181,8 @@ private:
 	double PlayerTime;
 	int dataSize;
 
+	bool winner;
+
 
 };
 

@@ -200,8 +200,12 @@ void Car::UpdateWaypoint()
 
 void Car::Lap()
 {
-	finishlap = time(NULL);
-	laptime[currentlap] = difftime(finishlap, startlap);
+	if (currentlap > 0)
+	{
+		finishlap = time(NULL);
+		laptime[currentlap] = difftime(finishlap, startlap);
+		
+	}
 	startlap = time(NULL);
 	currentlap++;
 }

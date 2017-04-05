@@ -113,30 +113,7 @@ int RMGS::Train(const char* fnames, int ds)
 
 
 	// 4. Adjust the weights of the second hidden layer using the MBD technique from section III
-	//MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
-
-	// we have to transpose the MBDOutputs for the gram schmidt calculation
-	/*double** TMBDout = MakeMatrix(layers[2].num_Neurons, datasize, 0);
-	for (int i = 0; i < layers[2].num_Neurons; i++)
-	{
-	for (int j = 0; j < datasize; j++)
-	{
-	TMBDout[i][j] = MBDOutput[j][i];
-	//printf("TMBDOut %i: %f     ", i, TMBDout[i][j]);
-	}
-	//printf("\n");
-	}*/
-
-	// we have to transpose the FirstHiddenoutputs for the gram schmidt calculation
-	double** TFHO = MakeMatrix(layers[1].num_Neurons, datasize, 0);
-	for (int i = 0; i < layers[1].num_Neurons; i++)
-	{
-		for (int j = 0; j < datasize; j++)
-		{
-			TFHO[i][j] = FirstHiddenOutput[j][i];
-		}
-	}
-
+	MBD(trainData, datasize, FirstHiddenOutput ,MBDOutput);
 	// 5. Calcualte the actual outputs at the second hidden layer. Use Equations (1), (2), (5) and (6)
 
 
@@ -160,8 +137,8 @@ int RMGS::Train(const char* fnames, int ds)
 	}
 
 	// perfrom gram schmidt on the output layer
-	//GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
-	GramSchmidt(FirstHiddenOutput, ExpectedOutputs, datasize, 1);
+	GramSchmidt(MBDOutput, ExpectedOutputs, datasize, 2);
+	//GramSchmidt(FirstHiddenOutput, ExpectedOutputs, datasize, 1);
 
 	return 0;
 }
@@ -403,6 +380,7 @@ void RMGS::GramSchmidt(double** hidden, double** outputs, int size, int currentL
 		for (int i = 0; i < layers[currentLayer].num_Neurons; i++)
 		{
 			layers[currentLayer + 1].neurons[n].weight[i] = W[i];
+			gef::DebugOut("weight[%i]:%f\n", i, W[i]);
 		}
 	}
 
@@ -416,7 +394,49 @@ void RMGS::PropagateSignal()
 	int i, j, k;
 	for (i = 1; i < num_layers; i++)
 	{
-		for (j = 0; j < layers[i].num_Neurons; j++)
+
+		if (i == 2)
+		{
+			for (int j = 0; j < layers[i].num_Neurons; j++)
+			{
+				double output = 0;
+				for (int k = 0; k < layers[1].num_Neurons; k++)
+				{
+					// Total of all the  x - w s
+					output += (pow((layers[i - 1].neurons[k].output - layers[i].neurons[j].weight[k]), 2) * (double(k + 1) / double(layers[1].num_Neurons)));
+				}
+
+				//output *= (double(i + 1) / double(layers[2].num_Neurons));
+				// squared
+				// mulitplied by current neuron / total neurons
+				// square root of said value
+				layers[2].neurons[j].output = sqrt(output);//sqrt(fabs(outputsquared));
+
+
+														   // put the value through the fitness function
+				double nout = exp(-layers[2].neurons[j].output);//(1.0 - tanh(layers[2].neurons[i].output));//  
+				layers[2].neurons[j].output = nout;
+				//gef::DebugOut("output[%i][%i]: %f\n", i, j, layers[2].neurons[j].output);
+			}
+
+		}
+		else
+		{
+			for (j = 0; j < layers[i].num_Neurons; j++)
+			{
+				double sum = 0;
+				for (k = 0; k < layers[i - 1].num_Neurons; k++)
+				{
+					double output = layers[i - 1].neurons[k].output;
+					double weight = layers[i].neurons[j].weight[k];
+					sum += weight*output;
+				}
+				layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
+
+				//gef::DebugOut("output[%i][%i]: %f\n", i, j, layers[i].neurons[j].output);
+			}
+		}
+		/*for (j = 0; j < layers[i].num_Neurons; j++)
 		{
 
 			double sum = 0;
@@ -430,10 +450,10 @@ void RMGS::PropagateSignal()
 			{
 				layers[i].neurons[j].output = exp(-sum);
 			}
-			else*/
+			else
 			layers[i].neurons[j].output = (1.0 / (1.0 + exp(-sum))); //double(1) / tanh(sum); // log((sum / (1 - sum)));//// //
 
-		}
+		}*/
 	}
 }
 

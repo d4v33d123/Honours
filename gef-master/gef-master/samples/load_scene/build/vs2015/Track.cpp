@@ -291,16 +291,11 @@ void Track::SetUpWaypoints(b2World* world)
 				val == 32 ||
 				val == 33 ||
 				/*val == 34 ||*/
-				val == 40 ||
-				val == 41 ||
-				val == 42 ||
-				val == 43 ||
-				val == 50 ||
-				val == 51 ||
-				val == 52 ||
-				val == 53 ||
-				val == 54 ||
-				val == 55)
+				val == 45 ||
+				val == 46 ||
+				val == 47 ||
+				val == 48 ||
+				val == 49)
 			{
 				WayPoints[it]->body->SetTransform(WayPoints[it]->body->GetPosition(), WayPoints[it]->body->GetAngle() + b2_pi);
 			}
