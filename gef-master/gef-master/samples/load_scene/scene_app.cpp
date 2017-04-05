@@ -185,7 +185,7 @@ void SceneApp::DrawHUD()
 	if(font_)
 	{
 		// display frame rate
-		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition()-(screen_width/2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
+		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition()-(screen_width/2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", _aiCar->currenttime);
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
 	}
 }
@@ -422,35 +422,27 @@ void SceneApp::GameInit()
 	controlState = 0;
 	
 	// FOR TESTING
-	net_type = RMGSN;// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+	net_type = RPROP;// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
 
 	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
 	//dataSize = 26620;
 	//dataSize = 5500;
 	dataSize = 5000;
 
-
-
-	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 77);
-	car->body->SetTransform(b2Vec2(100, 100), 0);
-	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
-	{
-		car->tires[it]->body->SetTransform(b2Vec2(100, 100), 0);
-	}
 	
 	switch (net_type)
 	{
 	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
+		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
 		//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
 		break;
 
 	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
+		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
 		break;
 
 	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 58);
+		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
 		break;
 
 	}
@@ -468,17 +460,37 @@ void SceneApp::GameInit()
 		break;
 	}
 
-	//_aiCar->Train("traindat29.txt");
-	//_aiCar->Train("traindat32.txt");
 	//_aiCar->Train("traindat34.txt");
+	_aiCar->Train("traindat38.txt");
 	//_aiCar->Train("traindat40.txt");
 
-	_aiCar->body->SetTransform(b2Vec2(50, 200), 0);// (DEGTORAD * 180));
+	//figure out the first waypoint
+	float starting_angle = 0;
+	b2Vec2 starting_point;
+
+	for (std::vector<Waypoint*>::size_type it = 0; it != level_->WayPoints.size(); it++)
+	{
+		if (level_->WayPoints[it]->WaypointOrderVal == 0)
+		{
+			starting_point = level_->WayPoints[it]->body->GetPosition();
+			starting_angle = level_->WayPoints[it]->body->GetAngle();
+		}
+	}
+
+	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
+	car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y ), starting_angle + b2_pi);
 	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 	{
-		_aiCar->tires[it]->body->SetTransform(b2Vec2(50, 200), 0);
+		car->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 	}
-	//_aiCar->SaveWeights();
+
+
+	_aiCar->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y+20), starting_angle + b2_pi);// (DEGTORAD * 180));
+	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+	{
+		_aiCar->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y+20), starting_angle + b2_pi);
+	}
+	_aiCar->SaveWeights();
 	_aiCar->LoadWeights();
 	
 

@@ -82,8 +82,6 @@ RProp::RProp(int nl, int npl[])
 			}
 		}
 	}
-	InititaliseRandoms(200);
-	RandomWeights();
 
 }
 
@@ -137,8 +135,10 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;//0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 20000;
+	int maxEpochs = 5000;
 	float preverr = 1.0;
+	float meansquarederror = 1.0;
+	float meansquaredsum = 0.0;
 
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
 
@@ -152,18 +152,20 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	}
 
 
+	RandomWeights();
+
 	int epoch = 0;
 	while (epoch < maxEpochs)
 	{
 		++epoch;
-		
+		meansquaredsum = 0;
 		//double* currWts = GetWeights();
-		double err = MeanSquaredError(trainData, trainDataSize);
-		if (err <= preverr)
+		//double err = MeanSquaredError(trainData, trainDataSize);
+		if (meansquarederror <= preverr)
 		{
 			SaveWeights();
-			preverr = err;
-			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);
+			preverr = meansquarederror;
+			gef::DebugOut("epoch: %i   error:%f \n", epoch, meansquarederror);
 		}
 
 
@@ -171,7 +173,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 		if (epoch % 100 == 0 && epoch != maxEpochs)
 		{
 			
-			gef::DebugOut("epoch: %i   error:%f \n", epoch, err);			
+			gef::DebugOut("epoch: %i   error:%f \n", epoch, meansquarederror);
 		}
 		
 		// 1. compute and accumulate all gradients
@@ -191,6 +193,12 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			copy_array_noindex(trainData[row], xValues, layers[0].num_Neurons); // get the inputs
 			copy_array_index(trainData[row], layers[0].num_Neurons, tValues, 0, layers[2].num_Neurons); // get the target values
 			ComputeOutputs(xValues, layers[0].num_Neurons, outputs); // copy xValues in, compute outputs using curr weights (and store outputs internally)
+			for (int j = 0; j < layers[2].num_Neurons; j++)
+			{
+				meansquaredsum += ((tValues[j] - outputs[j]) * (tValues[j] - outputs[j]));//((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
+																						   //gef::DebugOut("the error %i: %f\n",j, (yValues[j] - tValues[j]));
+			}
+
 
 			// compute the h-o gradient term/component as in regular back-prop
 			// this term usually is lower case Greek delta but there are too many other deltas below
@@ -381,7 +389,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 			oPrevBiasGradsAcc[i] = oBiasGradsAcc[i];
 		}
 
-
+		meansquarederror = meansquaredsum / trainDataSize;
 
 	} // while
 
@@ -554,7 +562,6 @@ double RProp::MeanSquaredError(double** trainData, int size) //double RProp::Mea
 			sumSquaredError += ((tValues[j] - yValues[j]) * (tValues[j] - yValues[j]));//((yValues[j] - tValues[j]) * (yValues[j] - tValues[j]));
 			//gef::DebugOut("the error %i: %f\n",j, (yValues[j] - tValues[j]));
 		}
-			
 			
 	}
 	sumSquaredError /= size;
