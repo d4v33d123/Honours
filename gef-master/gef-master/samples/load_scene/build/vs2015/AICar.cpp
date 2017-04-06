@@ -118,7 +118,7 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	net_type = network;
 
 	int ennl[] = { 4, 50,  4 }; //{ 4, 4, 4,  4 }; dat 25 = err < 0.20
-	int rpnnl[] = { 4, 50, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
+	int rpnnl[] = { 4, 100, 4 }; // 4, 50, 4 dat 25 = err < 0.06 after 5k iterations
 	int rmnnl[] = { 4, 4, 50, 4 };
 
 

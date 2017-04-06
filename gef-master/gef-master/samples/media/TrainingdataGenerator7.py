@@ -14,8 +14,8 @@ def noise(val, rng):
 
 
 def main():
-    file = open("traindat40.txt", "w")
-    for i in range(0, 1000, 1):
+    file = open("traindat42.txt", "w")
+    for i in range(0, 10000, 1):
         f = noise(rnd.uniform(0,0.9),0.1)
         s = noise(rnd.uniform(0,0.9),0.1)
         v = noise(rnd.uniform(0,0.9),0.1)
@@ -60,9 +60,9 @@ def main():
                         file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.0, 0.1), noise(0.0, 0.1), noise(0.1, 0.1)))
                 #elif(s <= 0.1):
                     #file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(1.0, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(1.0, -0.1)))
-                elif(s >= 0.7 and s < 0.9):
+                elif(s >= 0.7 and s < 0.8):
                     if(v < 0.8):
-                        file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.0, 0.1), noise(1.0, -0.1), noise(0.0, 0.1), noise(1.0, -0.1)))
+                        file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.0, 0.1), noise(1.0, -0.1), noise(1.0, -0.1), noise(0.0, 0.1)))
                     elif(v >=0.8):
                         file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.0, 0.1), noise(1.0, -0.1), noise(0.0, 0.1), noise(0.1, 0.1)))
                 else:
@@ -83,9 +83,9 @@ def main():
                         file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(0.1, 0.1), noise(0.0, 0.1), noise(0.0, 0.1), noise(0.1, 0.1)))
                 #elif(s >= 0.85):
                     #file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(1.0, -0.1), noise(0.1, 0.1), noise(0.1, 0.1), noise(1.0, -0.1)))
-                elif(s <= 0.3 and s > 0.1):
+                elif(s <= 0.3 and s > 0.2):
                     if(v < 0.8):
-                        file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(1.0, -0.1), noise(0.0, 0.1), noise(0.1, 0.1), noise(1.0, -0.1)))
+                        file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(1.0, -0.1), noise(0.0, 0.1), noise(1.0, -0.1), noise(0.0, 0.1)))
                     else:
                         file.write('%f   %f   %f   %f   %f   %f   %f   %f\n' %(f, s, v, k, noise(1.0, -0.1), noise(0.1, 0.1), noise(0.0, 0.1), noise(0.1, 0.1)))
                 else:

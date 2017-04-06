@@ -131,11 +131,11 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double* oPrevBiasDeltas = MakeVector(layers[2].num_Neurons, 0.01);
 	double* hPrevBiasDeltas = MakeVector(layers[1].num_Neurons, 0.01);
 
-	double etaPlus = 1.1;//1.2; // values are from the paper
+	double etaPlus = 1.2;//1.2; // values are from the paper
 	double etaMinus = 0.5;//0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 5000;
+	int maxEpochs = 10000;
 	float preverr = 1.0;
 	float meansquarederror = 1.0;
 	float meansquaredsum = 0.0;
