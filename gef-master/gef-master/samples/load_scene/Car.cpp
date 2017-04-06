@@ -1,7 +1,7 @@
 #include "Car.h"
 #include "system\debug_log.h"
 
-Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways)
+Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways, int laps)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -92,7 +92,7 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	body->SetUserData(this);
 	currentWaypoint = 0;
 	currentlap = 0;
-	laptime = new double[3];
+	laptime = new double[laps];
 	MaxWays = numways;
 
 }

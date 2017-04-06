@@ -1,7 +1,7 @@
 #include "AICar.h"
 #include "system\debug_log.h"
 
-AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways)
+AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways, int laps)
 {
 	//create car body
 	b2BodyDef bodyDef;
@@ -154,6 +154,8 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 
 	currentWaypoint = 0;
 	control_state = 0;
+	currentlap = 0;
+	laptime = new double[laps];
 	MaxWays = numways;
 }
 
@@ -162,7 +164,7 @@ void AICar::Train(const char* fname)
 	switch (net_type)
 	{
 	case EBP:
-		ebpNN->Run(fname, dataSize, 20000);
+		ebpNN->Run(fname, dataSize, 10000);
 		gef::DebugOut("trained ebp");
 		break;
 	case RPROP:

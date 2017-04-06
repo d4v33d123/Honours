@@ -47,7 +47,7 @@ void SceneApp::Init()
 
 	
 
-	game_state = GAME;
+	game_state = STARTUP;
 
 
 
@@ -62,9 +62,9 @@ void SceneApp::CleanUp()
 	delete renderer_3d_;
 	renderer_3d_ = NULL;
 
-	delete car;
-	car = NULL;
-	world->DestroyBody(groundBody);
+	//delete car;
+	//car = NULL;
+	//world->DestroyBody(groundBody);
 }
 
 bool SceneApp::Update(float frame_time)
@@ -185,7 +185,6 @@ void SceneApp::DrawHUD()
 	if(font_)
 	{
 		// display frame rate
-		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition()-(screen_width/2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", _aiCar->currenttime);
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
 	}
 }
@@ -291,15 +290,21 @@ void SceneApp::StartRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	projection_matrix = platform_.OrthographicFrustum(0, (screen_width), 0, (screen_height ), -1.0f, 1.0f);
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
 
-	car->draw(sprite_renderer_);
+	if (font_)
+	{
+		// display frame rate
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) ,  (screen_height / 2) , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
+
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
+		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
+	}
 
 
-	DrawHUD();
 	sprite_renderer_->End();
 }
 
@@ -320,6 +325,11 @@ void SceneApp::StartInput()
 void SceneApp::MenuInit()
 {
 	// load the menu assests
+	trainnetworks = false;
+	practice = false;
+	time_trial = false;
+	num_laps = 3;
+	net_type = EBP;
 }
 
 void SceneApp::MenuUpdate()
@@ -339,15 +349,47 @@ void SceneApp::MenuRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+
+	projection_matrix = platform_.OrthographicFrustum(0, (screen_width ),0, (screen_height ), -1.0f, 1.0f);
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
 
-	car->draw(sprite_renderer_);
+	if (font_)
+	{
+		// display frame rate
+		switch (net_type)
+		{
+		case EBP:
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST EBP!");
+			break;
+		case RPROP:
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RPROP!");
+			break;
+		case RMGSN:
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
+			break;
+		}
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "use w and s to change your opponent!");
 
 
-	DrawHUD();
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
+
+		if (trainnetworks)
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 20, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Training Networks!");
+		}
+		if (time_trial)
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "TIME TRIAL!");
+		}
+		if (practice)
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 40, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE!");
+		}
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 20, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps);
+		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
+	}
 	sprite_renderer_->End();
 }
 
@@ -362,7 +404,7 @@ void SceneApp::MenuInput()
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
 			game_state = GAME;
 
-		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_S))
 		{
 			if (net_type == EBP)
 			{
@@ -370,7 +412,7 @@ void SceneApp::MenuInput()
 			}
 			else if (net_type == RPROP)
 			{
-				net_type == RMGSN;
+				net_type = RMGSN;
 			}
 		}
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_W))
@@ -381,7 +423,66 @@ void SceneApp::MenuInput()
 			}
 			else if (net_type == RPROP)
 			{
+				net_type = EBP;
+			}
+		}
+		// this below can be used for track selection
+		/*
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_A))
+		{
+			if (net_type == EBP)
+			{
+				net_type = RPROP;
+			}
+			else if (net_type == RPROP)
+			{
+				net_type == RMGSN;
+			}
+		}
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
+		{
+			if (net_type == RMGSN)
+			{
+				net_type = RPROP;
+			}
+			else if (net_type == RPROP)
+			{
 				net_type == EBP;
+			}
+		}*/
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_T))
+		{
+			if (trainnetworks == true)
+			{
+				trainnetworks = false;
+			}
+			else if (trainnetworks == false)
+			{
+				trainnetworks = true;
+			}
+		}
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_P))
+		{
+			if (practice == true)
+			{
+				practice = false;
+			}
+			else if (practice == false)
+			{
+				practice = true;
+			}
+		}
+
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_O))
+		{
+			if (time_trial == true)
+			{
+				time_trial = false;
+			}
+			else if (time_trial == false)
+			{
+				time_trial = true;
 			}
 		}
 
@@ -390,7 +491,21 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameInit()
 {
-	
+	trainnetworks = false;
+	practice = false;
+	time_trial = false;
+	num_laps = 3;
+
+	net_type = EBP;
+	dataSize = 10000;
+	// FOR TESTING
+	// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+
+	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
+	//dataSize = 26620;
+	//dataSize = 5500;
+
+
 	world = new b2World(b2Vec2(0, 0));
 
 
@@ -421,48 +536,26 @@ void SceneApp::GameInit()
 
 	controlState = 0;
 	
-	// FOR TESTING
-	net_type = RMGSN;// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
-
-	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
-	//dataSize = 26620;
-	//dataSize = 5500;
-	dataSize = 10000;
-
 	
-	switch (net_type)
-	{
-	case EBP:
-		_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
-		//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
-		break;
+	
 
-	case RPROP:
-		_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
-		break;
-
-	case RMGSN:
-		_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
-		break;
-
-	}
+	int trackways;
 
 	switch (trackNum_)
 	{
 	case 1:
 		level_ = new Track("racetrack4.txt", world, 1);
+		trackways = 59;
 		break;
 	case 2:
 		level_ = new Track("racetrack2.txt", world, 2);
+		trackways = 59;
 		break;
 	case 3:
 		level_ = new Track("racetrack3.txt", world, 3);
+		trackways = 59;
 		break;
 	}
-
-	//_aiCar->Train("traindat34.txt");
-	//_aiCar->Train("traindat39.txt");
-	_aiCar->Train("traindat42.txt");
 
 	//figure out the first waypoint
 	float starting_angle = 0;
@@ -477,23 +570,56 @@ void SceneApp::GameInit()
 		}
 	}
 
-	car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, 59);
-	car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y ), starting_angle + b2_pi);
-	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+	if (practice == false)
 	{
-		car->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
+		switch (net_type)
+		{
+		case EBP:
+			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
+			break;
+
+		case RPROP:
+			_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			break;
+
+		case RMGSN:
+			_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			break;
+
+		}
+
+		if (trainnetworks)
+		{
+			//_aiCar->Train("traindat34.txt");
+			//_aiCar->Train("traindat39.txt");
+			_aiCar->Train("traindat42.txt"); // 40 was best for rprop, 42 for rmgs, 35/37 for ebp i believe
+			_aiCar->SaveWeights();
+		}
+		_aiCar->LoadWeights();
+
+		_aiCar->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y + 20), starting_angle + b2_pi);// (DEGTORAD * 180));
+		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+		{
+			_aiCar->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y + 20), starting_angle + b2_pi);
+		}
+
 	}
 
-
-	_aiCar->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y+20), starting_angle + b2_pi);// (DEGTORAD * 180));
-	for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+	if (time_trial == false)
 	{
-		_aiCar->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y+20), starting_angle + b2_pi);
+		car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+		car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
+		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
+		{
+			car->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
+		}
 	}
-	_aiCar->SaveWeights();
-	_aiCar->LoadWeights();
 	
-
+	startRace = false;
+	countdown = 3.0;
+	PlayerTime = 0.0;
+	
 
 		
 }
@@ -506,28 +632,73 @@ void SceneApp::GameUpdate(float frame_time)
 
 	GameInput();
 
-	car->Update(controlState, level_->getWaypoints());
-	_aiCar->Update(level_->getWaypoints(), level_->Barriers, world);
-	level_->UpdateSprites();
-
-	//check for victory!
-	if (car->currentlap == 4)
+	if (countdown > 0 && (startRace==false))
 	{
-		// game ends!
-		if (_aiCar->currentlap == 4)
+		countdown -= frame_time;
+	}
+	else
+	{
+		startRace = true;
+	}
+
+	if (startRace)
+	{
+		if (time_trial == false)
 		{
-			winner = false;
+			car->Update(controlState, level_->getWaypoints());
+
+			if (car->currentlap == num_laps)
+			{
+				// game ends!
+				if (practice)
+				{
+					winner = true;
+				}
+				else
+				{
+					if (_aiCar->currentlap == num_laps)
+					{
+						winner = false;
+					}
+					else
+					{
+						winner = true;
+					}
+				}
+				for (int i = 1; i < num_laps; i++)
+				{
+					PlayerTime += car->laptime[i];
+				}
+				game_state = GAMEOVER;
+			}
 		}
 		else
 		{
-			winner = true;
+			if (practice == false)
+			{
+				if (_aiCar->currentlap == num_laps)
+				{
+					winner = true;
+					for (int i = 1; i < num_laps; i++)
+					{
+						PlayerTime += _aiCar->laptime[i];
+					}
+					game_state = GAMEOVER;
+				}
+			}
+			
 		}
-		for (int i = 1; i < 4; i++)
+		if (practice == false)
 		{
-			PlayerTime += car->laptime[i];
+			_aiCar->Update(level_->getWaypoints(), level_->Barriers, world);
 		}
-		game_state == GAMEOVER;
+		level_->UpdateSprites();
+
+		//check for victory!
+		
 	}
+
+	
 
 }
 
@@ -543,17 +714,40 @@ void SceneApp::GameRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+	if (time_trial)
+	{
+		projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+	}
+	else
+	{
+		projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+	}
+	
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
 
-	car->draw(sprite_renderer_);
-	_aiCar->draw(sprite_renderer_);
+	if(time_trial == false)
+		car->draw(sprite_renderer_);
+
+	if(practice == false)
+		_aiCar->draw(sprite_renderer_);
 
 	level_->DrawTrack(sprite_renderer_, true);
 
-	DrawHUD();
+	if (startRace == false)
+	{
+		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
+	}
+	else
+	{
+
+		if(time_trial)
+			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", _aiCar->currenttime);
+		else
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition()-(screen_width/2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
+	}
+
 	sprite_renderer_->End();
 }
 
@@ -589,9 +783,7 @@ void SceneApp::GameInput()
 
 void SceneApp::GameOverUpdate()
 {
-	GameInput();
-
-
+	GameOverInput();
 }
 
 void SceneApp::GameOverRender()
@@ -606,20 +798,47 @@ void SceneApp::GameOverRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 1.0f);
+	if (time_trial)
+	{
+		projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+	}
+	else
+	{
+		projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+	}
+
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
 
-	car->draw(sprite_renderer_);
-	_aiCar->draw(sprite_renderer_);
+	if (time_trial == false)
+		car->draw(sprite_renderer_);
+
+	if (practice == false)
+		_aiCar->draw(sprite_renderer_);
 
 	level_->DrawTrack(sprite_renderer_, true);
 
-	DrawHUD();
 
 	// draw the text showing the score and your time
+	if(time_trial)
+		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() , _aiCar->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
+	else
+	{
+		if (winner)
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() - 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "YOU WON!");
+		}
+		else
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() - 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "YOU LOST!");
+		}
+		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
+
+	}
+		
 	// and press enter to exit
+	font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
 
 	sprite_renderer_->End();
 }

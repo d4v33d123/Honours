@@ -148,12 +148,18 @@ private:
 
 	// menu related variables
 	Net net_type;
+	bool trainnetworks;
 
 
 	// ----- Game Related Variables -----
 	// Track
 	Track* level_;
 	int trackNum_;
+	float countdown;
+	bool startRace;
+	bool practice;
+	bool time_trial;
+	int num_laps;
 
 	// box2d related functions
 

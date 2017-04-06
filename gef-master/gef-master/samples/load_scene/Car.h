@@ -20,7 +20,7 @@ protected:
 	
 
 public:
-	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways);
+	Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecategoryBits, uint16 tiremaskBits, int numways, int laps);
 	Car() {};
 	~Car();
 	void Update(int controlState, std::vector<Waypoint*> wps);
