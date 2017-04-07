@@ -102,6 +102,7 @@ Car::~Car()
 {
 	for (int i = 0; i < tires.size(); i++)
 		delete tires[i];
+	tires.clear();
 }
 
 void Car::Update(int controlState, std::vector<Waypoint*> wps) {

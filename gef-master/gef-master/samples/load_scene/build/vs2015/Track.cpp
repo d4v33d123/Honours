@@ -305,6 +305,26 @@ void Track::SetUpWaypoints(b2World* world)
 
 }
 
+void Track::cleanUpTrack(b2World* world)
+{
+	for (auto it = Barriers.begin(); it != Barriers.end(); it++)
+	{
+		barrier* bar = *it;
+		bar->body->GetWorld()->DestroyBody(bar->body);
+		delete bar;
+	}
+	Barriers.clear();
+	for (auto it = WayPoints.begin(); it != WayPoints.end(); it++)
+	{
+		Waypoint* way = *it;
+		way->body->GetWorld()->DestroyBody(way->body);
+		delete way;
+	}
+	WayPoints.clear();
+
+
+}
+
 void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 {
 	// check for any barriers with the "uppercase" value and push it onto our waypoints vector

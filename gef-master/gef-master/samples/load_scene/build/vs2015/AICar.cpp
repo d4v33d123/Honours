@@ -159,6 +159,35 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	MaxWays = numways;
 }
 
+AICar::~AICar()
+{
+	for (int i = 0; i < tires.size(); i++)
+		delete tires[i];
+
+	tires.clear();
+
+	switch (net_type)
+	{
+	case EBP:
+		//ebpNN->~BProp();
+		delete ebpNN;
+		ebpNN = NULL;
+		break;
+	case RPROP:
+		//rpNN->~RProp();
+		delete rpNN;
+		rpNN = NULL;
+		break;
+	case RMGSN:
+		//rmgsNN->~RMGS();
+		delete rmgsNN;
+		rmgsNN = NULL;
+		break;
+	}
+
+
+}
+
 void AICar::Train(const char* fname)
 {
 	switch (net_type)

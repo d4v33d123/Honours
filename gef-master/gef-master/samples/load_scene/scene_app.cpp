@@ -491,9 +491,9 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameInit()
 {
-	trainnetworks = false;
-	practice = false;
-	time_trial = false;
+	//trainnetworks = false;
+	//practice = false;
+	//time_trial = false;
 	num_laps = 3;
 
 	net_type = EBP;
@@ -852,6 +852,40 @@ void SceneApp::GameOverInput()
 	{
 
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
+		{
+			GameCleanUp();
 			game_state = MENU;
+		}
+			
 	}
+}
+
+void SceneApp::GameCleanUp()
+{
+	level_->cleanUpTrack(world);
+	delete level_;
+	level_ = NULL;
+
+	if (time_trial == false)
+	{
+		car->~Car();
+		delete car;
+		car = NULL;
+	}
+	
+	if (practice == false)
+	{
+		_aiCar->~AICar();
+		delete _aiCar;
+		_aiCar = NULL;
+
+	}
+
+
+	world->~b2World();
+	//delete world;
+	world = NULL;
+
+	gameinited = false;
+
 }

@@ -132,6 +132,7 @@ private:
 	void GameOverUpdate();
 	void GameOverRender();
 	void GameOverInput();
+	void GameCleanUp();
 
 	GState game_state;
 

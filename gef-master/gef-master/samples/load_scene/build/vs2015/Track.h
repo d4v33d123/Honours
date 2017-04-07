@@ -29,6 +29,7 @@ public:
 	void LoadTrack(FILE* fp);
 	void SetUpTrack(b2World* world);
 	void SetUpWaypoints(b2World* world);
+	void cleanUpTrack(b2World* world);
 
 	void WaypointBuildLetter(barrier* bar, char upper, b2World* world);
 	void WaypointBuildNumber(barrier* bar, char higher, b2World* world);
