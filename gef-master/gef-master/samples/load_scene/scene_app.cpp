@@ -107,6 +107,9 @@ bool SceneApp::Update(float frame_time)
 		break;
 
 	case EXIT:
+
+		return false;
+
 		break;
 	
 	}
@@ -486,6 +489,11 @@ void SceneApp::MenuInput()
 			}
 		}
 
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_ESCAPE))
+		{
+			game_state = EXIT;
+		}
+
 	}
 }
 
@@ -494,9 +502,9 @@ void SceneApp::GameInit()
 	//trainnetworks = false;
 	//practice = false;
 	//time_trial = false;
-	num_laps = 3;
+	//num_laps = 3;
 
-	net_type = EBP;
+	//net_type = EBP;
 	dataSize = 10000;
 	// FOR TESTING
 	// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
@@ -575,16 +583,16 @@ void SceneApp::GameInit()
 		switch (net_type)
 		{
 		case EBP:
-			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
 			break;
 
 		case RPROP:
-			_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			break;
 
 		case RMGSN:
-			_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			break;
 
 		}
@@ -608,7 +616,7 @@ void SceneApp::GameInit()
 
 	if (time_trial == false)
 	{
-		car = new Car(world, CARCAT, BARRIERCAT | CARCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+		car = new Car(world, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 		car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 		{
@@ -838,7 +846,7 @@ void SceneApp::GameOverRender()
 	}
 		
 	// and press enter to exit
-	font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
+	font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
 
 	sprite_renderer_->End();
 }
