@@ -615,6 +615,9 @@ void SceneApp::GameInit()
 			car->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 		}
 	}
+
+
+
 	
 	startRace = false;
 	countdown = 3.0;
@@ -735,9 +738,13 @@ void SceneApp::GameRender()
 
 	level_->DrawTrack(sprite_renderer_, true);
 
-	if (startRace == false)
+	if (startRace == false )
 	{
-		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
+		if(time_trial == false)
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
+		else
+			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
+
 	}
 	else
 	{
@@ -838,8 +845,11 @@ void SceneApp::GameOverRender()
 	}
 		
 	// and press enter to exit
-	font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
-
+	if(time_trial == false)
+		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
+	else
+		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
+	
 	sprite_renderer_->End();
 }
 

@@ -458,8 +458,41 @@ void RMGS::PropagateSignal()
 }
 
 
-void RMGS::ComputeOutputError(double * target)
+void RMGS::ComputeOutputError(const char* fnames,int ds)
 {
+	double** trainData = fillTrainingData(fnames, ds, layers[0].num_Neurons + layers[num_layers - 1].num_Neurons);
+
+	int datasize = ds;
+
+	double** Inputdata = MakeMatrix(datasize, layers[0].num_Neurons, 0);
+	double** ExpectedOutputs = MakeMatrix( datasize, layers[num_layers - 1].num_Neurons, 0);
+	double* out = MakeVector(layers[num_layers - 1].num_Neurons, 0);
+	double  meansquaredsum = 0;
+
+	for (int i = 0; i < datasize; i++)
+	{
+		for (int j = 0; j < layers[0].num_Neurons; j++)
+			Inputdata[i][j] = trainData[i][j];
+
+		for (int j = 0; j < layers[num_layers - 1].num_Neurons; j++)
+			ExpectedOutputs[i][j] = trainData[i][j + layers[0].num_Neurons];
+	}
+
+	for (int i = 0; i < datasize; i++)
+	{
+		SetInputSignal(Inputdata[i]);
+		PropagateSignal();
+		GetOutputSignal(out);
+
+		// calculate error
+		for (int j = 0; j < layers[num_layers - 1].num_Neurons; j++)
+		{
+			meansquaredsum += ((ExpectedOutputs[i][j] - out[j]) * (ExpectedOutputs[i][j] - out[j]));
+		}
+	}
+	meansquaredsum /= datasize;
+
+	gef::DebugOut("ERROR : %f", meansquaredsum);
 
 }
 

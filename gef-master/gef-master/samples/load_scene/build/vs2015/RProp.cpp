@@ -135,7 +135,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	double etaMinus = 0.5;//0.5;
 	double deltaMax = 50.0;
 	double deltaMin = 1.0E-6;
-	int maxEpochs = 10000;
+	int maxEpochs = 10000;//10000;
 	float preverr = 1.0;
 	float meansquarederror = 1.0;
 	float meansquaredsum = 0.0;
