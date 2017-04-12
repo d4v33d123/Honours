@@ -20,6 +20,8 @@ public:
 
 	void Run(const char* fname, const int& maxiter);
 
+	void ComputeOutputError(const char* fnames, int ds);
+
 private:
 
 	void RandomWeights();
@@ -29,7 +31,6 @@ private:
 
 
 	
-	void ComputeOutputError(double* target);
 	void BackPropagateError();
 	void AdjustWeights();
 
