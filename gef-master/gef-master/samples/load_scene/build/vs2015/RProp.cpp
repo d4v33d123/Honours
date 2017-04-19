@@ -202,10 +202,10 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 			// compute the h-o gradient term/component as in regular back-prop
 			// this term usually is lower case Greek delta but there are too many other deltas below
-			for (int i = 0; i < layers[2].num_Neurons; i++)
+			for (int i = 0; i < layers[num_layers - 1].num_Neurons; i++)
 			{
-				double derivative = ((1 / (1 + exp(-outputs[i])) ) * (1 - (1 / (1 + exp(-outputs[i])))));// (1 - outputs[i]) * (1 + outputs[i]); // derivative of softmax = (1 - y) * y (same as log-sigmoid)
-				oGradTerms[i] = derivative * (outputs[i] - tValues[i]); // careful with O-T vs. T-O, O-T is the most usual
+				double derivative = (1 / (1 + exp(-outputs[i])) ) * (1 - (1 / (1 + exp(-outputs[i]))));                                  // (1 - outputs[i]) * (1 + outputs[i]); // derivative of softmax = (1 - y) * y (same as log-sigmoid)
+				oGradTerms[i] = derivative * (outputs[i] - tValues[i]);                                                                    // careful with O-T vs. T-O, O-T is the most usual
 			}
 
 			// compute the i-h gradient term/component as in regular back-prop
