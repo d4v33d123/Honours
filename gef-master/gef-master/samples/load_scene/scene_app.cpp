@@ -773,10 +773,7 @@ void SceneApp::GameRender()
 	// make our camera follow the correct car
 	if (time_trial)
 	{
-
-
-		projection_matrix = platform_.OrthographicFrustum(0, (screen_width * 5), 0, (screen_height * 5), -1.0f, 1.0f);
-		//projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+		projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
 	}
 	else
 	{
