@@ -7,6 +7,7 @@
 #include "build\vs2015\Waypoint.h"
 #include <graphics/sprite_renderer.h>
 #include <time.h>
+#include "assets\png_loader.h"
 
 
 #ifndef DEGTORAD
@@ -27,7 +28,6 @@ public:
 	void draw(gef::SpriteRenderer* sprite_renderer);
 	float getXPosition();
 	float getYPosition();
-	gef::Sprite carBodySprite;
 	void UpdateSprites();
 	void Lap();
 	void UpdateTime();
@@ -39,6 +39,8 @@ public:
 	int currentWaypoint;
 	int MaxWays;
 
+	gef::Sprite carBodySprite;
+
 	// lap realted variables
 	int currentlap;
 	double* laptime;
@@ -46,6 +48,16 @@ public:
 
 	time_t startlap;
 	time_t finishlap;
+
+	// button presses
+	gef::Sprite UpButton;
+	gef::Sprite DownButton;
+	gef::Sprite LeftButton;
+	gef::Sprite RightButton;
+
+	// function to update button sprites
+	void updateButtonSprites();
+	int savedcontrolstate; //for updating the colour of the buttons
 
 };
 

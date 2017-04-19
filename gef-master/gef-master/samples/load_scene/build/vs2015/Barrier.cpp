@@ -25,7 +25,10 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 
 	barrierSprite.set_width(BARWIDTH);
 	barrierSprite.set_height(BARHEIGHT);
-	barrierSprite.set_colour(0xffffffff);
+
+	int colour = rand() % 99;
+	UInt32 col = ((99 << 24 | (0 << 16) | (colour << 8) | (0 << 0))); 
+	barrierSprite.set_colour(col);
 	barrierSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	barrierSprite.set_rotation(-body->GetAngle());
 }
@@ -53,8 +56,10 @@ barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 m
 	body->SetUserData(this);
 
 	barrierSprite.set_width(BARWIDTH);
-	barrierSprite.set_height(BARHEIGHT);
-	barrierSprite.set_colour(0xffffffff);
+	barrierSprite.set_height(BARHEIGHT); 
+	int colour = rand() % 99;
+	UInt32 col = ((99 << 24 | (0 << 16) | (colour << 8) | (0 << 0))); 
+	barrierSprite.set_colour(col);
 	barrierSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	barrierSprite.set_rotation(body->GetAngle());
 

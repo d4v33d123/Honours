@@ -57,7 +57,7 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 
 	barrierSprite.set_width(width);
 	barrierSprite.set_height(height);
-	barrierSprite.set_colour(0xff0000ff);
+	barrierSprite.set_colour(0xFF0000FF);
 	barrierSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	barrierSprite.set_rotation(-body->GetAngle());
 }

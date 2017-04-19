@@ -30,23 +30,19 @@ SceneApp::SceneApp(gef::Platform& platform) :
 
 void SceneApp::Init()
 {
+	// create our helpers!
 	sprite_renderer_ = gef::SpriteRenderer::Create(platform_);
 	renderer_3d_ = gef::Renderer3D::Create(platform_);
 	input_manager_ = gef::InputManager::Create(platform_);
 
+	// set up lights camera and ACTION
 	InitFont();
-
-	// create a new scene object and read in the data from the file
-	// no meshes or materials are created yet
-	// we're not making any assumptions about what the data may be loaded in for
-	// we do want to render the data stored in the scene file so lets create the materials from the material data present in the scene file
-
 	SetupLights();
 	SetupCamera();
 
 
 	
-
+	// start up the game
 	game_state = STARTUP;
 
 
@@ -72,6 +68,7 @@ bool SceneApp::Update(float frame_time)
 	
 	HandleInput();
 
+	// check the current game state and update the appropriate things, also check to see if the state has been initialised yet!
 	switch (game_state)
 	{
 	case STARTUP:
@@ -137,7 +134,7 @@ void SceneApp::Render()
 #endif
 
 
-
+	// check to see what the game state is and render the appropriate things
 	switch (game_state)
 	{
 	case STARTUP:
@@ -194,6 +191,7 @@ void SceneApp::DrawHUD()
 
 void SceneApp::SetupLights()
 {
+	// we need to see the game
 	gef::PointLight default_point_light;
 	default_point_light.set_colour(gef::Colour(0.7f, 0.7f, 1.0f, 1.0f));
 	default_point_light.set_position(gef::Vector4(-500.0f, 400.0f, 700.0f));
@@ -217,6 +215,7 @@ void SceneApp::SetupCamera()
 
 void SceneApp::Keyboard(unsigned char key)
 {
+	// this is for the control system. only used in the game, could be cleaner!
 	switch (key) {
 	case 'a': controlState |= TDC_LEFT; break;
 	case 'd': controlState |= TDC_RIGHT; break;
@@ -228,6 +227,7 @@ void SceneApp::Keyboard(unsigned char key)
 
 void SceneApp::KeyboardUp(unsigned char key)
 {
+	// this is for the control system. only used in the game, could be cleaner!
 	switch (key) {
 	case 'a': controlState &= ~TDC_LEFT; break;
 	case 'd': controlState &= ~TDC_RIGHT; break;
@@ -239,6 +239,7 @@ void SceneApp::KeyboardUp(unsigned char key)
 
 void SceneApp::handleContact(b2Contact* contact, bool began)
 {
+	// contact handler for our tires
 	b2Fixture* a = contact->GetFixtureA();
 	b2Fixture* b = contact->GetFixtureB();
 	FixtureUserData* fudA = (FixtureUserData*)a->GetUserData();
@@ -256,6 +257,7 @@ void SceneApp::handleContact(b2Contact* contact, bool began)
 
 void SceneApp::tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaFixture, bool began)
 {
+	// make sure there is ground under the tires!
 	Tire* tire = (Tire*)tireFixture->GetBody()->GetUserData();
 	GroundAreaFUD* gaFud = (GroundAreaFUD*)groundAreaFixture->GetUserData();
 	if (began)
@@ -273,7 +275,7 @@ void SceneApp::HandleInput()
 
 void SceneApp::StartInit()
 {
-	// set up our initial game, load the splash screen along with loading any big files
+	// set up our initial game, load the splash screen along with loading any big files, nothing to do here though!
 }
 
 void SceneApp::StartUpdate()
@@ -300,12 +302,11 @@ void SceneApp::StartRender()
 
 	if (font_)
 	{
-		// display frame rate
+		// show the title and the press enter to start message
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) ,  (screen_height / 2) , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
 
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
-		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
-	}
+		}
 
 
 	sprite_renderer_->End();
@@ -318,7 +319,7 @@ void SceneApp::StartInput()
 	const gef::Keyboard* keyboard = input_manager_->keyboard();
 	if (keyboard)
 	{
-
+		// go to the main menu
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
 			game_state = MENU;
 	}
@@ -360,7 +361,7 @@ void SceneApp::MenuRender()
 
 	if (font_)
 	{
-		// display frame rate
+		// display what AI is being raced against
 		switch (net_type)
 		{
 		case EBP:
@@ -373,11 +374,13 @@ void SceneApp::MenuRender()
 			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
 			break;
 		}
+		// display the controls to switch the AI
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "use w and s to change your opponent!");
 
-
+		// display the start message
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
 
+		// display other options
 		if (trainnetworks)
 		{
 			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 20, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Training Networks!");
@@ -390,7 +393,8 @@ void SceneApp::MenuRender()
 		{
 			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 40, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE!");
 		}
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 20, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps);
+		// display number of laps
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 20, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps - 1);
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
 	}
 	sprite_renderer_->End();
@@ -403,10 +407,11 @@ void SceneApp::MenuInput()
 	const gef::Keyboard* keyboard = input_manager_->keyboard();
 	if (keyboard)
 	{
-
+		// check to see if the game needs to be started
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_RETURN))
 			game_state = GAME;
 
+		// change the AI opponent
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_S))
 		{
 			if (net_type == EBP)
@@ -429,6 +434,7 @@ void SceneApp::MenuInput()
 				net_type = EBP;
 			}
 		}
+
 		// this below can be used for track selection
 		/*
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_A))
@@ -453,6 +459,7 @@ void SceneApp::MenuInput()
 				net_type == EBP;
 			}
 		}*/
+		// set training, practice or time trial modes
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_T))
 		{
 			if (trainnetworks == true)
@@ -499,26 +506,15 @@ void SceneApp::MenuInput()
 
 void SceneApp::GameInit()
 {
-	//trainnetworks = false;
-	//practice = false;
-	//time_trial = false;
-	//num_laps = 3;
-
-	//net_type = EBP;
+	// define the data size, this could be improved with something to check how many lines are in the dataset but for now this works perfectly
 	dataSize = 10000;
-	// FOR TESTING
-	// RPROP; //EBP is great, dat 25 = 21% error and going lower, needs more than 10000 iterations
+	
 
-	//dataSize = 14641; //10600 dat1 2425 dat2 500 dat3 180 dat4 2420 dat5 20 trainingData 500 dat6 500 dat7 500 dat8 11737 dat9 625 dat10 1375 dat11 625 dat12 3025 dat13 26620 dat14 26620 dat15 160000 dat16 160000 dat17 14641 dat18 14641 dat 19 53240 dat20 26620 dat21 34606 dat22 26620 dat24 14641 dat25
-	//dataSize = 26620;
-	//dataSize = 5500;
-
-
+	// create the world
 	world = new b2World(b2Vec2(0, 0));
 
 
 	// set up box 2d related 
-
 	world->SetGravity(b2Vec2(0, 0));
 	world->SetDestructionListener(&destructionListener);
 	world->SetContactListener(&wayListener);
@@ -544,11 +540,26 @@ void SceneApp::GameInit()
 
 	controlState = 0;
 	
+	//load the car sprite, this is done here to avoid complications in the constructors of the car class a bit messy but
+	// it is fast enough to avoid any time issues
 	
+	gef::ImageData image_data;
+	gef::Texture* car_texture;
+	bool successful_load = true;
+	// Load image
+	png_loader.Load("Car.png", platform_, image_data);
+
+	if (image_data.image() == NULL)
+	{
+		std::cout << "Image failed to load." << std::endl;
+		successful_load = false;
+	}
+
+	car_texture = gef::Texture::Create(platform_, image_data);
 	
 
 	int trackways;
-
+	// build the track, this has been set up so multiple tracks can be added later.
 	switch (trackNum_)
 	{
 	case 1:
@@ -568,7 +579,7 @@ void SceneApp::GameInit()
 	//figure out the first waypoint
 	float starting_angle = 0;
 	b2Vec2 starting_point;
-
+	// find the starting waypoint in order to spawn the racing cars next to it
 	for (std::vector<Waypoint*>::size_type it = 0; it != level_->WayPoints.size(); it++)
 	{
 		if (level_->WayPoints[it]->WaypointOrderVal == 0)
@@ -580,11 +591,11 @@ void SceneApp::GameInit()
 
 	if (practice == false)
 	{
+		// decide what AI to spawn
 		switch (net_type)
 		{
 		case EBP:
 			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
-			//_aiCar = new AICar(world, EBP, dataSize, CARCAT, CARCAT | WAYPOINTCAT, TIRECAT, 0, 77);
 			break;
 
 		case RPROP:
@@ -597,36 +608,61 @@ void SceneApp::GameInit()
 
 		}
 
+		// if the network is to be trained, train it, if not load the weights from the text file
 		if (trainnetworks)
 		{
-			//_aiCar->Train("traindat34.txt");
-			//_aiCar->Train("traindat39.txt");
-			_aiCar->Train("traindat42.txt"); // 40 was best for rprop, 42 for rmgs, 35/37 for ebp i believe
+			_aiCar->Train("traindat42.txt");
 			_aiCar->SaveWeights();
 		}
 		_aiCar->LoadWeights();
 
+
+		// spawn the ai car and set it to the correct position
 		_aiCar->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y + 20), starting_angle + b2_pi);// (DEGTORAD * 180));
 		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 		{
 			_aiCar->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y + 20), starting_angle + b2_pi);
 		}
 
+		//ugly values, but not another way to do this without editing the original pngs
+		if(successful_load)
+		{
+			_aiCar->carBodySprite.set_texture(car_texture);
+			_aiCar->carBodySprite.set_height(12);
+			_aiCar->carBodySprite.set_uv_position(gef::Vector2(0.3125, -0.09));
+			_aiCar->carBodySprite.set_uv_height(-0.91);
+			_aiCar->carBodySprite.set_uv_width(0.35);
+			_aiCar->carBodySprite.set_colour(0xffffffff);
+		}
+		
 	}
 
 	if (time_trial == false)
 	{
+		// spawn the car and set it to the correct position
 		car = new Car(world, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 		car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 		{
 			car->tires[it]->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 		}
+
+
+		//ugly values, but not another way to do this without editing the original pngs
+		if (successful_load)
+		{
+			car->carBodySprite.set_texture(car_texture);
+			car->carBodySprite.set_height(12);
+			car->carBodySprite.set_uv_position(gef::Vector2(0.3125, -0.09));
+			car->carBodySprite.set_uv_height(-0.91);
+			car->carBodySprite.set_uv_width(0.35);
+			car->carBodySprite.set_colour(0xffffffff);
+		}
+		
 	}
 
 
-
-	
+	// make sure the time is zero the countdown is ready and the race hasn't started
 	startRace = false;
 	countdown = 3.0;
 	PlayerTime = 0.0;
@@ -638,11 +674,12 @@ void SceneApp::GameInit()
 void SceneApp::GameUpdate(float frame_time)
 {
 	fps_ = 1.0f / frame_time;
-
+	// update the world
 	world->Step(frame_time, 4, 6);
-
+	// check for input
 	GameInput();
 
+	// make sure the race hasn't started before the countdown ends
 	if (countdown > 0 && (startRace==false))
 	{
 		countdown -= frame_time;
@@ -652,12 +689,16 @@ void SceneApp::GameUpdate(float frame_time)
 		startRace = true;
 	}
 
+	// RACE
 	if (startRace)
 	{
+		// make sure we are only updating appropriate cars depending on the race type
 		if (time_trial == false)
 		{
+			// update the car
 			car->Update(controlState, level_->getWaypoints());
 
+			// make sure the race hasn't ended!
 			if (car->currentlap == num_laps)
 			{
 				// game ends!
@@ -676,10 +717,12 @@ void SceneApp::GameUpdate(float frame_time)
 						winner = true;
 					}
 				}
+				// calculate the time
 				for (int i = 1; i < num_laps; i++)
 				{
 					PlayerTime += car->laptime[i];
 				}
+				// end the game
 				game_state = GAMEOVER;
 			}
 		}
@@ -690,10 +733,12 @@ void SceneApp::GameUpdate(float frame_time)
 				if (_aiCar->currentlap == num_laps)
 				{
 					winner = true;
+					// calculate the race time
 					for (int i = 1; i < num_laps; i++)
 					{
 						PlayerTime += _aiCar->laptime[i];
 					}
+					// end the game
 					game_state = GAMEOVER;
 				}
 			}
@@ -701,12 +746,12 @@ void SceneApp::GameUpdate(float frame_time)
 		}
 		if (practice == false)
 		{
+			// update the AI
 			_aiCar->Update(level_->getWaypoints(), level_->Barriers, world);
 		}
+		// update the Level sprites, this was initially here because the barriers could be moved, could be removed with current implementation
+		// however, it may be useful if other tracks have movable barriers
 		level_->UpdateSprites();
-
-		//check for victory!
-		
 	}
 
 	
@@ -725,9 +770,13 @@ void SceneApp::GameRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
+	// make our camera follow the correct car
 	if (time_trial)
 	{
-		projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
+
+
+		projection_matrix = platform_.OrthographicFrustum(0, (screen_width * 5), 0, (screen_height * 5), -1.0f, 1.0f);
+		//projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
 	}
 	else
 	{
@@ -738,6 +787,7 @@ void SceneApp::GameRender()
 
 	sprite_renderer_->Begin();
 
+	// redner the cars
 	if(time_trial == false)
 		car->draw(sprite_renderer_);
 
@@ -746,6 +796,7 @@ void SceneApp::GameRender()
 
 	level_->DrawTrack(sprite_renderer_, true);
 
+	// render the lap time
 	if (startRace == false )
 	{
 		if(time_trial == false)
@@ -769,7 +820,7 @@ void SceneApp::GameRender()
 void SceneApp::GameInput()
 {
 	input_manager_->Update();
-
+	// deal with the controls for the player car
 	const gef::Keyboard* keyboard = input_manager_->keyboard();
 	if (keyboard)
 	{
@@ -813,6 +864,7 @@ void SceneApp::GameOverRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
+	// make sure the camera is on the right car
 	if (time_trial)
 	{
 		projection_matrix = platform_.OrthographicFrustum(_aiCar->getXPosition() - (screen_width / 2), _aiCar->getXPosition() + (screen_width / 2), _aiCar->getYPosition() - (screen_height / 2), _aiCar->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
@@ -826,6 +878,7 @@ void SceneApp::GameOverRender()
 
 	sprite_renderer_->Begin();
 
+	// draw the cars
 	if (time_trial == false)
 		car->draw(sprite_renderer_);
 
@@ -866,6 +919,7 @@ void SceneApp::GameOverInput()
 {
 	input_manager_->Update();
 
+	// check the exit condition
 	const gef::Keyboard* keyboard = input_manager_->keyboard();
 	if (keyboard)
 	{
@@ -881,6 +935,7 @@ void SceneApp::GameOverInput()
 
 void SceneApp::GameCleanUp()
 {
+	// cleanup the game
 	level_->cleanUpTrack(world);
 	delete level_;
 	level_ = NULL;

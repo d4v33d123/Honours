@@ -79,14 +79,36 @@ Car::Car(b2World* world, uint16 categoryBits, uint16 maskBits, uint16 tirecatego
 	tires.push_back(tire);
 
 
-	//set up sprite
-
 	carBodySprite.set_width(6);
 	carBodySprite.set_height(10);
 	carBodySprite.set_colour(0xffffff00);
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(-body->GetAngle());
 
+	// set up our update buttons
+	UpButton.set_width(2);
+	UpButton.set_height(2);
+	UpButton.set_colour(0xffffffff);
+	UpButton.set_position(body->GetPosition().x, body->GetPosition().y - 2, 0.0f);
+	UpButton.set_rotation(-body->GetAngle());
+
+	LeftButton.set_width(2);
+	LeftButton.set_height(2);
+	LeftButton.set_colour(0xffffffff);
+	LeftButton.set_position(body->GetPosition().x - 2, body->GetPosition().y, 0.0f);
+	LeftButton.set_rotation(-body->GetAngle());
+
+	RightButton.set_width(2);
+	RightButton.set_height(2);
+	RightButton.set_colour(0xffffffff);
+	RightButton.set_position(body->GetPosition().x + 2, body->GetPosition().y, 0.0f);
+	RightButton.set_rotation(-body->GetAngle());
+
+	DownButton.set_width(2);
+	DownButton.set_height(2);
+	DownButton.set_colour(0xffffffff);
+	DownButton.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	DownButton.set_rotation(-body->GetAngle());
 
 
 	body->SetUserData(this);
@@ -110,6 +132,8 @@ void Car::Update(int controlState, std::vector<Waypoint*> wps) {
 		tires[i]->updateFriction();
 	for (int i = 0; i < tires.size(); i++)
 		tires[i]->updateDrive(controlState);
+
+	savedcontrolstate = controlState;
 
 	//control steering
 	float lockAngle = 35 * DEGTORAD;
@@ -155,6 +179,15 @@ void Car::UpdateSprites()
 	}
 	carBodySprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	carBodySprite.set_rotation(body->GetAngle());
+	
+	DownButton.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	UpButton.set_position(body->GetPosition().x, body->GetPosition().y + 2, 0.0f);
+	LeftButton.set_position(body->GetPosition().x - 2, body->GetPosition().y, 0.0f);
+	RightButton.set_position(body->GetPosition().x + 2, body->GetPosition().y, 0.0f);
+	
+	
+	updateButtonSprites();
+
 }
 
 void Car::draw(gef::SpriteRenderer* sprite_renderer)
@@ -167,7 +200,10 @@ void Car::draw(gef::SpriteRenderer* sprite_renderer)
 		tires[it]->draw(sprite_renderer);
 	}
 
-	
+	sprite_renderer->DrawSprite(UpButton);
+	sprite_renderer->DrawSprite(DownButton);
+	sprite_renderer->DrawSprite(LeftButton);
+	sprite_renderer->DrawSprite(RightButton);
 
 }
 
@@ -215,4 +251,83 @@ void Car::UpdateTime()
 {
 	finishlap = time(NULL);
 	currenttime = difftime(finishlap, startlap);
+}
+
+void Car::updateButtonSprites()
+{
+	float s = sinf(body->GetAngle());
+	float c = cosf(body->GetAngle());
+
+	gef::Vector2 pos = gef::Vector2(LeftButton.position().x(), LeftButton.position().y());
+	pos.x -= carBodySprite.position().x();
+	pos.y -= carBodySprite.position().y();
+
+	float newx = (pos.x * c) - (pos.y * s);
+	float newy = (pos.x * s) + (pos.y * c);
+	
+	gef::Vector2 newpos = gef::Vector2(carBodySprite.position().x(), carBodySprite.position().y());
+
+	LeftButton.set_position(newpos.x + newx, newpos.y + newy, 0);
+	LeftButton.set_rotation(body->GetAngle());
+
+	pos = gef::Vector2(RightButton.position().x(), RightButton.position().y());
+	pos.x -= carBodySprite.position().x();
+	pos.y -= carBodySprite.position().y();
+
+	newx = (pos.x * c) - (pos.y * s);
+	newy = (pos.x * s) + (pos.y * c);
+
+	newpos = gef::Vector2(carBodySprite.position().x(), carBodySprite.position().y());
+
+	RightButton.set_position(newpos.x + newx, newpos.y + newy, 0);
+	RightButton.set_rotation(body->GetAngle());
+
+	pos = gef::Vector2(UpButton.position().x(), UpButton.position().y());
+	pos.x -= carBodySprite.position().x();
+	pos.y -= carBodySprite.position().y();
+
+	newx = (pos.x * c) - (pos.y * s);
+	newy = (pos.x * s) + (pos.y * c);
+
+	newpos = gef::Vector2(carBodySprite.position().x(), carBodySprite.position().y());
+
+	UpButton.set_position(newpos.x + newx, newpos.y + newy, 0);
+	UpButton.set_rotation(body->GetAngle());
+
+	DownButton.set_rotation(body->GetAngle());
+
+	// update the sprite colours too 
+	if (savedcontrolstate & (TDC_RIGHT))
+	{
+		LeftButton.set_colour(0xff0000ff);
+	}
+	else
+	{
+		LeftButton.set_colour(0xffffffff);
+	}
+	if (savedcontrolstate & (TDC_LEFT))
+	{
+		RightButton.set_colour(0xff0000ff);
+	}
+	else
+	{
+		RightButton.set_colour(0xffffffff);
+	}
+	if (savedcontrolstate & (TDC_UP))
+	{
+		UpButton.set_colour(0xff0000ff);
+	}
+	else
+	{
+		UpButton.set_colour(0xffffffff);
+	}
+	if (savedcontrolstate & (TDC_DOWN))
+	{
+		DownButton.set_colour(0xff0000ff);
+	}
+	else
+	{
+		DownButton.set_colour(0xffffffff);
+	}
+
 }

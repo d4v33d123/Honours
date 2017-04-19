@@ -109,6 +109,7 @@ private:
 
 	gef::SpriteRenderer* sprite_renderer_;
 	class gef::Renderer3D* renderer_3d_;
+	gef::PNGLoader png_loader;
 
 	// Gamestate Related functions and variables
 	void StartInit();

@@ -110,6 +110,30 @@ AICar::AICar(b2World* world, Net network, int ds, uint16 categoryBits, uint16 ma
 	RightHitSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	RightHitSprite.set_rotation(-body->GetAngle());
 
+	// set up our update buttons
+	UpButton.set_width(2);
+	UpButton.set_height(2);
+	UpButton.set_colour(0xffffffff);
+	UpButton.set_position(body->GetPosition().x, body->GetPosition().y - 2, 0.0f);
+	UpButton.set_rotation(-body->GetAngle());
+
+	LeftButton.set_width(2);
+	LeftButton.set_height(2);
+	LeftButton.set_colour(0xffffffff);
+	LeftButton.set_position(body->GetPosition().x - 2, body->GetPosition().y, 0.0f);
+	LeftButton.set_rotation(-body->GetAngle());
+
+	RightButton.set_width(2);
+	RightButton.set_height(2);
+	RightButton.set_colour(0xffffffff);
+	RightButton.set_position(body->GetPosition().x + 2, body->GetPosition().y, 0.0f);
+	RightButton.set_rotation(-body->GetAngle());
+
+	DownButton.set_width(2);
+	DownButton.set_height(2);
+	DownButton.set_colour(0xffffffff);
+	DownButton.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
+	DownButton.set_rotation(-body->GetAngle());
 
 
 	// set up our neural network depending on what input was recieved
@@ -231,6 +255,9 @@ void AICar::Update(std::vector<Waypoint*> wps, std::vector<barrier*> bars, b2Wor
 	float turnSpeedPerSec = 160 * DEGTORAD;//from lock to lock in 0.5 sec
 	float turnPerTimeStep = turnSpeedPerSec / 60.0f;
 	float desiredAngle = 0;
+	//for the button press sprites
+	savedcontrolstate = control_state;
+
 	switch (control_state & (TDC_LEFT | TDC_RIGHT))
 	{
 	case TDC_LEFT:
@@ -449,6 +476,10 @@ void AICar::draw(gef::SpriteRenderer* sprite_renderer)
 	sprite_renderer->DrawSprite(LeftSprite);
 	sprite_renderer->DrawSprite(RightHitSprite);
 	sprite_renderer->DrawSprite(LeftHitSprite);
+	sprite_renderer->DrawSprite(UpButton);
+	sprite_renderer->DrawSprite(DownButton);
+	sprite_renderer->DrawSprite(LeftButton);
+	sprite_renderer->DrawSprite(RightButton);
 
 
 	for (std::vector<Tire*>::size_type it = 0; it != tires.size(); it++)
@@ -456,6 +487,8 @@ void AICar::draw(gef::SpriteRenderer* sprite_renderer)
 		tires[it]->draw(sprite_renderer);
 	}
 
+
+	
 }
 
 void AICar::SaveWeights()
