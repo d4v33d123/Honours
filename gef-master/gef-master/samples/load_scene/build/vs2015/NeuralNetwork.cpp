@@ -1,6 +1,7 @@
 #include "NeuralNetwork.h"
 #include <time.h>
 
+// set the input signal of the network
 void Network::SetInputSignal(double* input)
 {
 	int i;
@@ -10,6 +11,7 @@ void Network::SetInputSignal(double* input)
 	}
 }
 
+// get the output of the network
 void Network::GetOutputSignal(double* output)
 {
 	int i;
@@ -23,6 +25,7 @@ void Network::GetOutputSignal(double* output)
 	
 }
 
+// save the weights and biases of the network
 void Network::SaveWeights()
 {
 	int i, j, k;
@@ -41,6 +44,7 @@ void Network::SaveWeights()
 	}
 }
 
+// restore the saved weights to the current weights
 void Network::RestoreWeights()
 {
 	int i, j, k;
@@ -58,6 +62,7 @@ void Network::RestoreWeights()
 	}
 }
 
+// read the next number in the file
 bool Network::read_number(FILE* fp, double* number)
 {
 	char szWord[256];
@@ -96,22 +101,26 @@ bool Network::read_number(FILE* fp, double* number)
 	return true;
 }
 
+// initialise randoms
 void Network::InititaliseRandoms(int rnd)
 {
 	srand((unsigned)time(NULL));
 }
 
+// get a random int
 int Network::RandomEqualINT(int Low, int High)
 {
 	return rand() % (High - Low + 1) + Low;
 }
 
+// get a random double
 double Network::RandomEqualREAL(double Low, double High)
 {
 	double randomnum = ((double)rand() / RAND_MAX) * (High - Low) + Low;
 	return randomnum;
 }
 
+// make a matrix of size r,c and set values to v
 double** Network::MakeMatrix(int rows, int cols, double v) // helper for ctor, Train
 {
 	double** result = 0;
@@ -129,6 +138,7 @@ double** Network::MakeMatrix(int rows, int cols, double v) // helper for ctor, T
 	return result;
 }
 
+// make a vector of size l and set the values to v
 double* Network::MakeVector(int len, double v) // helper for Train
 {
 	double* result = new double[len];
@@ -137,6 +147,7 @@ double* Network::MakeVector(int len, double v) // helper for Train
 	return result;
 }
 
+// difference between vectors
 double* Network::MinusVectors(double* Vec1, double* Vec2, int size)
 {
 	double* ret = MakeVector(size, 0);
@@ -147,6 +158,7 @@ double* Network::MinusVectors(double* Vec1, double* Vec2, int size)
 	return ret;
 }
 
+// dot product calculation
 double Network::DotProduct(double* Vec1, double* Vec2, int size)
 {
 	double ret = 0;
@@ -158,6 +170,7 @@ double Network::DotProduct(double* Vec1, double* Vec2, int size)
 	return ret;
 }
 
+// multiply vectors
 double* Network::MultiplyVector(double * Vec, double value, int size)
 {
 	double* ret = MakeVector(size, 0);

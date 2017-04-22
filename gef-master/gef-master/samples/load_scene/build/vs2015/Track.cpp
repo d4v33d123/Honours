@@ -19,6 +19,7 @@ Track::Track(const char* fname, b2World* world, int number)
 
 }
 
+// load the track in from the file
 void Track::LoadTrack(FILE* fp)
 {
 	// run through the file and fill our map with the information 
@@ -75,7 +76,7 @@ void Track::LoadTrack(FILE* fp)
 
 }
 
-
+// build the track
 void Track::SetUpTrack(b2World * world)
 {
 	// run through our map matrix and build any barriers in the map
@@ -107,6 +108,7 @@ void Track::SetUpTrack(b2World * world)
 
 }
 
+// build the waypoints
 void Track::SetUpWaypoints(b2World* world)
 {
 	for (auto it = Barriers.begin(); it != Barriers.end(); it++)
@@ -246,37 +248,8 @@ void Track::SetUpWaypoints(b2World* world)
 		for (std::vector<Waypoint*>::size_type it = 0; it != WayPoints.size(); it++)
 		{
 			int val = WayPoints[it]->WaypointOrderVal;
-			/*
-			if (val == 21 ||
-				val == 22 ||
-				val == 23 ||
-				val == 24 ||
-				val == 25 ||
-				val == 26 ||
-				val == 27 ||
-				val == 28 ||
-				val == 29 ||
-				val == 30 ||
-				val == 31 ||
-				val == 32 ||
-				val == 33 ||
-				val == 46 ||
-				val == 47 ||
-				val == 48 ||
-				val == 49 ||
-				val == 50 ||
-				val == 51 ||
-				val == 52 ||
-				val == 64 ||
-				val == 65 ||
-				val == 66 ||
-				val == 67 ||
-				val == 68 ||
-				val == 69)
-			{
-				WayPoints[it]->body->SetTransform(WayPoints[it]->body->GetPosition(), WayPoints[it]->body->GetAngle() + b2_pi);
-			}*/
 			
+			// flip the waypoints that will be backwards in track one. This is kind of messy but it works fine for a prototype
 			if (val == 21 ||
 				val == 22 ||
 				val == 23 ||
@@ -290,7 +263,7 @@ void Track::SetUpWaypoints(b2World* world)
 				val == 31 ||
 				val == 32 ||
 				val == 33 ||
-				/*val == 34 ||*/
+
 				val == 45 ||
 				val == 46 ||
 				val == 47 ||
@@ -305,6 +278,7 @@ void Track::SetUpWaypoints(b2World* world)
 
 }
 
+// delete the track
 void Track::cleanUpTrack(b2World* world)
 {
 	for (auto it = Barriers.begin(); it != Barriers.end(); it++)
@@ -325,6 +299,7 @@ void Track::cleanUpTrack(b2World* world)
 
 }
 
+// build a waypoint with letters
 void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 {
 	// check for any barriers with the "uppercase" value and push it onto our waypoints vector
@@ -337,6 +312,7 @@ void Track::WaypointBuildLetter(barrier* bar, char upper, b2World* world)
 	}
 }
 
+// build a waypoint with numbers
 void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 {
 	// check for any barriers with the "higher" char value and push it onto our waypoints vector
@@ -349,6 +325,7 @@ void Track::WaypointBuildNumber(barrier* bar, char higher, b2World * world)
 	}
 }
 
+// draw the track
 void Track::DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug)
 {
 	// draw the track
@@ -368,6 +345,7 @@ void Track::DrawTrack(gef::SpriteRenderer* sprite_renderer, bool debug)
 
 }
 
+// update the sprites, this was useful when you could move the barriers
 void Track::UpdateSprites()
 {
 	for (std::vector<barrier*>::size_type it = 0; it != Barriers.size(); it++)
@@ -383,6 +361,7 @@ void Track::UpdateSprites()
 
 }
 
+// read number helper
 bool Track::read_number(FILE* fp, double* number)
 {
 	char szWord[256];

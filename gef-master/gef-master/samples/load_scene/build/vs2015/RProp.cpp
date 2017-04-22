@@ -1,6 +1,7 @@
 #include "RProp.h"
 #include <math.h>
 
+// three helper functions to avoid having to actually write for loops or use the "sign" maths function 
 void copy_array_noindex(double* array1, double* array2, int size)
 {
 	for (int i = 0; i < size; i++)
@@ -140,16 +141,8 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	float meansquarederror = 1.0;
 	float meansquaredsum = 0.0;
 
+	// get the training data
 	double** trainData = fillTrainingData(fnames, trainDataSize, layers[0].num_Neurons + layers[2].num_Neurons);
-
-	for (int i = 0; i < trainDataSize; i++)
-	{
-		for (int j = 0; j < 8; j++)
-		{
-			//gef::DebugOut("val: %f  ", trainData[i][j]);
-		}
-		//gef::DebugOut("\n");
-	}
 
 
 	RandomWeights();
@@ -159,8 +152,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 	{
 		++epoch;
 		meansquaredsum = 0;
-		//double* currWts = GetWeights();
-		//double err = MeanSquaredError(trainData, trainDataSize);
+		// check to see if the error is less than the lowest one
 		if (meansquarederror <= preverr)
 		{
 			SaveWeights();
@@ -393,8 +385,7 @@ int RProp::Train(const char* fnames, int trainDataSize, int numInAndOut)
 
 	} // while
 
-	//double* wts = GetWeights();
-	//return wts;
+
 	RestoreWeights();
 
 	return 0;
@@ -455,11 +446,11 @@ void RProp::RandomWeights()
 		{
 			for (k = 0; k < layers[i - 1].num_Neurons; k++)
 			{
-				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5); //RandomEqualREAL(0.001, 0.01);//
+				layers[i].neurons[j].weight[k] = RandomEqualREAL(0.5, -0.5); 
 				layers[i].neurons[j].pre_Weight[k] = 0.0;
 				layers[i].neurons[j].saved_weight[k] = 0.0;
 			}
-			layers[i].neurons[j].bias = RandomEqualREAL(0.001, 0.01); //RandomEqualREAL(0.5, -0.5); //
+			layers[i].neurons[j].bias = RandomEqualREAL(0.001, 0.01); 
 			layers[i].neurons[j].savedBias = 0;
 
 		}
@@ -496,6 +487,9 @@ void RProp::Simulate(double* input, double* output, double* target, bool trainin
 {
 
 }
+
+// multiple helper functions for quickly resetting arrays, doing some mathematics. The maths functions help more if you are using the
+// RPROP algorithm for a classfication problem, but we are using it for a regression problem in this application
 
 void RProp::ZeroOutMat(double** matrix, int rows, int cols)
 {
@@ -573,13 +567,10 @@ double RProp::MeanSquaredError(double** trainData, int size) //double RProp::Mea
 
 void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 {
-	//double* hSums = new double[numHidden]; // hidden nodes sums scratch array
-	//double* oSums = new double[numOutput]; // output nodes sums
+	
 
 	for (int i = 0; i < size; i++) // copy x-values to inputs
 		layers[0].neurons[i].output = xValues[i];
-	// note: no need to copy x-values unless you implement a ToString and want to see them.
-	// more efficient is to simply use the xValues[] directly.
 
 	for (int j = 0; j < layers[1].num_Neurons; j++)  // compute i-h sum of weights * inputs
 		for (int i = 0; i < layers[0].num_Neurons; i++)
@@ -624,13 +615,6 @@ void RProp::ComputeOutputs(double* xValues, int size, double* outs)
 		outs[i] = layers[2].neurons[i].output;
 	}
 
-	
-	//double* softOut = Softmax(valuesforsoftout, layers[2].num_Neurons); // softmax activation does all outputs at once for efficiency
-	//Array.Copy(softOut, outputs, softOut.Length);
-
-	//double* retResult = new double[numOutput]; // could define a GetOutputs method instead
-	//Array.Copy(this.outputs, retResult, retResult.Length);
-	//return valuesforsoftout;
 }
 
 double** RProp::fillTrainingData(const char* fname, int rows, int cols)

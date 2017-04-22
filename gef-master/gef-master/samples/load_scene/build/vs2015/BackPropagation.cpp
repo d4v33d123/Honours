@@ -7,7 +7,7 @@
 #include <math.h>
 #include <string.h>
 
-
+// initialise EBP
 BProp::BProp(int nl, int npl[])
 {
 	num_layers = 0;
@@ -76,6 +76,7 @@ BProp::~BProp()
 	delete[] layers;
 }
 
+// set the network weights to random values between -0.5 and 0.5
 void BProp::RandomWeights()
 {
 	int i, j, k;
@@ -94,7 +95,7 @@ void BProp::RandomWeights()
 	}
 }
 
-
+// pass the signal through  the network
 void BProp::PropagateSignal()
 {
 	int i, j, k;
@@ -116,6 +117,7 @@ void BProp::PropagateSignal()
 	}
 }
 
+// compute the output error
 void BProp::ComputeOutputError(double* target)
 {
 	int i;
@@ -140,6 +142,7 @@ void BProp::ComputeOutputError(double* target)
 
 }
 
+// EBP 
 void BProp::BackPropagateError()
 {
 	int i, j, k;
@@ -160,6 +163,7 @@ void BProp::BackPropagateError()
 	}
 }
 
+// weight adjustments
 void BProp::AdjustWeights()
 {
 	int i, j, k;
@@ -179,6 +183,7 @@ void BProp::AdjustWeights()
 	}
 }
 
+// simulate the network
 void BProp::Simulate(double* input, double* output, double* target, bool training)
 {
 	if (!input) return;
@@ -200,7 +205,7 @@ void BProp::Simulate(double* input, double* output, double* target, bool trainin
 }
 
 
-
+// train the network
 int BProp::Train(const char* fname, int datasize, double** TrainDat)
 {
 	int count = 0;
@@ -258,6 +263,8 @@ int BProp::Train(const char* fname, int datasize, double** TrainDat)
 
 	return count;
 }
+
+// fill the training data from the data file
 double** BProp::fillTrainingData(const char* fname, int rows, int cols)
 {
 	double** result = MakeMatrix(rows, cols, 0);
@@ -312,7 +319,7 @@ double** BProp::fillTrainingData(const char* fname, int rows, int cols)
 	return result;
 }
 
-
+// test the network
 int BProp::Test(const char* fname, int datasize, double** TrainDat)
 {
 	int count = 0;
@@ -370,12 +377,15 @@ int BProp::Test(const char* fname, int datasize, double** TrainDat)
 	return count;
 }
 
+// evaluate not used currently
 int BProp::Evaluate()
 {
 	int count = 0;
 	return count;
 }
 
+
+// run the network for "maxiter" iterations
 void BProp::Run(const char* fname, int datasize,const int& maxiter)
 {
 	int countTrain = 0;
@@ -391,29 +401,31 @@ void BProp::Run(const char* fname, int datasize,const int& maxiter)
 
 	do
 	{
+		// run through the network and get the values
 		countLines += Train(fname, datasize, TrainDat);
 		Test(fname, datasize, TrainDat);
 		countTrain++;
 
-
+		// set the lowest error
 		if (firstIter)
 		{
 			dMinTestError = dAvgTestError;
 			firstIter = false;
 		}
+		// output ever 100th epoch with the current error
 		if (countTrain % 100 == 0)
 		{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
 		}
 			
-
+		// if the error is lower than the "lowest" erro, output the epoch and save the weights
 		if (dAvgTestError < dMinTestError)
 		{
 			gef::DebugOut("%i \t Test Error: %f \n", countTrain, dAvgTestError);
 			dMinTestError = dAvgTestError;
 			SaveWeights();
 		}
-		else if (dAvgTestError > 1.3 * dMinTestError)
+		else if (dAvgTestError > 1.3 * dMinTestError) // if the network is going too far in the wrong direction, just exit
 		{
 			gef::DebugOut(" -> stopping training and restoring weights\n");
 			Stop = true;

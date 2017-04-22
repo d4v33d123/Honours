@@ -1,5 +1,6 @@
 #include "Barrier.h"
 
+// two barrier constructors depending if they have a waypoint or not attached to them
 barrier::barrier(float x, float y, b2World* world, uint16 categoryBits, uint16 maskBits)
 {
 	b2BodyDef bodyDef;

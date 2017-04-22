@@ -302,6 +302,7 @@ void AICar::UpdateNN(std::vector<Waypoint*> wps)
 	}
 	speed = ((tire_speed / 4) / 200) + 0.4;
 
+	// set up angles
 	for (std::vector<Waypoint*>::size_type it = 0; it != wps.size(); it++)
 	{
 		if (currentWaypoint == wps[it]->WaypointOrderVal)

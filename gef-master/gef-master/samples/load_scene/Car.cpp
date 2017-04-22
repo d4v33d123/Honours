@@ -217,6 +217,7 @@ float Car::getYPosition()
 	return body->GetPosition().y;
 }
 
+// waypoint update
 void Car::UpdateWaypoint()
 {
 	gef::DebugOut("AYYY");
@@ -235,6 +236,7 @@ void Car::UpdateWaypoint()
 	}
 }
 
+// record lap time
 void Car::Lap()
 {
 	if (currentlap > 0)
@@ -247,14 +249,18 @@ void Car::Lap()
 	currentlap++;
 }
 
+// update laptime
 void Car::UpdateTime()
 {
 	finishlap = time(NULL);
 	currenttime = difftime(finishlap, startlap);
 }
 
+// update the button sprites depending on what buttons the user/ai is pressing
 void Car::updateButtonSprites()
 {
+	// really annoying simple but long calculation for rotation around an origin point for each button.
+	// this could be put into a function and called however for speed this was done instead.
 	float s = sinf(body->GetAngle());
 	float c = cosf(body->GetAngle());
 
@@ -295,6 +301,7 @@ void Car::updateButtonSprites()
 	UpButton.set_rotation(body->GetAngle());
 
 	DownButton.set_rotation(body->GetAngle());
+
 
 	// update the sprite colours too 
 	if (savedcontrolstate & (TDC_RIGHT))

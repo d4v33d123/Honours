@@ -24,7 +24,8 @@ SceneApp::SceneApp(gef::Platform& platform) :
 	menuinited(false),
 	startupinited(false),
 	gameinited(false),
-	trackNum_(1)
+	trackNum_(1),
+	game_state(STARTUP)
 {
 }
 
@@ -43,7 +44,7 @@ void SceneApp::Init()
 
 	
 	// start up the game
-	game_state = STARTUP;
+	//game_state = STARTUP;
 
 
 
@@ -175,6 +176,7 @@ void SceneApp::CleanUpFont()
 	font_ = NULL;
 }
 
+// not used anymore
 void SceneApp::DrawHUD()
 {
 	float aspect_ratio = (float)platform_.width() / (float)platform_.height();
@@ -303,9 +305,9 @@ void SceneApp::StartRender()
 	if (font_)
 	{
 		// show the title and the press enter to start message
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) ,  (screen_height / 2) , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) ,  (screen_height / 2) - 10, -0.9f), 0.4f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
 
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.3f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
 		}
 
 
@@ -365,36 +367,50 @@ void SceneApp::MenuRender()
 		switch (net_type)
 		{
 		case EBP:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST EBP!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f) , 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST EBP!");
 			break;
 		case RPROP:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RPROP!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f) , 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RPROP!");
 			break;
 		case RMGSN:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
 			break;
 		}
 		// display the controls to switch the AI
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "use w and s to change your opponent!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Use W and S to change your opponent!");
 
 		// display the start message
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
 
 		// display other options
 		if (trainnetworks)
 		{
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 20, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Training Networks!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Training Networks: ON   [T]");
+		}
+		else
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Training Networks: OFF  [T]");
 		}
 		if (time_trial)
 		{
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "TIME TRIAL!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 40, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "TIME TRIAL: ON    [O]");
+		}
+		else
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 40, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "TIME TRIAL: OFF   [O]");
 		}
 		if (practice)
 		{
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 40, (screen_height / 2) + 40, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 60, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE: ON    [P]");
+		}
+		else
+		{
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 60, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE: OFF   [P]");
 		}
 		// display number of laps
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 20, (screen_height / 2) + 30, -0.9f), 0.10f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps - 1);
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps - 1);
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 40, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Use R and F to change the number of laps");
+
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
 	}
 	sprite_renderer_->End();
@@ -459,6 +475,23 @@ void SceneApp::MenuInput()
 				net_type == EBP;
 			}
 		}*/
+
+		// set the number of laps
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_R))
+		{
+			if (num_laps < 6)
+			{
+				num_laps++;
+			}
+		}
+		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_F))
+		{
+			if (num_laps > 2)
+			{
+				num_laps--;
+			}
+		}
+
 		// set training, practice or time trial modes
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_T))
 		{
@@ -805,11 +838,49 @@ void SceneApp::GameRender()
 	else
 	{
 
-		if(time_trial)
+		if (time_trial)
+		{
 			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", _aiCar->currenttime);
-		else
+			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", _aiCar->currentlap, num_laps);
+
+		}
+			else
+		{
 			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition()-(screen_width/2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
-	}
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", car->currentlap, num_laps);
+			// decide who is in first
+			if (car->currentlap >= _aiCar->currentlap)
+			{
+				if (car->currentlap > _aiCar->currentlap)
+				{
+					font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 1st");
+				}
+				else
+				{
+					if (car->currentWaypoint >= _aiCar->currentWaypoint)
+					{
+						font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 1st");
+					}
+					else if(car->currentWaypoint < _aiCar->currentWaypoint)
+					{
+						font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 2nd");
+					}
+					else // do this later maybe it will get quite complex quickly due to having to find the position of the waypoint
+					{
+						// distance calculation
+						float diffx = level_->WayPoints[car->currentWaypoint]->barrierSprite.position().x()
+					}
+
+				}
+			}
+			else
+			{
+				font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 2nd");
+
+			}
+			
+		}
+			}
 
 	sprite_renderer_->End();
 }
@@ -939,14 +1010,14 @@ void SceneApp::GameCleanUp()
 
 	if (time_trial == false)
 	{
-		car->~Car();
+		//car->~Car();
 		delete car;
 		car = NULL;
 	}
 	
 	if (practice == false)
 	{
-		_aiCar->~AICar();
+		//_aiCar->~AICar();
 		delete _aiCar;
 		_aiCar = NULL;
 

@@ -25,6 +25,7 @@ namespace gef
 	class Scene;
 }
 
+// gamestate
 enum GState
 {
 	STARTUP,
@@ -34,7 +35,7 @@ enum GState
 	EXIT
 };
 
-
+// destruction listener for Box2D
 class MyDestructionListener : public b2DestructionListener
 {
 	void SayGoodbye(b2Fixture* fixture)

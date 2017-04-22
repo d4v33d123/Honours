@@ -17,7 +17,7 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 		}
 	}
 
-	
+	// calculate the angle that the waypoint is at
 	wayx = x - CAPx;//CAPx - x;
 	wayx /= 2;
 	wayx += CAPx;
@@ -26,15 +26,20 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 	wayy /= 2;
 	wayy += CAPy;
 
-	width = sqrt((pow((x - CAPx), 2) + (pow((y - CAPy), 2))));//0.1;//
-	height = 0.1;//sqrt((pow((CAPx - x), 2) + (pow((CAPy - CAPy), 2))));//
+	width = sqrt((pow((x - CAPx), 2) + (pow((y - CAPy), 2))));
 
-	angle = atan2((y - CAPy), (x - CAPx)); //atan2((CAPy - y), (CAPx - x));//
-	//if (angle < 0)
-	//{
-	//	angle += 2 * b2_pi;
-	//}
+	// set the finish line to look differently
+	if (WaypointOrderVal == 0)
+	{
+		height = 0.4;
+	}
+	else
+	{
+		height = 0.3;
+	}
+		
 
+	angle = atan2((y - CAPy), (x - CAPx)); 
 
 
 	b2BodyDef bodyDef;
@@ -57,7 +62,17 @@ Waypoint::Waypoint(float CAPx, float CAPy, float x, float y, int mapx, int mapy,
 
 	barrierSprite.set_width(width);
 	barrierSprite.set_height(height);
-	barrierSprite.set_colour(0xFF0000FF);
+
+	if (WaypointOrderVal == 0)
+	{
+		barrierSprite.set_colour(0xFFFFFF00);
+	}
+	else
+	{
+		barrierSprite.set_colour(0xFF0000FF);
+	}
+		
+
 	barrierSprite.set_position(body->GetPosition().x, body->GetPosition().y, 0.0f);
 	barrierSprite.set_rotation(-body->GetAngle());
 }
