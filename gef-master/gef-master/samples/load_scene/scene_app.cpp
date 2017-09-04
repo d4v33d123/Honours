@@ -41,13 +41,7 @@ void SceneApp::Init()
 	SetupLights();
 	SetupCamera();
 
-
-	
 	// start up the game
-	//game_state = STARTUP;
-
-
-
 }
 
 void SceneApp::CleanUp()
@@ -58,16 +52,10 @@ void SceneApp::CleanUp()
 
 	delete renderer_3d_;
 	renderer_3d_ = NULL;
-
-	//delete car;
-	//car = NULL;
-	//world->DestroyBody(groundBody);
 }
 
 bool SceneApp::Update(float frame_time)
 {
-	
-	HandleInput();
 
 	// check the current game state and update the appropriate things, also check to see if the state has been initialised yet!
 	switch (game_state)
@@ -105,21 +93,16 @@ bool SceneApp::Update(float frame_time)
 		break;
 
 	case EXIT:
-
-		return false;
-
+		return false; // exit the application
 		break;
-	
 	}
-
-
 
 	return true;
 }
 
 void SceneApp::Render()
 {
-	
+
 
 #if 0
 	gef::Matrix44 view_matrix;
@@ -139,17 +122,17 @@ void SceneApp::Render()
 	switch (game_state)
 	{
 	case STARTUP:
-		if(startupinited)
+		if (startupinited)
 			StartRender();
 		break;
 
 	case MENU:
-		if(menuinited)
+		if (menuinited)
 			MenuRender();
 		break;
 
 	case GAME:
-		if(gameinited)
+		if (gameinited)
 			GameRender();
 		break;
 
@@ -162,7 +145,7 @@ void SceneApp::Render()
 
 	}
 
-	
+
 }
 void SceneApp::InitFont()
 {
@@ -184,7 +167,7 @@ void SceneApp::DrawHUD()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	if(font_)
+	if (font_)
 	{
 		// display frame rate
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
@@ -268,13 +251,6 @@ void SceneApp::tire_vs_groundArea(b2Fixture* tireFixture, b2Fixture* groundAreaF
 		tire->removeGroundArea(gaFud);
 }
 
-void SceneApp::HandleInput()
-{
-	
-	
-
-}
-
 void SceneApp::StartInit()
 {
 	// set up our initial game, load the splash screen along with loading any big files, nothing to do here though!
@@ -297,7 +273,7 @@ void SceneApp::StartRender()
 	float screen_width = 300.0f;
 	float screen_height = screen_width / aspect_ratio;
 
-	projection_matrix = platform_.OrthographicFrustum(0, (screen_width), 0, (screen_height ), -1.0f, 1.0f);
+	projection_matrix = platform_.OrthographicFrustum(0, (screen_width), 0, (screen_height), -1.0f, 1.0f);
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
@@ -305,10 +281,10 @@ void SceneApp::StartRender()
 	if (font_)
 	{
 		// show the title and the press enter to start message
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) ,  (screen_height / 2) - 10, -0.9f), 0.4f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) - 10, -0.9f), 0.4f, 0xff00ff00, gef::TJ_CENTRE, "MULTI-LAYER PERCEPTRON RACING!");
 
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10 , -0.9f), 0.3f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
-		}
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10, -0.9f), 0.3f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
+	}
 
 
 	sprite_renderer_->End();
@@ -356,7 +332,7 @@ void SceneApp::MenuRender()
 	float screen_height = screen_width / aspect_ratio;
 
 
-	projection_matrix = platform_.OrthographicFrustum(0, (screen_width ),0, (screen_height ), -1.0f, 1.0f);
+	projection_matrix = platform_.OrthographicFrustum(0, (screen_width), 0, (screen_height), -1.0f, 1.0f);
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
@@ -367,17 +343,17 @@ void SceneApp::MenuRender()
 		switch (net_type)
 		{
 		case EBP:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f) , 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST EBP!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) - 10.0f, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST EBP!");
 			break;
 		case RPROP:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f) , 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RPROP!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) - 10.0f, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RPROP!");
 			break;
 		case RMGSN:
-			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2)- 10.0f, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
+			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) - 10.0f, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "YOU ARE RACING AGAINST RMGS!");
 			break;
 		}
 		// display the controls to switch the AI
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) , -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Use W and S to change your opponent!");
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2), -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Use W and S to change your opponent!");
 
 		// display the start message
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Press enter to start!");
@@ -408,7 +384,7 @@ void SceneApp::MenuRender()
 			font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2) + 100, (screen_height / 2) + 60, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "PRACTICE: OFF   [P]");
 		}
 		// display number of laps
-		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i",num_laps - 1);
+		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Number of laps:%i", num_laps - 1);
 		font_->RenderText(sprite_renderer_, gef::Vector4((screen_width / 2), (screen_height / 2) + 40, -0.9f), 0.25f, 0xff00ff00, gef::TJ_CENTRE, "Use R and F to change the number of laps");
 
 		//car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2)
@@ -455,25 +431,25 @@ void SceneApp::MenuInput()
 		/*
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_A))
 		{
-			if (net_type == EBP)
-			{
-				net_type = RPROP;
-			}
-			else if (net_type == RPROP)
-			{
-				net_type == RMGSN;
-			}
+		if (net_type == EBP)
+		{
+		net_type = RPROP;
+		}
+		else if (net_type == RPROP)
+		{
+		net_type == RMGSN;
+		}
 		}
 		if (keyboard->IsKeyReleased(gef::Keyboard::KeyCode::KC_D))
 		{
-			if (net_type == RMGSN)
-			{
-				net_type = RPROP;
-			}
-			else if (net_type == RPROP)
-			{
-				net_type == EBP;
-			}
+		if (net_type == RMGSN)
+		{
+		net_type = RPROP;
+		}
+		else if (net_type == RPROP)
+		{
+		net_type == EBP;
+		}
 		}*/
 
 		// set the number of laps
@@ -541,7 +517,7 @@ void SceneApp::GameInit()
 {
 	// define the data size, this could be improved with something to check how many lines are in the dataset but for now this works perfectly
 	dataSize = 10000;
-	
+
 
 	// create the world
 	world = new b2World(b2Vec2(0, 0));
@@ -572,10 +548,10 @@ void SceneApp::GameInit()
 	}
 
 	controlState = 0;
-	
+
 	//load the car sprite, this is done here to avoid complications in the constructors of the car class a bit messy but
 	// it is fast enough to avoid any time issues
-	
+
 	gef::ImageData image_data;
 	gef::Texture* car_texture;
 	bool successful_load = true;
@@ -589,7 +565,7 @@ void SceneApp::GameInit()
 	}
 
 	car_texture = gef::Texture::Create(platform_, image_data);
-	
+
 
 	int trackways;
 	// build the track, this has been set up so multiple tracks can be added later.
@@ -628,15 +604,15 @@ void SceneApp::GameInit()
 		switch (net_type)
 		{
 		case EBP:
-			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, EBP, dataSize, CARCAT, BARRIERCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			break;
 
 		case RPROP:
-			_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, RPROP, dataSize, CARCAT, BARRIERCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			break;
 
 		case RMGSN:
-			_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+			_aiCar = new AICar(world, RMGSN, dataSize, CARCAT, BARRIERCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 			break;
 
 		}
@@ -658,22 +634,22 @@ void SceneApp::GameInit()
 		}
 
 		//ugly values, but not another way to do this without editing the original pngs
-		if(successful_load)
+		if (successful_load)
 		{
 			_aiCar->carBodySprite.set_texture(car_texture);
 			_aiCar->carBodySprite.set_height(12);
 			_aiCar->carBodySprite.set_uv_position(gef::Vector2(0.3125, -0.09));
 			_aiCar->carBodySprite.set_uv_height(-0.91);
 			_aiCar->carBodySprite.set_uv_width(0.35);
-			_aiCar->carBodySprite.set_colour(0xffffffff);
+			_aiCar->carBodySprite.set_colour(0xffff00ff);
 		}
-		
+
 	}
 
 	if (time_trial == false)
 	{
 		// spawn the car and set it to the correct position
-		car = new Car(world, CARCAT, BARRIERCAT  | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
+		car = new Car(world, CARCAT, BARRIERCAT | WAYPOINTCAT, TIRECAT, BARRIERCAT, trackways, num_laps);
 		car->body->SetTransform(b2Vec2(starting_point.x + 10, starting_point.y), starting_angle + b2_pi);
 		for (std::vector<Tire*>::size_type it = 0; it < 4; it++)
 		{
@@ -691,7 +667,7 @@ void SceneApp::GameInit()
 			car->carBodySprite.set_uv_width(0.35);
 			car->carBodySprite.set_colour(0xffffffff);
 		}
-		
+
 	}
 
 
@@ -699,9 +675,9 @@ void SceneApp::GameInit()
 	startRace = false;
 	countdown = 3.0;
 	PlayerTime = 0.0;
-	
 
-		
+
+
 }
 
 void SceneApp::GameUpdate(float frame_time)
@@ -713,7 +689,7 @@ void SceneApp::GameUpdate(float frame_time)
 	GameInput();
 
 	// make sure the race hasn't started before the countdown ends
-	if (countdown > 0 && (startRace==false))
+	if (countdown > 0 && (startRace == false))
 	{
 		countdown -= frame_time;
 	}
@@ -775,7 +751,7 @@ void SceneApp::GameUpdate(float frame_time)
 					game_state = GAMEOVER;
 				}
 			}
-			
+
 		}
 		if (practice == false)
 		{
@@ -787,7 +763,7 @@ void SceneApp::GameUpdate(float frame_time)
 		level_->UpdateSprites();
 	}
 
-	
+
 
 }
 
@@ -812,25 +788,25 @@ void SceneApp::GameRender()
 	{
 		projection_matrix = platform_.OrthographicFrustum(car->getXPosition() - (screen_width / 2), car->getXPosition() + (screen_width / 2), car->getYPosition() - (screen_height / 2), car->getYPosition() + (screen_height / 2), -1.0f, 10.0f);
 	}
-	
+
 	sprite_renderer_->set_projection_matrix(projection_matrix);
 
 	sprite_renderer_->Begin();
 
 	// redner the cars
-	if(time_trial == false)
+	if (time_trial == false)
 		car->draw(sprite_renderer_);
 
-	if(practice == false)
+	if (practice == false)
 		_aiCar->draw(sprite_renderer_);
 
 	level_->DrawTrack(sprite_renderer_, true);
 
 	// render the lap time
-	if (startRace == false )
+	if (startRace == false)
 	{
-		if(time_trial == false)
-			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
+		if (time_trial == false)
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
 		else
 			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "%f", countdown);
 
@@ -841,13 +817,13 @@ void SceneApp::GameRender()
 		if (time_trial)
 		{
 			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", _aiCar->currenttime);
-			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", _aiCar->currentlap, num_laps);
+			font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() - (screen_width / 2) + 10, _aiCar->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", _aiCar->currentlap, num_laps - 1);
 
 		}
-			else
+		else
 		{
-			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition()-(screen_width/2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
-			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", car->currentlap, num_laps);
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "time: %.1f", car->currenttime);
+			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 20, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "lap: %i / %i", car->currentlap, num_laps - 1);
 			// decide who is in first
 			if (car->currentlap >= _aiCar->currentlap)
 			{
@@ -857,18 +833,45 @@ void SceneApp::GameRender()
 				}
 				else
 				{
-					if (car->currentWaypoint >= _aiCar->currentWaypoint)
+					if (car->currentWaypoint > _aiCar->currentWaypoint || car->currentWaypoint == 0 && _aiCar->currentWaypoint != 0)
 					{
 						font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 1st");
 					}
-					else if(car->currentWaypoint < _aiCar->currentWaypoint)
+					else if (car->currentWaypoint < _aiCar->currentWaypoint)
 					{
 						font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 2nd");
 					}
 					else // do this later maybe it will get quite complex quickly due to having to find the position of the waypoint
 					{
 						// distance calculation
-						float diffx = level_->WayPoints[car->currentWaypoint]->barrierSprite.position().x()
+						int carway;
+						int aiway;
+						for (int it = 0; it < level_->WayPoints.size(); it++)
+						{
+							if (level_->WayPoints[it]->WaypointOrderVal == car->currentWaypoint)
+								carway = it;
+							if (level_->WayPoints[it]->WaypointOrderVal == _aiCar->currentWaypoint)
+								aiway = it;
+						}
+
+
+						float diffx = abs(level_->WayPoints[carway]->barrierSprite.position().x() - car->carBodySprite.position().x());
+						float diffy = abs(level_->WayPoints[carway]->barrierSprite.position().y() - car->carBodySprite.position().y());
+						float diffx2 = abs(level_->WayPoints[aiway]->barrierSprite.position().x() - _aiCar->carBodySprite.position().x());
+						float diffy2 = abs(level_->WayPoints[aiway]->barrierSprite.position().y() - _aiCar->carBodySprite.position().y());
+
+						float dist = sqrtf((diffy * diffy) + (diffx * diffx));
+						float dist2 = sqrtf((diffy2 * diffy2) + (diffx2 * diffx2));
+
+						if (dist <= dist2)
+						{
+							font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 1st");
+						}
+						else
+						{
+							font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 2nd");
+						}
+
 					}
 
 				}
@@ -878,9 +881,9 @@ void SceneApp::GameRender()
 				font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition() - (screen_width / 2) + 10, car->getYPosition() - (screen_height / 2) + 30, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "position: 2nd");
 
 			}
-			
+
 		}
-			}
+	}
 
 	sprite_renderer_->End();
 }
@@ -957,8 +960,8 @@ void SceneApp::GameOverRender()
 
 
 	// draw the text showing the score and your time
-	if(time_trial)
-		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition() , _aiCar->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
+	if (time_trial)
+		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
 	else
 	{
 		if (winner)
@@ -969,17 +972,17 @@ void SceneApp::GameOverRender()
 		{
 			font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() - 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "YOU LOST!");
 		}
-		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() , -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
+		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition(), -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Total Time: %.1f", PlayerTime);
 
 	}
-		
+
 	// and press enter to exit
 
-	if(time_trial == false)
+	if (time_trial == false)
 		font_->RenderText(sprite_renderer_, gef::Vector4(car->getXPosition(), car->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
 	else
 		font_->RenderText(sprite_renderer_, gef::Vector4(_aiCar->getXPosition(), _aiCar->getYPosition() + 10, -0.9f), 0.25f, 0xff00ff00, gef::TJ_LEFT, "Press enter to go back to the main menu");
-	
+
 	sprite_renderer_->End();
 }
 
@@ -997,7 +1000,7 @@ void SceneApp::GameOverInput()
 			GameCleanUp();
 			game_state = MENU;
 		}
-			
+
 	}
 }
 
@@ -1014,7 +1017,7 @@ void SceneApp::GameCleanUp()
 		delete car;
 		car = NULL;
 	}
-	
+
 	if (practice == false)
 	{
 		//_aiCar->~AICar();
